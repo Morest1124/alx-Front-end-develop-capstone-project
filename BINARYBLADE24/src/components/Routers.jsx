@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./Navbar";
 import Dashboard from "./Dashboard";
 import ProjectsPage from "./ProjectsPage";
@@ -16,7 +16,8 @@ import FindWork from "./FindWork";
 import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
 
-export default function AppRouters() {
+// External routers Separated from the app main file
+function AppRouters() {
   return (
     <BrowserRouter>
       <Navbar />
@@ -40,3 +41,4 @@ export default function AppRouters() {
     </BrowserRouter>
   );
 }
+export default AppRouters;
