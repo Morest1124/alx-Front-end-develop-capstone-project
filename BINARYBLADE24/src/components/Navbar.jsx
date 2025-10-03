@@ -161,7 +161,6 @@ const Navbar = () => {
               BINARYBLADE24
             </Link>
           </div>
-          <h1 className="text-red-600 justify-center">You are not logged in</h1>
 
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex md:space-x-4 items-center">

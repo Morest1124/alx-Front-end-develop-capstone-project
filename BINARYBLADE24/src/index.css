@@ -1,2 +1,8 @@
 @import "tailwindcss";
 
+@layer components {
+	.nav-link {
+		@apply text-xs text-gray-700 hover:text-indigo-600 px-5 py-3 font-medium transition-colors duration-250 rounded-lg;
+	}
+}
+
