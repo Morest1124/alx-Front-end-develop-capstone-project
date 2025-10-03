@@ -15,7 +15,8 @@ import FindTalent from "./FindTalent";
 import FindWork from "./FindWork";
 import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
-import { Children, useState } from "react";
+import { Children, useContext, useState } from "react";
+import { AuthConext } from "./AuthConext";
 
 // External routers Separated from the app main file
 function AppRouters() {
@@ -51,10 +52,30 @@ const RouterProvider = ({ Children }) => {
   const navigations = (path) => {
     setCurrentPath(path);
     return (
-      value={{currentPath, navigations}}{Children}
-    )
+      <RouterConext.Provider value={{ currentPath, navigations }}>
+        {Children}
+      </RouterConext.Provider>
+    );
   };
 };
+// Hooks to use navigations
+const useRouter = () => useContext(RouterConext);
+
+//custom Link components for  navigation
+const { navigations } = useRouter();
+const className =
+  "px-5 py-3 font-medium transition-colors duration-250 rounded-lg";
+const handleClick = (e) => {
+  e.preventDefault();
+  navigations(to);
+};
+return (
+  <Link to={to} onClick={handleClick} className={`{$className} {$className}`}>
+    {" "}
+    {Children}
+  </Link>
+);
+
 
 
 

@@ -1,8 +1,8 @@
 import React, { createContext, useState, useEffect, Children } from "react";
 import { create } from "zustand";
-
+import { ClientNavLinks, FreelancerNavLinks, PublicNavLinks } from "./Navbar";
 //create the context
-export const AuthConext = createContext();
+const AuthConext = createContext();
 //check the current state of the user and if the user is not logged In only a caritain can be viewed. No proposal, no messages etc
 const LogInUserState = {
   isLoggedIn: false,
@@ -10,7 +10,7 @@ const LogInUserState = {
   userId: null,
 };
 
-export const Authprovider = ({ Children }) => {
+const Authprovider = ({ Children }) => {
   const [user, setUser] = useState(LogInUserState); //check the current state of the use
 
   // useEffect to verify cookies in local storage
@@ -41,3 +41,4 @@ export const Authprovider = ({ Children }) => {
     </AuthConext.Provider>
   );
 };
+export default AuthConext;
