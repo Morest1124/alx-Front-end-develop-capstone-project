@@ -45,7 +45,7 @@ function AppRouters() {
 }
 
 // Routing logic
-const RouterConext = createConext();
+const RouterContext = createContext();
 //Update the current patg
 const RouterProvider = ({ Children }) => {
   const [currentPath, setCurrentPath] = useState("/");
@@ -64,14 +64,14 @@ const useRouter = () => useContext(RouterConext);
 //custom Link components for  navigation
 const Link = ({ to, Children, className = "" }) => {
   const { navigations } = useRouter();
-  const className =
+  const baseClass =
     "px-5 py-3 font-medium transition-colors duration-250 rounded-lg";
   const handleClick = (e) => {
     e.preventDefault();
     navigations(to);
   };
   return (
-    <Link to={to} onClick={handleClick} className={`{$className} {$className}`}>
+    <Link to={to} onClick={handleClick} className={`{$baseClass} {$className}`}>
       {" "}
       {Children}
     </Link>

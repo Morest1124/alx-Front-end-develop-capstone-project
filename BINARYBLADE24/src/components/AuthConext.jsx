@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, Children } from "react";
 import { create } from "zustand";
 import { ClientNavLinks, FreelancerNavLinks, PublicNavLinks } from "./Navbar";
 //create the context
-const AuthConext = createContext();
+const AuthContext = createContext();
 //check the current state of the user and if the user is not logged In only a caritain can be viewed. No proposal, no messages etc
 const LogInUserState = {
   isLoggedIn: false,
@@ -36,9 +36,9 @@ const Authprovider = ({ Children }) => {
     }
   };
   return (
-    <AuthConext.Provider value={{ user, login, logout, switchRoles }}>
+    <AuthContext.Provider value={{ user, login, logout, switchRoles }}>
       {Children}
-    </AuthConext.Provider>
+    </AuthContext.Provider>
   );
 };
 export default AuthConext;
