@@ -19,21 +19,21 @@ const Authprovider = ({ Children }) => {
     setUser({
       isLoggedIn: true,
       role: useData.role,
-      name: role === "client" ? "Client A" : "Freeancer B",
+      name: role === "client" ? "Client A" : "Freelancer B",
       useId: "user-" + Math.random().toString(24).substring(2, 6),
     });
   };
   const logout = () => {
     //logic clear session data
     setUser(LogInUserState);
-    // };
-    // //Setting to switch roles
-    // const switchRols = () = {
-    //     if (user.role === "client") {
-    //         login("freelancer");
-    //     } else {login("client");
-
-    //     }
+  };
+  // Role seetings
+  const switchRoles = () => {
+    if (user.role === "client") {
+      login("freelancer");
+    } else {
+      login("client");
+    }
   };
   return (
     <AuthConext.Provider value={{ user, login, logout, switchRoles }}>
