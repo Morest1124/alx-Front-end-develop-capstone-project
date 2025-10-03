@@ -1,8 +1,2 @@
 @import "tailwindcss";
 
-@layer components {
-  .nav-link {
-    @apply text-white p-2 hover:bg-purple-700 rounded-2xl;
-
-  }
-}
