@@ -1,0 +1,50 @@
+import React, { createContext, useState } from 'react';
+
+// Create the context
+export const AuthContext = createContext();
+
+//check the current state of the user and if the user is not logged In only a caritain can be viewed. No proposal, no messages etc
+const LogInUserState = {
+  isLoggedIn: false,
+  role: null, // 'client', 'freelancer', or GuestUser
+  name: "GuestUser",
+  userId: null,
+};
+
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(LogInUserState);
+
+  // Login function setting a successful session
+  // useEffect to verify cookies in local storage
+  const login = (role, useData) => {
+    setUser({
+      isLoggedIn: true,
+      role: useData,
+      role,
+      name: role === "client" ? "Client" : "Freelancer",
+      userId: "user-" + Math.random().toString(24).substring(2, 9),
+    });
+  };
+
+  //Logout function
+  const logout = () => {
+    setUser(LogInUserState);
+  };
+
+  //settings page
+  const switchRole = () => {
+    if (user.role === "client") {
+      login("freelancer");
+    } else {
+      login("client");
+    }
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout, switchRole }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthProvider;
