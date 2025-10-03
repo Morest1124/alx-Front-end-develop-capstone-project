@@ -15,6 +15,7 @@ import FindTalent from "./FindTalent";
 import FindWork from "./FindWork";
 import LoginPage from "./LoginPage";
 import SignupPage from "./SignupPage";
+import { Children, useState } from "react";
 
 // External routers Separated from the app main file
 function AppRouters() {
@@ -41,4 +42,26 @@ function AppRouters() {
     </BrowserRouter>
   );
 }
+
+// Routing logic
+const RouterConext = createConext();
+//Update the current patg
+const RouterProvider = ({ Children }) => {
+  const [currentPath, setCurrentPath] = useState("/");
+  const navigations = (path) => {
+    setCurrentPath(path);
+    return (
+      value={{currentPath, navigations}}{Children}
+    )
+  };
+};
+
+
+
+
+
+
+
+
+
 export default AppRouters;

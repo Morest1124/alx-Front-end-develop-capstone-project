@@ -4,9 +4,8 @@ const Dashboard = () => {
   return (
     <>
       <h1 className="bg-auto">
-        Welcome to BinaryBlade24 weather you are a freelancer of a client
+        Welcome to BinaryBlade24 weather you are a freelancer or a client
       </h1>
-      <div className="container bg-black text-amber-50 m-20 p-10 rounded-2xl shadow-amber-50"></div>
     </>
   );
 };

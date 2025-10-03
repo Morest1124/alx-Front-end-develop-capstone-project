@@ -34,7 +34,6 @@ export const Authprovider = ({ Children }) => {
     //     } else {login("client");
 
     //     }
-    //
   };
   return (
     <AuthConext.Provider value={{ user, login, logout, switchRoles }}>
