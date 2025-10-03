@@ -15,12 +15,11 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(LogInUserState);
 
   // Login function setting a successful session
-  // useEffect to verify cookies in local storage
-  const login = (role, useData) => {
+
+  const login = (role) => {
     setUser({
       isLoggedIn: true,
-      role: useData,
-      role,
+      role: role,
       name: role === "client" ? "Client" : "Freelancer",
       userId: "user-" + Math.random().toString(24).substring(2, 9),
     });
