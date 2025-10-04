@@ -106,17 +106,17 @@ The core concept is inspired by a "Book Library," where users can search for pro
 	- ➡️ Build the reusable **`ProjectCard`** (likely a component within `components/`) populated with **dummy data** for layout demonstration.
 	- ➡️ Finalize the responsive layout for the public browsing and search pages (`PublicHome.jsx` and `Projects.jsx`).
 
-	### Week 4: Advanced Component Design (Interactivity Simulation)
 
-	- ➡️ Design the search and filtering UI (likely within `Projects.jsx`).
-	- ➡️ Build the **`Project`** component, using **dummy data** to demonstrate the full layout, including the description and proposals section.
-	- ➡️ Create the component to display proposal listings.
+	### Week 4: Dashboard Implementation & Core Features
 
-	### Week 5: User Profiles and Forms (Completion)
+	- ➡️ Complete at least half of the Client Dashboard (core functionality and layout).
+	- ➡️ Continue building key interactive components (search/filter UI, project details, proposal listings).
 
-	- ➡️ Build and style the **Profile Page** (using `Profile.jsx` and potentially `RatingsPage.jsx`) with **placeholder content**.
-	- ➡️ Design the **`ProposalForm.jsx`** component, including all necessary input fields.
-	- ➡️ Design the layouts for the Dashboards (`ClientDashboard.jsx` and `FreelancerDashboard.jsx`).
+	### Week 5: Verification, Bug Fixing & Launch
+
+	- ➡️ Finalize and verify all pages and features.
+	- ➡️ Patch bugs and polish UI/UX.
+	- ➡️ Prepare for website launch and final submission.
 
 	---
 
