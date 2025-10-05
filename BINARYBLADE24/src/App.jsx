@@ -7,6 +7,7 @@ import ClientDashboard from "./pages/ClientDashboard";
 import FreelancerDashboard from "./pages/FreelancerDashboard";
 import UnknownPage from "./pages/UnknownPage";
 import PageWrapper from "./pages/PageWrapper";
+import ChatNav from "./components/ChatNav";
 
 // The main App component which combines all parts (like App.jsx)
 const AppContent = () => {
@@ -98,8 +99,9 @@ const AppContent = () => {
 
 // Main Export
 const App = () => (
-  <div className="font-inter">
-    <style>{`
+  <>
+    <div className="font-inter">
+      <style>{`
             /* To smoothen transitions for links and buttons */
             .transition-colors {
                 transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
@@ -107,12 +109,16 @@ const App = () => (
                 transition-duration: 200ms;
             }
         `}</style>
-    <AuthProvider>
-      <RouterProvider>
-        <AppContent />
-      </RouterProvider>
-    </AuthProvider>
-  </div>
+      <AuthProvider>
+        <RouterProvider>
+          <AppContent />
+        </RouterProvider>
+      </AuthProvider>
+    </div>
+    <div className="flexmin-h-screen"> </div>
+    <main className="flex-1 lg:mr-20"></main>
+    <ChatNav />
+  </>
 );
 
 export default App;
