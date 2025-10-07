@@ -138,4 +138,32 @@ The core concept is inspired by a "Book Library," where users can search for pro
 
 	---
 
+
+	---
+
+	## Progress Reflection
+
+	### What I Have Accomplished So Far
+	- Set up the project structure using React, Vite, and Tailwind CSS.
+	- Created core components: Login, Profile, Projects, Register, SignUp, Talent.
+	- Implemented dynamic navigation for public, client, and freelancer roles.
+	- Set up routing for all main pages.
+	- Established authentication context for managing user state and role switching.
+	- Performed general cleanup: removed unused assets, updated configuration files.
+
+	### Challenges Faced and How I Handled Them
+	- **Component Duplication:** Had to refactor and remove duplicate/obsolete components to keep the codebase clean.
+	- **Tailwind CSS Integration:** Faced issues with custom styles and the `@apply` directive, which required checking build configuration and ensuring PostCSS was set up correctly.
+	- **Role Switching Logic:** I struggled with implementing the feature for switching user roles (client/freelancer). To solve this, I reached out to a friend who does web and mobile app development using a different framework and programming language. Their explanation helped me understand the logic, and I ended up using absolute paths for navigation in my React project.
+	- **Planning for API Integration:** Decided to use placeholder components and dummy data for now, as backend/API integration will be handled separately.
+	- **Time Management:** Balancing project requirements with weekly goals, prioritizing the Client Dashboard for week 4.
+
+	### What’s Next? – Plan for the Upcoming Week
+	- Focus on building at least half of the Client Dashboard (core functionality and layout).
+	- Continue developing key interactive components (search/filter UI, project details, proposal listings).
+	- Prepare for verification, bug fixing, and launch in week 5.
+	- Begin integrating API calls for dynamic data (without building a backend yet).
+
+	---
+
 	Feel free to contribute or suggest improvements!
