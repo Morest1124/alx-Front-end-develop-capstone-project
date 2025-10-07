@@ -7,9 +7,8 @@ import ClientDashboard from "./pages/ClientDashboard";
 import FreelancerDashboard from "./pages/FreelancerDashboard";
 import UnknownPage from "./pages/UnknownPage";
 import PageWrapper from "./pages/PageWrapper";
-import ChatNav from "./components/ChatNav";
 
-// The main App component which combines all parts (like App.jsx)
+// The main App component which combines all parts
 const AppContent = () => {
   const { currentPath } = useRouter();
   const { user } = useContext(AuthContext);
@@ -115,9 +114,6 @@ const App = () => (
         </RouterProvider>
       </AuthProvider>
     </div>
-    <div className="flexmin-h-screen"> </div>
-    <main className="flex-1 lg:mr-20"></main>
-    <ChatNav />
   </>
 );
 
