@@ -7,13 +7,16 @@ import ClientDashboard from "./pages/ClientDashboard";
 import FreelancerDashboard from "./pages/FreelancerDashboard";
 import UnknownPage from "./pages/UnknownPage";
 import PageWrapper from "./pages/PageWrapper";
+import Projects from "./components/Projects";
+import Talent from "./components/Talent";
+import GigsPage from "./components/Gigs";
 
 // The main App component which combines all parts
 const AppContent = () => {
   const { currentPath } = useRouter();
   const { user } = useContext(AuthContext);
 
-  // Simple routing logic (like a switch/case block)
+  // routing logic (like a switch/case block)
   const renderPage = () => {
     // PUBLIC PAGES
     if (currentPath === "/") return <PublicHome />;
@@ -33,6 +36,7 @@ const AppContent = () => {
           currentPath.startsWith("/client/projects")
         )
           return <ClientDashboard />;
+        if (currentPath.startsWith("/client/talent")) return <Talent />;
         if (currentPath.startsWith("/client/post-job"))
           return (
             <PageWrapper title="Post New Job">
@@ -47,6 +51,8 @@ const AppContent = () => {
           currentPath.startsWith("/freelancer/jobs")
         )
           return <FreelancerDashboard />;
+        if (currentPath.startsWith("/freelancer/projects")) return <Projects />;
+        if (currentPath.startsWith("/freelancer/gigs")) return <GigsPage />;
         if (currentPath.startsWith("/freelancer/proposals"))
           return (
             <PageWrapper title="My Proposals">

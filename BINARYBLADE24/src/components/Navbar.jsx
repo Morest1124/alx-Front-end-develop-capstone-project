@@ -9,8 +9,10 @@ import {
   LayoutDashboard,
   Menu,
   X,
+  Folder,
   Settings,
   Inbox,
+  Star,
 } from "lucide-react";
 import { AuthContext } from "../contexts/AuthContext";
 import { useRouter, Link } from "../contexts/Routers";
@@ -69,7 +71,7 @@ const ClientNavLinks = () => {
       <Link to="/client/projects" className={isActive("/client/projects")}>
         <LayoutDashboard size={16} className="inline mr-1" /> My Dashboard
       </Link>
-      <Link to="/talent" className={isActive("/talent")}>
+      <Link to="/client/talent" className={isActive("/talent")}>
         <Search size={16} className="inline mr-1" /> Find Talent
       </Link>
       <Link to="/client/messages" className={isActive("/client/messages")}>
@@ -82,9 +84,6 @@ const ClientNavLinks = () => {
       >
         Post a Job
       </Link>
-      {/* <p className="bg-purple-600 text-blue-950 rounded-2xl  m-1">
-        <Search size={16} className="inline mr-1" /> Find Talent
-      </p> */}
     </>
   );
 };
@@ -101,6 +100,12 @@ const FreelancerNavLinks = () => {
     <>
       <Link to="/freelancer/jobs" className={isActive("/freelancer/jobs")}>
         <Briefcase size={16} className="inline mr-1" /> My Dashboard
+      </Link>
+      <Link
+        to="/freelancer/projects"
+        className={isActive("/freelancer/projects")}
+      >
+        <Folder size={16} className="inline mr-1" /> My Projects
       </Link>
       <Link
         to="/freelancer/proposals"
