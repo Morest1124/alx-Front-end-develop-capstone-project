@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import PageWrapper from "./PageWrapper";
 import { LucideIcon, DashboardCard } from "./DashboardUtils";
-..
+
 const FreelancerDashboard = () => {
   // Access user context to display personalized data (e.g., name)
   const { user } = useContext(AuthContext);

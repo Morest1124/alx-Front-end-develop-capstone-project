@@ -235,7 +235,7 @@ const GigsContent = () => {
                             <h3 className="text-lg font-bold text-gray-800 mb-2">{gigData.title || 'Your Gig Title'}</h3>
                             <p className="text-gray-600 mb-2">{gigData.category}</p>
                             <div className="flex justify-between items-center">
-                                <p className="text-lg font-bold text-green-600">{pricingModel === 'package' ? `R${gigData.basicPrice || '0'}` : `R${gigData.hourlyRate || '0'}/hr`}</p>
+                                <p className="text-lg font-bold text-green-600">{pricingModel === 'package' ? `R{gigData.basicPrice || '0'}` : `R{gigData.hourlyRate || '0'}/hr`}</p>
                                 <div className="flex items-center">
                                     <span className="text-yellow-500">★</span>
                                     <span className="ml-1 text-gray-600">Not rated yet</span>

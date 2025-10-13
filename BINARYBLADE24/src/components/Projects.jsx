@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import GigsContent from "../contexts/GigsContent";
+import GigsContent from "../pages/GigsContent";
 
 const projects = [
   {
