@@ -20,7 +20,7 @@ const AuthProvider = ({ children }) => {
     setUser({
       isLoggedIn: true,
       role: role,
-      name: role === "client" ? "Client" : "Freelancer",
+      name: role === "client" ? "Morest" : "BinaryBlade24",
       userId: "user-" + Math.random().toString(24).substring(2, 9),
     });
   };

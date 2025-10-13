@@ -1,13 +1,8 @@
 import React, { useContext } from "react";
-import { AuthContext } from "../contexts/AuthContext"; // Expects AuthContext file in ../contexts/
-import PageWrapper from "./PageWrapper"; // Expects PageWrapper file in the same directory (./)
-import { LucideIcon, DashboardCard } from "./DashboardUtils"; // Expects DashboardUtils in the same directory (./)
-
-/**
- * FreelancerDashboard Component
- * Displays key performance metrics, financial data, and recent activity
- * relevant to a freelance user.
- */
+import { AuthContext } from "../contexts/AuthContext";
+import PageWrapper from "./PageWrapper";
+import { LucideIcon, DashboardCard } from "./DashboardUtils";
+..
 const FreelancerDashboard = () => {
   // Access user context to display personalized data (e.g., name)
   const { user } = useContext(AuthContext);
@@ -22,8 +17,8 @@ const FreelancerDashboard = () => {
         {/* ROW 1: Financial and Contract Metrics */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           <DashboardCard
-            title="Total Earnings (YTD)"
-            value="$24,800"
+            title="Total Earnings (ZAR)"
+            value="R24,800"
             icon="TrendingUp"
             to="/freelancer/earnings"
             bgColor="bg-green-50"
@@ -35,14 +30,14 @@ const FreelancerDashboard = () => {
           </DashboardCard>
           <DashboardCard
             title="Estimated Monthly Tax"
-            value="$522"
+            value="R4,320"
             icon="CreditCard"
             to="/freelancer/tax"
             bgColor="bg-red-50"
             textColor="text-red-700"
           >
             <span className="text-sm text-gray-500">
-              Based on 18% flat rate.
+              Based on 18% ZAR rate.
             </span>
           </DashboardCard>
           <DashboardCard
