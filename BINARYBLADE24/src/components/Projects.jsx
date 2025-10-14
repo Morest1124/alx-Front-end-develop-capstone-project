@@ -77,7 +77,7 @@ const ProjectsPage = () => {
         <div className="flex border-b mb-6">
           <button
             onClick={() => setActiveTab("gigs")}
-            className={`py-2 px-4 text-lg R{
+            className={`py-2 px-4 text-lg ${
               activeTab === "gigs"
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500"
@@ -87,7 +87,7 @@ const ProjectsPage = () => {
           </button>
           <button
             onClick={() => setActiveTab("active")}
-            className={`py-2 px-4 text-lg R{
+            className={`py-2 px-4 text-lg ${
               activeTab === "active"
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500"
@@ -97,7 +97,7 @@ const ProjectsPage = () => {
           </button>
           <button
             onClick={() => setActiveTab("past")}
-            className={`py-2 px-4 text-lg R{
+            className={`py-2 px-4 text-lg ${
               activeTab === "past"
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500"
