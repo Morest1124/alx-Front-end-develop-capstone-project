@@ -10,6 +10,11 @@ import PageWrapper from "./pages/PageWrapper";
 import Projects from "./components/Projects";
 import Talent from "./components/Talent";
 import GigsPage from "./components/Gigs";
+import LogIn from "./components/LogIn";
+import SignUp from "./components/SignUp";
+import FindWork from "./components/FindWork";
+import ProposalForm from "./components/Proposals";
+import Messages from "./components/Messages";
 
 // The main App component which combines all parts
 const AppContent = () => {
@@ -19,14 +24,12 @@ const AppContent = () => {
   // routing logic (like a switch/case block)
   const renderPage = () => {
     // PUBLIC PAGES
-    if (currentPath === "/") return <PublicHome />;
-    if (
-      currentPath === "/jobs" ||
-      currentPath === "/talent" ||
-      currentPath === "/about" ||
-      currentPath === "/login"
-    )
-      return <PublicHome />;
+    if (currentPath === "/") return <FindWork />;
+    if (currentPath === "/jobs") return <FindWork />;
+    if (currentPath === "/talent") return <Talent />;
+    if (currentPath === "/about") return <PublicHome />;
+    if (currentPath === "/login") return <LogIn />;
+    if (currentPath === "/signup") return <SignUp />;
 
     // AUTHENTICATED PAGES
     if (user.isLoggedIn) {
@@ -53,12 +56,7 @@ const AppContent = () => {
           return <FreelancerDashboard />;
         if (currentPath.startsWith("/freelancer/projects")) return <Projects />;
         if (currentPath.startsWith("/freelancer/gigs")) return <GigsPage />;
-        if (currentPath.startsWith("/freelancer/proposals"))
-          return (
-            <PageWrapper title="My Proposals">
-              List of submitted proposals and their status.
-            </PageWrapper>
-          );
+        if (currentPath.startsWith("/freelancer/proposals")) return <ProposalForm />;
         if (currentPath.startsWith("/freelancer/earnings"))
           return (
             <PageWrapper title="Earnings">
@@ -74,12 +72,7 @@ const AppContent = () => {
             Manage your account preferences.
           </PageWrapper>
         );
-      if (currentPath.startsWith("/messages"))
-        return (
-          <PageWrapper title="Messages">
-            Your privete massage center.
-          </PageWrapper>
-        );
+      if (currentPath.startsWith("/messages")) return <Messages />;
     }
 
     // Default 404

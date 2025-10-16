@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 // Create the context
 export const AuthContext = createContext();
@@ -12,7 +12,14 @@ const LogInUserState = {
 };
 
 const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(LogInUserState);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser ? JSON.parse(storedUser) : LogInUserState;
+  });
+
+  useEffect(() => {
+    localStorage.setItem('user', JSON.stringify(user));
+  }, [user]);
 
   // Login function setting a successful session
 

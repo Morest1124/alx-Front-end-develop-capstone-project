@@ -6,6 +6,9 @@ const projects = [
     id: 1,
     title: "E-commerce Website Development",
     client: "ABC Corp",
+    name: "John",
+    lastName: "Doe",
+    countryOfOrigin: "USA",
     status: "In Progress",
     deadline: "2025-12-31",
     budget: 5000,
@@ -17,6 +20,9 @@ const projects = [
     id: 2,
     title: "Mobile App Design",
     client: "XYZ Inc",
+    name: "Jane",
+    lastName: "Smith",
+    countryOfOrigin: "UK",
     status: "Completed",
     deadline: "2025-10-15",
     budget: 3000,
@@ -28,6 +34,9 @@ const projects = [
     id: 3,
     title: "Social Media Campaign",
     client: "Jane Doe",
+    name: "Peter",
+    lastName: "Jones",
+    countryOfOrigin: "Canada",
     status: "In Progress",
     deadline: "2025-11-30",
     budget: 1500,
@@ -39,6 +48,177 @@ const projects = [
     id: 4,
     title: "Logo Design",
     client: "John Smith",
+    name: "Mary",
+    lastName: "Williams",
+    countryOfOrigin: "Australia",
+    status: "Completed",
+    deadline: "2025-09-01",
+    budget: 500,
+    rating: 5.0,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
+    client_avatar: "https://i.pravatar.cc/150?img=8",
+  },
+  {
+    id: 5,
+    title: "E-commerce Website Development",
+    client: "ABC Corp",
+    name: "David",
+    lastName: "Brown",
+    countryOfOrigin: "Germany",
+    status: "In Progress",
+    deadline: "2025-12-31",
+    budget: 5000,
+    rating: 4.8,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=E-commerce",
+    client_avatar: "https://i.pravatar.cc/150?img=5",
+  },
+  {
+    id: 6,
+    title: "Mobile App Design",
+    client: "XYZ Inc",
+    name: "Sarah",
+    lastName: "Davis",
+    countryOfOrigin: "France",
+    status: "Completed",
+    deadline: "2025-10-15",
+    budget: 3000,
+    rating: 4.9,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=Mobile+App",
+    client_avatar: "https://i.pravatar.cc/150?img=6",
+  },
+  {
+    id: 7,
+    title: "Social Media Campaign",
+    client: "Jane Doe",
+    name: "Chris",
+    lastName: "Miller",
+    countryOfOrigin: "Spain",
+    status: "In Progress",
+    deadline: "2025-11-30",
+    budget: 1500,
+    rating: 4.7,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=Social+Media",
+    client_avatar: "https://i.pravatar.cc/150?img=7",
+  },
+  {
+    id: 8,
+    title: "Logo Design",
+    client: "John Smith",
+    name: "Jessica",
+    lastName: "Wilson",
+    countryOfOrigin: "Italy",
+    status: "Completed",
+    deadline: "2025-09-01",
+    budget: 500,
+    rating: 5.0,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
+    client_avatar: "https://i.pravatar.cc/150?img=8",
+  },
+  {
+    id: 9,
+    title: "E-commerce Website Development",
+    client: "ABC Corp",
+    name: "Mark",
+    lastName: "Moore",
+    countryOfOrigin: "Japan",
+    status: "In Progress",
+    deadline: "2025-12-31",
+    budget: 5000,
+    rating: 4.8,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=E-commerce",
+    client_avatar: "https://i.pravatar.cc/150?img=5",
+  },
+  {
+    id: 10,
+    title: "Mobile App Design",
+    client: "XYZ Inc",
+    name: "Laura",
+    lastName: "Taylor",
+    countryOfOrigin: "Brazil",
+    status: "Completed",
+    deadline: "2025-10-15",
+    budget: 3000,
+    rating: 4.9,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=Mobile+App",
+    client_avatar: "https://i.pravatar.cc/150?img=6",
+  },
+  {
+    id: 11,
+    title: "Social Media Campaign",
+    client: "Jane Doe",
+    name: "Robert",
+    lastName: "Anderson",
+    countryOfOrigin: "India",
+    status: "In Progress",
+    deadline: "2025-11-30",
+    budget: 1500,
+    rating: 4.7,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=Social+Media",
+    client_avatar: "https://i.pravatar.cc/150?img=7",
+  },
+  {
+    id: 12,
+    title: "Logo Design",
+    client: "John Smith",
+    name: "Linda",
+    lastName: "Thomas",
+    countryOfOrigin: "Mexico",
+    status: "Completed",
+    deadline: "2025-09-01",
+    budget: 500,
+    rating: 5.0,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
+    client_avatar: "https://i.pravatar.cc/150?img=8",
+  },
+  {
+    id: 13,
+    title: "E-commerce Website Development",
+    client: "ABC Corp",
+    name: "James",
+    lastName: "Hernandez",
+    countryOfOrigin: "Argentina",
+    status: "In Progress",
+    deadline: "2025-12-31",
+    budget: 5000,
+    rating: 4.8,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=E-commerce",
+    client_avatar: "https://i.pravatar.cc/150?img=5",
+  },
+  {
+    id: 14,
+    title: "Mobile App Design",
+    client: "XYZ Inc",
+    name: "Patricia",
+    lastName: "Martinez",
+    countryOfOrigin: "Chile",
+    status: "Completed",
+    deadline: "2025-10-15",
+    budget: 3000,
+    rating: 4.9,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=Mobile+App",
+    client_avatar: "https://i.pravatar.cc/150?img=6",
+  },
+  {
+    id: 15,
+    title: "Social Media Campaign",
+    client: "Jane Doe",
+    name: "Michael",
+    lastName: "Garcia",
+    countryOfOrigin: "Peru",
+    status: "In Progress",
+    deadline: "2025-11-30",
+    budget: 1500,
+    rating: 4.7,
+    thumbnail: "https://via.placeholder.com/300x200.png?text=Social+Media",
+    client_avatar: "https://i.pravatar.cc/150?img=7",
+  },
+  {
+    id: 16,
+    title: "Logo Design",
+    client: "John Smith",
+    name: "Barbara",
+    lastName: "Rodriguez",
+    countryOfOrigin: "Colombia",
     status: "Completed",
     deadline: "2025-09-01",
     budget: 500,
@@ -51,6 +231,7 @@ const projects = [
 const ProjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("gigs");
+  const [selectedProject, setSelectedProject] = useState(null);
 
   const filteredProjects = projects.filter((project) =>
     project.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -60,6 +241,14 @@ const ProjectsPage = () => {
     (p) => p.status === "In Progress"
   );
   const pastProjects = filteredProjects.filter((p) => p.status === "Completed");
+
+  const openModal = (project) => {
+    setSelectedProject(project);
+  };
+
+  const closeModal = () => {
+    setSelectedProject(null);
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -76,16 +265,6 @@ const ProjectsPage = () => {
 
         <div className="flex border-b mb-6">
           <button
-            onClick={() => setActiveTab("gigs")}
-            className={`py-2 px-4 text-lg ${
-              activeTab === "gigs"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-500"
-            }`}
-          >
-            My Gigs
-          </button>
-          <button
             onClick={() => setActiveTab("active")}
             className={`py-2 px-4 text-lg ${
               activeTab === "active"
@@ -95,6 +274,17 @@ const ProjectsPage = () => {
           >
             Active Projects
           </button>
+          <button
+            onClick={() => setActiveTab("gigs")}
+            className={`py-2 px-4 text-lg ${
+              activeTab === "gigs"
+                ? "border-b-2 border-blue-500 text-blue-600"
+                : "text-gray-500"
+            }`}
+          >
+            My Gigs
+          </button>
+
           <button
             onClick={() => setActiveTab("past")}
             className={`py-2 px-4 text-lg ${
@@ -124,7 +314,7 @@ const ProjectsPage = () => {
                       className="w-full h-48 object-cover"
                     />
                     <span
-                      className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded R{
+                      className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${
                         project.status === "In Progress"
                           ? "bg-yellow-500"
                           : "bg-green-500"
@@ -158,6 +348,14 @@ const ProjectsPage = () => {
                         </span>
                       </div>
                     </div>
+                    <div className="text-center mt-4">
+                      <button
+                        onClick={() => openModal(project)}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                      >
+                        Send
+                      </button>
+                    </div>
                   </div>
                 </div>
               )
@@ -165,8 +363,27 @@ const ProjectsPage = () => {
           </div>
         )}
       </div>
+
+      {selectedProject && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-bold mb-4">Project Details</h2>
+            <p><strong>Name:</strong> {selectedProject.name}</p>
+            <p><strong>Last Name:</strong> {selectedProject.lastName}</p>
+            <p><strong>ID:</strong> {selectedProject.id}</p>
+            <p><strong>Country of Origin:</strong> {selectedProject.countryOfOrigin}</p>
+            <button
+              onClick={closeModal}
+              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
 export default ProjectsPage;
+

@@ -1,9 +1,10 @@
 import React from 'react';
+import Gigs from './Gigs';
 
 const FindWork = () => {
   return (
     <div>
-      <h1>FindWork</h1>
+      <Gigs />
     </div>
   );
 };

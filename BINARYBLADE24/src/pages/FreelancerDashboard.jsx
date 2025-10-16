@@ -10,15 +10,11 @@ const FreelancerDashboard = () => {
   return (
     <PageWrapper title={`Freelancer Dashboard | ${user.name}`}>
       <div className="space-y-10">
-        <h2 className="text-3xl font-bold text-gray-800">
-          Freelancer Dashboard
-        </h2>
-
         {/* ROW 1: Financial and Contract Metrics */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           <DashboardCard
             title="Total Earnings (ZAR)"
-            value="R24,800"
+            value="R24,896,30"
             icon="TrendingUp"
             to="/freelancer/earnings"
             bgColor="bg-green-50"
@@ -30,7 +26,7 @@ const FreelancerDashboard = () => {
           </DashboardCard>
           <DashboardCard
             title="Estimated Monthly Tax"
-            value="R4,320"
+            value="R4,481.33"
             icon="CreditCard"
             to="/freelancer/tax"
             bgColor="bg-red-50"

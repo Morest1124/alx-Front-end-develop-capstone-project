@@ -1,155 +1,109 @@
-import React, { useState } from 'react';
+import React from "react";
+import { Link } from "../contexts/Routers";
 
-const gigs = [
-  {
-    id: 1,
-    title: "I will create a professional logo design",
-    price: 50,
-    delivery_days: 3,
-    rating: 4.9,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
-  },
-  {
-    id: 2,
-    title: "I will build a responsive WordPress website",
-    price: 200,
-    delivery_days: 7,
-    rating: 4.8,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=WordPress+Site",
-  },
-  {
-    id: 3,
-    title: "I will create a professional logo design",
-    price: 50,
-    delivery_days: 3,
-    rating: 4.9,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
-  },
-  {
-    id: 4,
-    title: "I will build a responsive WordPress website",
-    price: 200,
-    delivery_days: 7,
-    rating: 4.8,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=WordPress+Site",
-  },
-  {
-    id: 5,
-    title: "I will create a professional logo design",
-    price: 50,
-    delivery_days: 3,
-    rating: 4.9,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
-  },
-  {
-    id: 6,
-    title: "I will build a responsive WordPress website",
-    price: 200,
-    delivery_days: 7,
-    rating: 4.8,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=WordPress+Site",
-  },
-  {
-    id: 7,
-    title: "I will create a professional logo design",
-    price: 50,
-    delivery_days: 3,
-    rating: 4.9,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
-  },
-  {
-    id: 8,
-    title: "I will build a responsive WordPress website",
-    price: 200,
-    delivery_days: 7,
-    rating: 4.8,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=WordPress+Site",
-  },
-  {
-    id: 9,
-    title: "I will create a professional logo design",
-    price: 50,
-    delivery_days: 3,
-    rating: 4.9,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
-  },
-  {
-    id: 2,
-    title: "I will build a responsive WordPress website",
-    price: 200,
-    delivery_days: 7,
-    rating: 4.8,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=WordPress+Site",
-  },
-];
-
-const GigsPage = () => {
-  const [showForm, setShowForm] = useState(false);
+const Gigs = () => {
+  const gigs = [
+    {
+      id: 1,
+      title: "I will create a professional website for your business",
+      freelancer: "John Doe",
+      price: 500,
+      rating: 4.9,
+      reviews: 120,
+      image: "https://via.placeholder.com/300x200",
+    },
+    {
+      id: 2,
+      title: "I will design a stunning logo for your brand",
+      freelancer: "Jane Smith",
+      price: 150,
+      rating: 4.8,
+      reviews: 85,
+      image: "https://via.placeholder.com/300x200",
+    },
+    {
+      id: 3,
+      title: "I will write engaging content for your blog",
+      freelancer: "Peter Jones",
+      price: 50,
+      rating: 4.9,
+      reviews: 200,
+      image: "https://via.placeholder.com/300x200",
+    },
+    {
+      id: 4,
+      title: "I will create a professional website for your business",
+      freelancer: "John Doe",
+      price: 500,
+      rating: 4.9,
+      reviews: 120,
+      image: "https://via.placeholder.com/300x200",
+    },
+    {
+      id: 5,
+      title: "I will design a stunning logo for your brand",
+      freelancer: "Jane Smith",
+      price: 150,
+      rating: 4.8,
+      reviews: 85,
+      image: "https://via.placeholder.com/300x200",
+    },
+    {
+      id: 6,
+      title: "I will write engaging content for your blog",
+      freelancer: "Peter Jones",
+      price: 50,
+      rating: 4.9,
+      reviews: 200,
+      image: "https://via.placeholder.com/300x200",
+    },
+  ];
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">My Gigs</h1>
-          <button 
-            onClick={() => setShowForm(!showForm)}
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+    <div className="p-8">
+      <h2 className="text-3xl font-bold mb-6">Gigs</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {gigs.map((gig) => (
+          <div
+            key={gig.id}
+            className="bg-white rounded-lg shadow-md overflow-hidden"
           >
-            {showForm ? 'Cancel' : 'Create New Gig'}
-          </button>
-        </div>
-
-        {showForm && (
-          <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">Create a New Gig</h2>
-            <form>
-              <div className="mb-4">
-                <label htmlFor="title" className="block text-gray-700 font-bold mb-2">Gig Title</label>
-                <input type="text" id="title" className="w-full px-4 py-2 border rounded-lg" placeholder="e.g., I will create a professional logo design" />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label htmlFor="price" className="block text-gray-700 font-bold mb-2">Price (R)</label>
-                  <input type="number" id="price" className="w-full px-4 py-2 border rounded-lg" placeholder="e.g., 50" />
+            <img
+              src={gig.image}
+              alt={gig.title}
+              className="w-full h-48 object-cover"
+            />
+            <div className="p-6">
+              <h3 className="text-xl font-semibold mb-2">{gig.title}</h3>
+              <p className="text-gray-600 mb-4">By {gig.freelancer}</p>
+              <div className="flex justify-between items-center">
+                <p className="text-lg font-bold text-gray-800">${gig.price}</p>
+                <div className="flex items-center">
+                  <svg
+                    className="w-5 h-5 text-yellow-500 mr-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
+                  </svg>
+                  <p className="text-gray-600">
+                    {gig.rating} ({gig.reviews} reviews)
+                  </p>
                 </div>
-                <div>
-                  <label htmlFor="delivery_days" className="block text-gray-700 font-bold mb-2">Delivery Days</label>
-                  <input type="number" id="delivery_days" className="w-full px-4 py-2 border rounded-lg" placeholder="e.g., 3" />
-                </div>
               </div>
-              <div className="mb-4">
-                <label htmlFor="description" className="block text-gray-700 font-bold mb-2">Description</label>
-                <textarea id="description" rows="4" className="w-full px-4 py-2 border rounded-lg" placeholder="Describe your gig in detail..."></textarea>
-              </div>
-              <div className="mb-4">
-                <label htmlFor="thumbnail" className="block text-gray-700 font-bold mb-2">Thumbnail Image</label>
-                <input type="file" id="thumbnail" className="w-full" />
-              </div>
-              <button type="submit" className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600">Create Gig</button>
-            </form>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {gigs.map(gig => (
-            <div key={gig.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <img src={gig.thumbnail} alt={gig.title} className="w-full h-48 object-cover" />
-              <div className="p-4">
-                <h3 className="text-lg font-bold text-gray-800 mb-2">{gig.title}</h3>
-                <div className="flex justify-between items-center">
-                  <p className="text-lg font-bold text-green-600">R{gig.price}</p>
-                  <div className="flex items-center">
-                    <span className="text-yellow-500">★</span>
-                    <span className="ml-1 text-gray-600">{gig.rating}</span>
-                  </div>
-                </div>
+              <div className="mt-4">
+                <Link to="/freelancer/proposals">
+                  <button className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Contact
+                  </button>
+                </Link>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-export default GigsPage;
+export default Gigs;
