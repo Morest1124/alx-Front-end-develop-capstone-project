@@ -1,63 +1,24 @@
-import React from "react";
-import { Link } from "../contexts/Routers";
+import React, { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
+import { GigsContext } from "../contexts/GigsContext";
 
 const Gigs = () => {
-  const gigs = [
-    {
-      id: 1,
-      title: "I will create a professional website for your business",
-      freelancer: "John Doe",
-      price: 500,
-      rating: 4.9,
-      reviews: 120,
-      image: "https://via.placeholder.com/300x200",
-    },
-    {
-      id: 2,
-      title: "I will design a stunning logo for your brand",
-      freelancer: "Jane Smith",
-      price: 150,
-      rating: 4.8,
-      reviews: 85,
-      image: "https://via.placeholder.com/300x200",
-    },
-    {
-      id: 3,
-      title: "I will write engaging content for your blog",
-      freelancer: "Peter Jones",
-      price: 50,
-      rating: 4.9,
-      reviews: 200,
-      image: "https://via.placeholder.com/300x200",
-    },
-    {
-      id: 4,
-      title: "I will create a professional website for your business",
-      freelancer: "John Doe",
-      price: 500,
-      rating: 4.9,
-      reviews: 120,
-      image: "https://via.placeholder.com/300x200",
-    },
-    {
-      id: 5,
-      title: "I will design a stunning logo for your brand",
-      freelancer: "Jane Smith",
-      price: 150,
-      rating: 4.8,
-      reviews: 85,
-      image: "https://via.placeholder.com/300x200",
-    },
-    {
-      id: 6,
-      title: "I will write engaging content for your blog",
-      freelancer: "Peter Jones",
-      price: 50,
-      rating: 4.9,
-      reviews: 200,
-      image: "https://via.placeholder.com/300x200",
-    },
-  ];
+  const { user } = useContext(AuthContext);
+  const { gigs, loading } = useContext(GigsContext);
+
+  const handleContact = (e, gig) => {
+    e.stopPropagation();
+    alert(`Contacting ${gig.freelancer}`);
+  };
+
+  const handleViewGig = (gig) => {
+    alert(`Navigating to overview for gig: ${gig.title}`);
+    alert(`Navigating to payment for gig: ${gig.title}`);
+  };
+
+  if (loading) {
+    return <div className="p-8 text-center">Loading gigs...</div>;
+  }
 
   return (
     <div className="p-8">
@@ -66,7 +27,8 @@ const Gigs = () => {
         {gigs.map((gig) => (
           <div
             key={gig.id}
-            className="bg-white rounded-lg shadow-md overflow-hidden"
+            className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+            onClick={() => handleViewGig(gig)}
           >
             <img
               src={gig.image}
@@ -74,7 +36,14 @@ const Gigs = () => {
               className="w-full h-48 object-cover"
             />
             <div className="p-6">
-              <h3 className="text-xl font-semibold mb-2">{gig.title}</h3>
+              <div className="flex items-center mb-4">
+                <img
+                  src={gig.avatar}
+                  alt={gig.freelancer}
+                  className="w-10 h-10 rounded-full mr-4"
+                />
+                <h3 className="text-xl font-semibold">{gig.title}</h3>
+              </div>
               <p className="text-gray-600 mb-4">By {gig.freelancer}</p>
               <div className="flex justify-between items-center">
                 <p className="text-lg font-bold text-gray-800">${gig.price}</p>
@@ -92,11 +61,14 @@ const Gigs = () => {
                 </div>
               </div>
               <div className="mt-4">
-                <Link to="/freelancer/proposals">
-                  <button className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    Contact
+                {user.isLoggedIn && user.role === 'client' && (
+                  <button 
+                    onClick={(e) => handleContact(e, gig)}
+                    className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Contact Freelancer
                   </button>
-                </Link>
+                )}
               </div>
             </div>
           </div>
