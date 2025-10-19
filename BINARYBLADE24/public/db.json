@@ -1,0 +1,203 @@
+{
+  "gigs": [
+    {
+      "id": 1,
+      "title": "Build a React Component Library",
+      "freelancer": "Jane Doe",
+      "price": 2500,
+      "rating": 4.9,
+      "reviews": 120,
+      "image": "https://ik.imagekit.io/ably/ghost/prod/2023/11/best-react-component-libraries.png?tr=w-1728,q-50",
+      "avatar": "https://placehold.co/100x100/e0e0e0/000?text=JD"
+    },
+    {
+      "id": 2,
+      "title": "Backend API with Node.js",
+      "freelancer": "John Smith",
+      "price": 3500,
+      "rating": 4.8,
+      "reviews": 95,
+      "image": "https://celestialsys.com/wp-content/uploads/2019/09/image.png",
+      "avatar": "https://placehold.co/100x100/e0e0e0/000?text=JS"
+    },
+    {
+      "id": 3,
+      "title": "Build a React Component Library",
+      "freelancer": "Jane Doe",
+      "price": 2500,
+      "rating": 4.9,
+      "reviews": 120,
+      "image": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*kxBdslclglg4zgCw0NMIIA.png",
+      "avatar": "https://placehold.co/100x100/e0e0e0/000?text=JD"
+    },
+    {
+      "id": 1,
+      "title": "Build a React Component Library",
+      "freelancer": "Jane Doe",
+      "price": 2500,
+      "rating": 4.9,
+      "reviews": 120,
+      "image": "https://ik.imagekit.io/ably/ghost/prod/2023/11/best-react-component-libraries.png?tr=w-1728,q-50",
+      "avatar": "https://placehold.co/100x100/e0e0e0/000?text=JD"
+    },
+    {
+      "id": 2,
+      "title": "Backend API with Node.js",
+      "freelancer": "John Smith",
+      "price": 3500,
+      "rating": 4.8,
+      "reviews": 95,
+      "image": "https://celestialsys.com/wp-content/uploads/2019/09/image.png",
+      "avatar": "https://placehold.co/100x100/e0e0e0/000?text=JS"
+    },
+    {
+      "id": 3,
+      "title": "Build a React Component Library",
+      "freelancer": "Jane Doe",
+      "price": 2500,
+      "rating": 4.9,
+      "reviews": 120,
+      "image": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*kxBdslclglg4zgCw0NMIIA.png",
+      "avatar": "https://placehold.co/100x100/e0e0e0/000?text=JD"
+    },
+    {
+      "id": 1,
+      "title": "Build a React Component Library",
+      "freelancer": "Jane Doe",
+      "price": 2500,
+      "rating": 4.9,
+      "reviews": 120,
+      "image": "https://ik.imagekit.io/ably/ghost/prod/2023/11/best-react-component-libraries.png?tr=w-1728,q-50",
+      "avatar": "https://placehold.co/100x100/e0e0e0/000?text=JD"
+    },
+    {
+      "id": 2,
+      "title": "Backend API with Node.js",
+      "freelancer": "John Smith",
+      "price": 3500,
+      "rating": 4.8,
+      "reviews": 95,
+      "image": "https://celestialsys.com/wp-content/uploads/2019/09/image.png",
+      "avatar": "https://placehold.co/100x100/e0e0e0/000?text=JS"
+    },
+    {
+      "id": 3,
+      "title": "Build a React Component Library",
+      "freelancer": "Jane Doe",
+      "price": 2500,
+      "rating": 4.9,
+      "reviews": 120,
+      "image": "https://miro.medium.com/v2/resize:fit:720/format:webp/1*kxBdslclglg4zgCw0NMIIA.png",
+      "avatar": "https://placehold.co/100x100/e0e0e0/000?text=JD"
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "title": "E-commerce Website Development",
+      "client": "ABC Corp",
+      "name": "John",
+      "lastName": "Doe",
+      "countryOfOrigin": "USA",
+      "status": "In Progress",
+      "deadline": "2025-12-31",
+      "budget": 5000,
+      "rating": 4.8,
+      "thumbnail": "https://cmsmart.net/images/community/8382/banner.jpg",
+      "client_avatar": "https://i.pravatar.cc/150?img=5"
+    },
+    {
+      "id": 2,
+      "title": "Mobile App Design",
+      "client": "XYZ Inc",
+      "name": "Jane",
+      "lastName": "Smith",
+      "countryOfOrigin": "UK",
+      "status": "Completed",
+      "deadline": "2025-10-15",
+      "budget": 3000,
+      "rating": 4.9,
+      "thumbnail": "https://i0.wp.com/procreator.design/blog/wp-content/uploads/2024/02/mobile-apps.png?resize=1024%2C682&ssl=1",
+      "client_avatar": "https://i.pravatar.cc/150?img=6"
+    },
+    {
+      "id": 3,
+      "title": "E-commerce Website Development",
+      "client": "ABC Corp",
+      "name": "John",
+      "lastName": "Doe",
+      "countryOfOrigin": "USA",
+      "status": "In Progress",
+      "deadline": "2025-12-31",
+      "budget": 5000,
+      "rating": 4.8,
+      "thumbnail": "https://cmsmart.net/images/community/8382/banner.jpg",
+      "client_avatar": "https://i.pravatar.cc/150?img=5"
+    },
+    {
+      "id": 4,
+      "title": "Mobile App Design",
+      "client": "XYZ Inc",
+      "name": "Jane",
+      "lastName": "Smith",
+      "countryOfOrigin": "UK",
+      "status": "Completed",
+      "deadline": "2025-10-15",
+      "budget": 3000,
+      "rating": 4.9,
+      "thumbnail": "https://i0.wp.com/procreator.design/blog/wp-content/uploads/2024/02/mobile-apps.png?resize=1024%2C682&ssl=1",
+      "client_avatar": "https://i.pravatar.cc/150?img=6"
+    },
+    {
+      "id": 5,
+      "title": "E-commerce Website Development",
+      "client": "ABC Corp",
+      "name": "John",
+      "lastName": "Doe",
+      "countryOfOrigin": "USA",
+      "status": "In Progress",
+      "deadline": "2025-12-31",
+      "budget": 5000,
+      "rating": 4.8,
+      "thumbnail": "https://cmsmart.net/images/community/8382/banner.jpg",
+      "client_avatar": "https://i.pravatar.cc/150?img=5"
+    },
+    {
+      "id": 6,
+      "title": "Mobile App Design",
+      "client": "XYZ Inc",
+      "name": "Jane",
+      "lastName": "Smith",
+      "countryOfOrigin": "UK",
+      "status": "Completed",
+      "deadline": "2025-10-15",
+      "budget": 3000,
+      "rating": 4.9,
+      "thumbnail": "https://i0.wp.com/procreator.design/blog/wp-content/uploads/2024/02/mobile-apps.png?resize=1024%2C682&ssl=1",
+      "client_avatar": "https://i.pravatar.cc/150?img=6"
+    }
+  ],
+  "proposals": [
+    {
+      "id": 1,
+      "clientName": "ABC Corp",
+      "projectTitle": "E-commerce Website Development",
+      "offer": 4500,
+      "status": "Pending"
+    },
+    {
+      "id": 2,
+      "clientName": "XYZ Inc",
+      "projectTitle": "Mobile App Design",
+      "offer": 2800,
+      "status": "Pending"
+    },
+    {
+      "id": 3,
+      "clientName": "Jane Doe",
+      "projectTitle": "Social Media Campaign",
+      "offer": 1200,
+      "status": "Accepted"
+    }
+  ]
+}

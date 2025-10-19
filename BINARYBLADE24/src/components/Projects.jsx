@@ -1,237 +1,25 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import GigsContent from "../pages/GigsContent";
 
-const projects = [
-  {
-    id: 1,
-    title: "E-commerce Website Development",
-    client: "ABC Corp",
-    name: "John",
-    lastName: "Doe",
-    countryOfOrigin: "USA",
-    status: "In Progress",
-    deadline: "2025-12-31",
-    budget: 5000,
-    rating: 4.8,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=E-commerce",
-    client_avatar: "https://i.pravatar.cc/150?img=5",
-  },
-  {
-    id: 2,
-    title: "Mobile App Design",
-    client: "XYZ Inc",
-    name: "Jane",
-    lastName: "Smith",
-    countryOfOrigin: "UK",
-    status: "Completed",
-    deadline: "2025-10-15",
-    budget: 3000,
-    rating: 4.9,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Mobile+App",
-    client_avatar: "https://i.pravatar.cc/150?img=6",
-  },
-  {
-    id: 3,
-    title: "Social Media Campaign",
-    client: "Jane Doe",
-    name: "Peter",
-    lastName: "Jones",
-    countryOfOrigin: "Canada",
-    status: "In Progress",
-    deadline: "2025-11-30",
-    budget: 1500,
-    rating: 4.7,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Social+Media",
-    client_avatar: "https://i.pravatar.cc/150?img=7",
-  },
-  {
-    id: 4,
-    title: "Logo Design",
-    client: "John Smith",
-    name: "Mary",
-    lastName: "Williams",
-    countryOfOrigin: "Australia",
-    status: "Completed",
-    deadline: "2025-09-01",
-    budget: 500,
-    rating: 5.0,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
-    client_avatar: "https://i.pravatar.cc/150?img=8",
-  },
-  {
-    id: 5,
-    title: "E-commerce Website Development",
-    client: "ABC Corp",
-    name: "David",
-    lastName: "Brown",
-    countryOfOrigin: "Germany",
-    status: "In Progress",
-    deadline: "2025-12-31",
-    budget: 5000,
-    rating: 4.8,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=E-commerce",
-    client_avatar: "https://i.pravatar.cc/150?img=5",
-  },
-  {
-    id: 6,
-    title: "Mobile App Design",
-    client: "XYZ Inc",
-    name: "Sarah",
-    lastName: "Davis",
-    countryOfOrigin: "France",
-    status: "Completed",
-    deadline: "2025-10-15",
-    budget: 3000,
-    rating: 4.9,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Mobile+App",
-    client_avatar: "https://i.pravatar.cc/150?img=6",
-  },
-  {
-    id: 7,
-    title: "Social Media Campaign",
-    client: "Jane Doe",
-    name: "Chris",
-    lastName: "Miller",
-    countryOfOrigin: "Spain",
-    status: "In Progress",
-    deadline: "2025-11-30",
-    budget: 1500,
-    rating: 4.7,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Social+Media",
-    client_avatar: "https://i.pravatar.cc/150?img=7",
-  },
-  {
-    id: 8,
-    title: "Logo Design",
-    client: "John Smith",
-    name: "Jessica",
-    lastName: "Wilson",
-    countryOfOrigin: "Italy",
-    status: "Completed",
-    deadline: "2025-09-01",
-    budget: 500,
-    rating: 5.0,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
-    client_avatar: "https://i.pravatar.cc/150?img=8",
-  },
-  {
-    id: 9,
-    title: "E-commerce Website Development",
-    client: "ABC Corp",
-    name: "Mark",
-    lastName: "Moore",
-    countryOfOrigin: "Japan",
-    status: "In Progress",
-    deadline: "2025-12-31",
-    budget: 5000,
-    rating: 4.8,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=E-commerce",
-    client_avatar: "https://i.pravatar.cc/150?img=5",
-  },
-  {
-    id: 10,
-    title: "Mobile App Design",
-    client: "XYZ Inc",
-    name: "Laura",
-    lastName: "Taylor",
-    countryOfOrigin: "Brazil",
-    status: "Completed",
-    deadline: "2025-10-15",
-    budget: 3000,
-    rating: 4.9,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Mobile+App",
-    client_avatar: "https://i.pravatar.cc/150?img=6",
-  },
-  {
-    id: 11,
-    title: "Social Media Campaign",
-    client: "Jane Doe",
-    name: "Robert",
-    lastName: "Anderson",
-    countryOfOrigin: "India",
-    status: "In Progress",
-    deadline: "2025-11-30",
-    budget: 1500,
-    rating: 4.7,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Social+Media",
-    client_avatar: "https://i.pravatar.cc/150?img=7",
-  },
-  {
-    id: 12,
-    title: "Logo Design",
-    client: "John Smith",
-    name: "Linda",
-    lastName: "Thomas",
-    countryOfOrigin: "Mexico",
-    status: "Completed",
-    deadline: "2025-09-01",
-    budget: 500,
-    rating: 5.0,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
-    client_avatar: "https://i.pravatar.cc/150?img=8",
-  },
-  {
-    id: 13,
-    title: "E-commerce Website Development",
-    client: "ABC Corp",
-    name: "James",
-    lastName: "Hernandez",
-    countryOfOrigin: "Argentina",
-    status: "In Progress",
-    deadline: "2025-12-31",
-    budget: 5000,
-    rating: 4.8,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=E-commerce",
-    client_avatar: "https://i.pravatar.cc/150?img=5",
-  },
-  {
-    id: 14,
-    title: "Mobile App Design",
-    client: "XYZ Inc",
-    name: "Patricia",
-    lastName: "Martinez",
-    countryOfOrigin: "Chile",
-    status: "Completed",
-    deadline: "2025-10-15",
-    budget: 3000,
-    rating: 4.9,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Mobile+App",
-    client_avatar: "https://i.pravatar.cc/150?img=6",
-  },
-  {
-    id: 15,
-    title: "Social Media Campaign",
-    client: "Jane Doe",
-    name: "Michael",
-    lastName: "Garcia",
-    countryOfOrigin: "Peru",
-    status: "In Progress",
-    deadline: "2025-11-30",
-    budget: 1500,
-    rating: 4.7,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Social+Media",
-    client_avatar: "https://i.pravatar.cc/150?img=7",
-  },
-  {
-    id: 16,
-    title: "Logo Design",
-    client: "John Smith",
-    name: "Barbara",
-    lastName: "Rodriguez",
-    countryOfOrigin: "Colombia",
-    status: "Completed",
-    deadline: "2025-09-01",
-    budget: 500,
-    rating: 5.0,
-    thumbnail: "https://via.placeholder.com/300x200.png?text=Logo+Design",
-    client_avatar: "https://i.pravatar.cc/150?img=8",
-  },
-];
-
 const ProjectsPage = () => {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("gigs");
   const [selectedProject, setSelectedProject] = useState(null);
+
+  useEffect(() => {
+    fetch("/db.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setProjects(data.projects);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching projects:", error);
+        setLoading(false);
+      });
+  }, []);
 
   const filteredProjects = projects.filter((project) =>
     project.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -249,6 +37,20 @@ const ProjectsPage = () => {
   const closeModal = () => {
     setSelectedProject(null);
   };
+
+  const handleContact = (e, project) => {
+    e.stopPropagation();
+    alert(`Contacting ${project.client}`);
+  };
+
+  const handleViewProject = (project) => {
+    alert(`Navigating to overview for gig: ${project.title}`);
+    alert(`Navigating to payment for gig: ${project.title}`);
+  };
+
+  if (loading) {
+    return <div className="p-8 text-center">Loading...</div>;
+  }
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -305,7 +107,8 @@ const ProjectsPage = () => {
               (project) => (
                 <div
                   key={project.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden"
+                  className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+                  onClick={() => handleViewProject(project)}
                 >
                   <div className="relative">
                     <img
@@ -348,12 +151,21 @@ const ProjectsPage = () => {
                         </span>
                       </div>
                     </div>
-                    <div className="text-center mt-4">
+                    <div className="text-center mt-4 flex justify-center space-x-4">
                       <button
-                        onClick={() => openModal(project)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          openModal(project);
+                        }}
                         className="bg-blue-500 text-white px-4 py-2 rounded-lg"
                       >
                         Send
+                      </button>
+                      <button
+                        onClick={(e) => handleContact(e, project)}
+                        className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                      >
+                        Contact Client
                       </button>
                     </div>
                   </div>

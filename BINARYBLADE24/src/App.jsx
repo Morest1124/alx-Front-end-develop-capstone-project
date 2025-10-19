@@ -15,6 +15,7 @@ import SignUp from "./components/SignUp";
 import FindWork from "./components/FindWork";
 import ProposalForm from "./components/Proposals";
 import Messages from "./components/Messages";
+import { GigsProvider } from "./contexts/GigsContext";
 
 // The main App component which combines all parts
 const AppContent = () => {
@@ -84,12 +85,11 @@ const AppContent = () => {
       <Navbar />
       <main>{renderPage()}</main>
       <footer className="p-4 text-center text-sm text-gray-500 bg-white border-t">
-        Role:{" "}
-        <span className="font-semibold text-indigo-600">
-          {user.role || "Public"}
-        </span>{" "}
-        | Current Path:{" "}
-        <span className="font-semibold text-gray-700">{currentPath}</span>
+        <p>&copy; 2025 BINARYBLADE24. All rights reserved.</p>
+        <div className="flex justify-center space-x-4 mt-2">
+          <a href="/terms" className="hover:text-indigo-600">Terms of Service</a>
+          <a href="/privacy" className="hover:text-indigo-600">Privacy Policy</a>
+        </div>
       </footer>
     </>
   );
@@ -109,7 +109,9 @@ const App = () => (
         `}</style>
       <AuthProvider>
         <RouterProvider>
-          <AppContent />
+          <GigsProvider>
+            <AppContent />
+          </GigsProvider>
         </RouterProvider>
       </AuthProvider>
     </div>

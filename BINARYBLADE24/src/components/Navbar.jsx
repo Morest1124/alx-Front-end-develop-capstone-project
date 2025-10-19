@@ -161,9 +161,9 @@ const Navbar = () => {
           <div className="flex-shrink-0">
             <Link
               to={user.isLoggedIn ? `/${user.role}/dashboard` : "/"}
-              className="text-2xl font-extrabold text-indigo-600 tracking-tight flex items-center"
+              className="text-2xl mr-10 pr-10 font-extrabold text-indigo-600 tracking-tight flex items-center"
             >
-              <img className="w-30 h-auto" src="logo6.11.png" alt="Logo" />
+              <img className="w-30 h-auto mr-0" src="logo6.11.png" alt="Logo" />
             </Link>
           </div>
 
@@ -176,7 +176,7 @@ const Navbar = () => {
               <div className="relative ml-4">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center space-x-2 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition"
+                  className="flex items-center space-x-2 p-2 ml-10 mr-0 rounded-full bg-gray-100 hover:bg-gray-200 transition"
                 >
                   <User size={20} className="text-gray-700" />
                   <span className="text-xs font-semibold text-gray-900 hidden lg:inline">

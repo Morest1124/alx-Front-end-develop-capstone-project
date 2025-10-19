@@ -1,61 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const ProposalForm = () => {
-  const [description, setDescription] = useState('');
-  const [rate, setRate] = useState('');
-  const [deliveryTime, setDeliveryTime] = useState('');
+const Proposals = () => {
+  const [proposals, setProposals] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle proposal submission logic here
-    console.log('Proposal submitted:', { description, rate, deliveryTime });
+  useEffect(() => {
+    fetch("/db.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setProposals(data.proposals);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching proposals:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleAccept = (id) => {
+    alert(`Proposal ${id} accepted`);
+    setProposals(
+      proposals.map((p) => (p.id === id ? { ...p, status: 'Accepted' } : p))
+    );
   };
+
+  const handleDeny = (id) => {
+    alert(`Proposal ${id} denied`);
+    setProposals(
+      proposals.map((p) => (p.id === id ? { ...p, status: 'Denied' } : p))
+    );
+  };
+
+  if (loading) {
+    return <div className="p-8 text-center">Loading...</div>;
+  }
 
   return (
     <div className="p-8">
-      <h2 className="text-3xl font-bold mb-6">Submit a Proposal</h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Proposal Description</label>
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            rows="5"
-            required
-          ></textarea>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Your Rate ($)</label>
-          <input
-            type="number"
-            value={rate}
-            onChange={(e) => setRate(e.target.value)}
-            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">Estimated Delivery Time (in days)</label>
-          <input
-            type="number"
-            value={deliveryTime}
-            onChange={(e) => setDeliveryTime(e.target.value)}
-            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
-          />
-        </div>
-        <div>
-          <button
-            type="submit"
-            className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+      <h2 className="text-3xl font-bold mb-6">Received Proposals</h2>
+      <div className="space-y-6">
+        {proposals.map((proposal) => (
+          <div
+            key={proposal.id}
+            className="bg-white rounded-lg shadow-md p-6 flex justify-between items-center"
           >
-            Submit Proposal
-          </button>
-        </div>
-      </form>
+            <div>
+              <h3 className="text-xl font-semibold">{proposal.projectTitle}</h3>
+              <p className="text-gray-600">From: {proposal.clientName}</p>
+              <p className="text-lg font-bold text-gray-800">Offer: ${proposal.offer}</p>
+              <p className="text-gray-500">Status: {proposal.status}</p>
+            </div>
+            {proposal.status === 'Pending' && (
+              <div className="flex space-x-4">
+                <button
+                  onClick={() => handleAccept(proposal.id)}
+                  className="px-4 py-2 font-medium text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                >
+                  Accept
+                </button>
+                <button
+                  onClick={() => handleDeny(proposal.id)}
+                  className="px-4 py-2 font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                >
+                  Deny
+                </button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
-export default ProposalForm;
+export default Proposals;
