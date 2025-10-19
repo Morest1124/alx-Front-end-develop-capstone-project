@@ -107,7 +107,7 @@ const ProjectsPage = () => {
               (project) => (
                 <div
                   key={project.id}
-                  className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+                  className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform duration-200 hover:scale-105"
                   onClick={() => handleViewProject(project)}
                 >
                   <div className="relative">
