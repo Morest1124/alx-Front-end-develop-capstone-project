@@ -47,7 +47,7 @@ const Gigs = () => {
               </div>
               <p className="text-gray-600 mb-4">By {gig.freelancer}</p>
               <div className="flex justify-between items-center">
-                <p className="text-lg font-bold text-gray-800">${gig.price}</p>
+                <p className="text-lg font-bold text-gray-800">R{gig.price}</p>
                 <div className="flex items-center">
                   <svg
                     className="w-5 h-5 text-yellow-500 mr-1"
