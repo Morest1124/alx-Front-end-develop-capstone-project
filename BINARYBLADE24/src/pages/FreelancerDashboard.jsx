@@ -1,11 +1,14 @@
 import React, { useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
+import { EarningsContext } from "../contexts/EarningsContext";
 import PageWrapper from "./PageWrapper";
 import { LucideIcon, DashboardCard } from "./DashboardUtils";
 import CreateGigForm from "../components/CreateGigForm";
+import { formatToZAR } from "../utils/currency";
 
 const FreelancerDashboard = () => {
   const { user } = useContext(AuthContext);
+  const { monthlyEarnings, monthlyTax, TAX_RATE } = useContext(EarningsContext);
   const [activeTab, setActiveTab] = useState("dashboard");
 
   return (
@@ -38,8 +41,8 @@ const FreelancerDashboard = () => {
           {/* ROW 1: Financial and Contract Metrics */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             <DashboardCard
-              title="Total Earnings (ZAR)"
-              value="R24,896,30"
+              title="Total Monthly Earnings (ZAR)"
+              value={formatToZAR(monthlyEarnings, 'ZAR')}
               icon="TrendingUp"
               to="/freelancer/earnings"
               bgColor="bg-green-50"
@@ -51,14 +54,14 @@ const FreelancerDashboard = () => {
             </DashboardCard>
             <DashboardCard
               title="Estimated Monthly Tax"
-              value="R4,481,33"
+              value={formatToZAR(monthlyTax, 'ZAR')}
               icon="CreditCard"
               to="/freelancer/tax"
               bgColor="bg-red-50"
               textColor="text-red-700"
             >
               <span className="text-sm text-gray-500">
-                Based on 18% ZAR rate.
+                Based on {TAX_RATE * 100}% ZAR rate.
               </span>
             </DashboardCard>
             <DashboardCard

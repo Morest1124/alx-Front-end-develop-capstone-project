@@ -1,10 +1,14 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
+import { ClientSpendingContext } from '../contexts/ClientSpendingContext';
 import PageWrapper from './PageWrapper';
 import { DashboardCard, LucideIcon } from './DashboardUtils';
+import { formatToZAR } from '../utils/currency';
 
 const ClientDashboard = () => {
     const { user } = useContext(AuthContext);
+    const { totalSpent, transactions, loading } = useContext(ClientSpendingContext);
+
     return (
       <PageWrapper title={`Client Dashboard | ${user.name}`}>
         <div className="space-y-10">
@@ -23,13 +27,13 @@ const ClientDashboard = () => {
             </DashboardCard>
             <DashboardCard
               title="Total Spent"
-              value="R12,500"
+              value={loading ? 'Loading...' : formatToZAR(totalSpent, 'ZAR')}
               icon="DollarSign"
               to="/client/billing"
               bgColor="bg-green-50"
               textColor="text-green-700"
             >
-              <span className="text-sm text-gray-500">Across 15 projects.</span>
+              <span className="text-sm text-gray-500">Across {transactions.length} projects.</span>
             </DashboardCard>
             <DashboardCard
               title="Proposals Received"
@@ -64,21 +68,21 @@ const ClientDashboard = () => {
               />{" "}
               Recent Activity
             </h3>
-            <ul className="space-y-4">
-              {[
-                "Payment of R2,500 made to John D.",
-                "New proposal received for 'Website Redesign'.",
-                "Project 'Mobile App Development' marked as complete.",
-              ].map((item, index) => (
-                <li
-                  key={index}
-                  className="flex justify-between items-center py-2 border-b last:border-b-0 text-gray-600"
-                >
-                  <span>{item}</span>
-                  <span className="text-sm text-gray-400">today</span>
-                </li>
-              ))}
-            </ul>
+            {loading ? (
+              <p>Loading recent activity...</p>
+            ) : (
+              <ul className="space-y-4">
+                {transactions.map((item) => (
+                  <li
+                    key={item.id}
+                    className="flex justify-between items-center py-2 border-b last:border-b-0 text-gray-600"
+                  >
+                    <span>Payment of {formatToZAR(item.amount, 'ZAR')} made for "{item.project}".</span>
+                    <span className="text-sm text-gray-400">{new Date(item.date).toLocaleDateString()}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         </div>
       </PageWrapper>

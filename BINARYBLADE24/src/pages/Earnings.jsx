@@ -1,31 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { EarningsContext } from '../contexts/EarningsContext';
 import { formatToZAR } from '../utils/currency';
 
 const Earnings = () => {
-  // Mock data for earnings in USD
-  const earningsData = {
-    totalEarnings: 4500,
-    recentTransactions: [
-      { id: 1, project: 'E-commerce Website', amount: 1500, date: '2023-10-20' },
-      { id: 2, project: 'Mobile App Design', amount: 2000, date: '2023-10-15' },
-      { id: 3, project: 'Logo Design', amount: 1000, date: '2023-10-10' },
-    ],
-  };
+  const { transactions, totalEarnings } = useContext(EarningsContext);
 
   return (
     <div className="p-8">
       <h2 className="text-4xl font-bold mb-4">Earnings</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-2xl font-bold mb-4">Total Earnings</h3>
+          <h3 className="text-2xl font-bold mb-4">Total Lifetime Earnings</h3>
           <p className="text-4xl font-bold text-green-600">
-            {formatToZAR(earningsData.totalEarnings)}
+            {formatToZAR(totalEarnings, 'ZAR')}
           </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h3 className="text-2xl font-bold mb-4">Recent Transactions</h3>
+          <h3 className="text-2xl font-bold mb-4">All Transactions</h3>
           <ul>
-            {earningsData.recentTransactions.map((transaction) => {
+            {transactions.map((transaction) => {
               return (
                 <li key={transaction.id} className="flex justify-between items-center py-2 border-b">
                   <div>
@@ -33,7 +26,7 @@ const Earnings = () => {
                     <p className="text-sm text-gray-500">{transaction.date}</p>
                   </div>
                   <p className="font-bold text-green-600">
-                    +{formatToZAR(transaction.amount)}
+                    +{formatToZAR(transaction.amount, 'ZAR')}
                   </p>
                 </li>
               );

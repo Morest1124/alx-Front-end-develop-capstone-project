@@ -16,6 +16,8 @@ import FindWork from "./components/FindWork";
 import ProposalForm from "./components/Proposals";
 import Messages from "./components/Messages";
 import { GigsProvider } from "./contexts/GigsContext";
+import { EarningsProvider } from "./contexts/EarningsContext";
+import { ClientSpendingProvider } from "./contexts/ClientSpendingContext";
 import GigDetailsPage from "./pages/GigDetailsPage";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
 import PostJob from "./pages/PostJob";
@@ -136,7 +138,11 @@ const App = () => {
         <RouterProvider>
           <AuthProvider>
             <GigsProvider>
-              <AppContent />
+              <ClientSpendingProvider>
+                <EarningsProvider>
+                  <AppContent />
+                </EarningsProvider>
+              </ClientSpendingProvider>
             </GigsProvider>
           </AuthProvider>
         </RouterProvider>
