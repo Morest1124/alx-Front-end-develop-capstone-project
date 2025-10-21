@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import AuthProvider, { AuthContext } from "./contexts/AuthContext";
-import { RouterProvider, useRouter } from "./contexts/Routers";
+import { RouterProvider, useRouter, Link } from "./contexts/Routers";
 import Navbar from "./components/Navbar";
 import PublicHome from "./pages/PublicHome";
 import ClientDashboard from "./pages/ClientDashboard";
@@ -19,6 +19,9 @@ import { GigsProvider } from "./contexts/GigsContext";
 import GigDetailsPage from "./pages/GigDetailsPage";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
 import PostJob from "./pages/PostJob";
+import Earnings from "./pages/Earnings";
+import Tax from "./pages/Tax";
+import { fetchRates } from "./utils/currency";
 
 // The main App component which combines all parts
 const AppContent = () => {
@@ -76,7 +79,7 @@ const AppContent = () => {
         if (currentPath.startsWith("/freelancer/earnings"))
           return (
             <PageWrapper title="Earnings">
-              Detailed payment history and invoices.
+              <Earnings />
             </PageWrapper>
           );
       }
@@ -86,9 +89,12 @@ const AppContent = () => {
         return (
           <PageWrapper title="Settings">
             Manage your account preferences.
+            <br />
+            <Link to="/settings/tax">Tax Information</Link>
           </PageWrapper>
         );
-      if (currentPath.startsWith("/messages")) return <Messages />;
+      if (currentPath === "/settings/tax") return <Tax />;
+      if (currentPath.startsWith("/client/messages") || currentPath.startsWith("/freelancer/messages")) return <Messages />;
     }
 
     // Default 404
@@ -111,10 +117,15 @@ const AppContent = () => {
 };
 
 // Main Export
-const App = () => (
-  <>
-    <div className="font-inter">
-      <style>{`
+const App = () => {
+  useEffect(() => {
+    fetchRates();
+  }, []);
+
+  return (
+    <>
+      <div className="font-inter">
+        <style>{`
             /* To smoothen transitions for links and buttons */
             .transition-colors {
                 transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
@@ -122,15 +133,16 @@ const App = () => (
                 transition-duration: 200ms;
             }
         `}</style>
-      <AuthProvider>
         <RouterProvider>
-          <GigsProvider>
-            <AppContent />
-          </GigsProvider>
+          <AuthProvider>
+            <GigsProvider>
+              <AppContent />
+            </GigsProvider>
+          </AuthProvider>
         </RouterProvider>
-      </AuthProvider>
-    </div>
-  </>
-);
+      </div>
+    </>
+  );
+};
 
 export default App;

@@ -12,7 +12,7 @@ export const DashboardCard = ({ title, value, icon, to, bgColor, textColor, chil
         <div className="flex justify-between items-start">
             <div className="flex flex-col">
                 <p className="text-sm text-gray-500">{title}</p>
-                <p className={`text-3xl font-bold ${textColor}`}>{value}</p>
+                <p className={`text-2xl lg:text-3xl font-bold ${textColor}`}>{value}</p>
             </div>
             <div className={`p-3 rounded-full ${bgColor-100}`}>
                 <LucideIcon name={icon} size={24} className={textColor} />
