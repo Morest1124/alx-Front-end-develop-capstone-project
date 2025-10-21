@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from '../contexts/Routers';
 import { getGig } from '../api';
-import { convertToZAR } from '../utils/currency';
+import { formatToZAR } from '../utils/currency';
 
 const GigDetailsPage = ({ gigId }) => {
   const { navigate } = useRouter();
@@ -38,7 +38,6 @@ const GigDetailsPage = ({ gigId }) => {
     );
   }
 
-  const priceInZAR = convertToZAR(gig.price, "USD");
   const allImages = [gig.image, ...(gig.extra_images || [])].filter(Boolean);
 
   return (
@@ -85,7 +84,7 @@ const GigDetailsPage = ({ gigId }) => {
               This is a placeholder description. A detailed overview of the project requirements, deliverables, and scope would be displayed here.
             </p>
             <div className="price text-3xl font-bold text-green-600">
-              {priceInZAR ? `R${priceInZAR.toFixed(2)}` : `$${gig.price}`}
+              {formatToZAR(gig.price)}
             </div>
             <button className="mt-6 w-full bg-green-500 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-green-600 transition-transform transform hover:scale-105">
               Accept Offer

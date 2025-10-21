@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatToZAR } from '../utils/currency';
 
 const JobPreview = ({ jobDetails }) => {
   const { title, description, budget, image } = jobDetails;
@@ -10,7 +11,7 @@ const JobPreview = ({ jobDetails }) => {
         <h3 className="text-xl font-semibold">{title || 'Job Title'}</h3>
         <p className="text-gray-600 mt-2">{description || 'Job description...'}</p>
         <div className="flex justify-between items-center mt-4">
-          <p className="text-lg font-bold text-green-600">${budget || '0'}</p>
+          <p className="text-lg font-bold text-green-600">{formatToZAR(budget || '0')}</p>
         </div>
       </div>
     </div>

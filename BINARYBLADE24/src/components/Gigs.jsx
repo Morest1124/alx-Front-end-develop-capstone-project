@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { GigsContext } from "../contexts/GigsContext";
 import { useRouter } from "../contexts/Routers"; // Import the router hook
-import { convertToZAR } from "../utils/currency";
+import { formatToZAR } from "../utils/currency";
 
 const Gigs = () => {
   const { user } = useContext(AuthContext);
@@ -29,7 +29,6 @@ const Gigs = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {gigs.map((gig) => {
-          const priceInZAR = convertToZAR(gig.price, "USD");
           return (
             <div
               key={gig.id}
@@ -53,7 +52,7 @@ const Gigs = () => {
                 <p className="text-gray-600 mb-4">By {gig.freelancer}</p>
                 <div className="flex justify-between items-center">
                   <p className="text-lg font-bold text-gray-800">
-                    {priceInZAR ? `R${priceInZAR.toFixed(2)}` : `$${gig.price}`}
+                    {formatToZAR(gig.price)}
                   </p>
                   <div className="flex items-center">
                     <svg

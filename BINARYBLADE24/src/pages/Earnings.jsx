@@ -1,5 +1,5 @@
 import React from 'react';
-import { convertToZAR } from '../utils/currency';
+import { formatToZAR } from '../utils/currency';
 
 const Earnings = () => {
   // Mock data for earnings in USD
@@ -12,8 +12,6 @@ const Earnings = () => {
     ],
   };
 
-  const totalEarningsInZAR = convertToZAR(earningsData.totalEarnings, 'USD');
-
   return (
     <div className="p-8">
       <h2 className="text-4xl font-bold mb-4">Earnings</h2>
@@ -21,14 +19,13 @@ const Earnings = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-2xl font-bold mb-4">Total Earnings</h3>
           <p className="text-4xl font-bold text-green-600">
-            {totalEarningsInZAR ? `R${totalEarningsInZAR.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `$${earningsData.totalEarnings.toLocaleString()}`}
+            {formatToZAR(earningsData.totalEarnings)}
           </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h3 className="text-2xl font-bold mb-4">Recent Transactions</h3>
           <ul>
             {earningsData.recentTransactions.map((transaction) => {
-              const amountInZAR = convertToZAR(transaction.amount, 'USD');
               return (
                 <li key={transaction.id} className="flex justify-between items-center py-2 border-b">
                   <div>
@@ -36,7 +33,7 @@ const Earnings = () => {
                     <p className="text-sm text-gray-500">{transaction.date}</p>
                   </div>
                   <p className="font-bold text-green-600">
-                    {amountInZAR ? `+R${amountInZAR.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `+$${transaction.amount.toLocaleString()}`}
+                    +{formatToZAR(transaction.amount)}
                   </p>
                 </li>
               );

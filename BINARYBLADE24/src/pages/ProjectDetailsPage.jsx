@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from '../contexts/Routers';
+import { formatToZAR } from '../utils/currency';
 
 // Mock function to fetch project details by ID from db.json
 const fetchProjectById = async (id) => {
@@ -82,7 +83,7 @@ const ProjectDetailsPage = ({ projectId }) => {
             <div className="space-y-3 text-gray-700">
               <div className="flex justify-between">
                 <span className="font-semibold">Budget:</span>
-                <span className="font-bold text-green-600 text-lg">${project.budget.toLocaleString()}</span>
+                <span className="font-bold text-green-600 text-lg">{formatToZAR(project.budget)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-semibold">Deadline:</span>

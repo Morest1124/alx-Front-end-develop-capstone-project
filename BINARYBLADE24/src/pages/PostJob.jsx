@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import JobPreview from '../components/JobPreview';
 import { createJob } from '../api';
-import { convertToZAR } from '../utils/currency';
 
 const PostJob = () => {
   const [jobDetails, setJobDetails] = useState({
@@ -23,9 +22,7 @@ const PostJob = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const budgetInZAR = convertToZAR(jobDetails.budget, 'USD');
-      const jobDetailsWithZAR = { ...jobDetails, budget: budgetInZAR };
-      await createJob(jobDetailsWithZAR);
+      await createJob(jobDetails);
       alert('Job posted successfully!');
       // Optionally, you can redirect the user to another page
       // navigate('/client/dashboard');
@@ -70,7 +67,7 @@ const PostJob = () => {
           </div>
           <div>
             <label htmlFor="budget" className="block text-sm font-medium text-gray-700">
-              Budget (USD)
+              Budget (R)
             </label>
             <input
               type="number"
