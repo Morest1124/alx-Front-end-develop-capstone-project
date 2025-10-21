@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { useRouter } from './Routers';
 
 // Create the context
 export const AuthContext = createContext();
@@ -16,6 +17,7 @@ const AuthProvider = ({ children }) => {
     const storedUser = localStorage.getItem('user');
     return storedUser ? JSON.parse(storedUser) : LogInUserState;
   });
+  const { navigate } = useRouter();
 
   useEffect(() => {
     localStorage.setItem('user', JSON.stringify(user));
@@ -35,15 +37,14 @@ const AuthProvider = ({ children }) => {
   //Logout function
   const logout = () => {
     setUser(LogInUserState);
+    navigate('/');
   };
 
   //settings page
   const switchRole = () => {
-    if (user.role === "client") {
-      login("freelancer");
-    } else {
-      login("client");
-    }
+    const newRole = user.role === "client" ? "freelancer" : "client";
+    login(newRole);
+    navigate(`/${newRole}/dashboard`);
   };
 
   return (

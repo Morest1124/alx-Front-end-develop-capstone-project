@@ -53,8 +53,8 @@ const Messages = () => {
               key={index}
               className={`p-2 my-2 rounded-lg ${
                 message.sender === "Me"
-                  ? "bg-blue-500 text-white self-end"
-                  : "bg-gray-200"
+                  ? "bg-blue-500 gap-1 inline-block m-10 text-white self-end"
+                  : "bg-gray-200 inline-block m-10 gap-2"
               }`}
             >
               <p>{message.text}</p>
@@ -79,3 +79,11 @@ const Messages = () => {
 };
 
 export default Messages;
+
+
+
+
+
+
+
+

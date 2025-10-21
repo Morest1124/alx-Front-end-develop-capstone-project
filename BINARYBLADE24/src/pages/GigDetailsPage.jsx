@@ -1,30 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from '../contexts/Routers';
-
-// Mock function to fetch gig details by ID from db.json
-const fetchGigById = async (id) => {
-  try {
-    const response = await fetch('/db.json');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    const gig = data.gigs.find(g => g.id === parseInt(id));
-
-    if (gig) {
-      // Add extra images for the gallery view
-      gig.extra_images = [
-        "https://react.semantic-ui.com/images/wireframe/image.png",
-        "https://react.semantic-ui.com/images/wireframe/image-text.png",
-        "https://react.semantic-ui.com/images/wireframe/media-paragraph.png",
-      ];
-    }
-    return gig;
-  } catch (error) {
-    console.error("Failed to fetch gig:", error);
-    return null; // Return null on error
-  }
-};
+import { getGig } from '../api';
+import { convertToZAR } from '../utils/currency';
 
 const GigDetailsPage = ({ gigId }) => {
   const { navigate } = useRouter();
@@ -35,7 +12,7 @@ const GigDetailsPage = ({ gigId }) => {
   useEffect(() => {
     if (gigId) {
       setIsLoading(true);
-      fetchGigById(gigId).then(data => {
+      getGig(gigId).then(data => {
         setGig(data);
         if (data && data.image) {
           setMainImage(data.image);
@@ -61,8 +38,8 @@ const GigDetailsPage = ({ gigId }) => {
     );
   }
 
-  // This is the key change: `allImages` is now declared *after* we know `gig` is not null.
-  const allImages = [gig.image, ...gig.extra_images].filter(Boolean); // .filter(Boolean) removes any null/undefined images
+  const priceInZAR = convertToZAR(gig.price, "USD");
+  const allImages = [gig.image, ...(gig.extra_images || [])].filter(Boolean);
 
   return (
     <div className="container mx-auto p-4 lg:p-8 bg-white rounded-lg shadow-lg mt-6">
@@ -108,7 +85,7 @@ const GigDetailsPage = ({ gigId }) => {
               This is a placeholder description. A detailed overview of the project requirements, deliverables, and scope would be displayed here.
             </p>
             <div className="price text-3xl font-bold text-green-600">
-              R{gig.price.toLocaleString()}
+              {priceInZAR ? `R${priceInZAR.toFixed(2)}` : `$${gig.price}`}
             </div>
             <button className="mt-6 w-full bg-green-500 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-green-600 transition-transform transform hover:scale-105">
               Accept Offer

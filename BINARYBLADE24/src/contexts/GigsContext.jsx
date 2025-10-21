@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
+import { getGigs, createJob } from '../api';
 
 const GigsContext = createContext();
 
@@ -7,21 +8,27 @@ const GigsProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/db.json')
-      .then(response => response.json())
-      .then(data => {
-        setGigs(data.gigs);
-        setLoading(false);
-      })
-      .catch(error => {
+    const fetchGigs = async () => {
+      try {
+        const gigsData = await getGigs();
+        setGigs(gigsData);
+      } catch (error) {
         console.error("Error fetching gigs:", error);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchGigs();
   }, []);
 
-  const addGig = (gig) => {
-    // This would be a POST request in a real API
-    setGigs([...gigs, { ...gig, id: gigs.length + 1 }]);
+  const addGig = async (gig) => {
+    try {
+      const newGig = await createJob(gig);
+      setGigs([...gigs, newGig]);
+    } catch (error) {
+      console.error("Error creating gig:", error);
+    }
   };
 
   return (

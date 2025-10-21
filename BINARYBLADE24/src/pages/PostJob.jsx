@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import JobPreview from '../components/JobPreview';
+import { createJob } from '../api';
+import { convertToZAR } from '../utils/currency';
 
 const PostJob = () => {
   const [jobDetails, setJobDetails] = useState({
@@ -8,20 +10,6 @@ const PostJob = () => {
     budget: '',
     image: null,
   });
-
-  useEffect(() => {
-    fetch('/db.json')
-      .then((res) => res.json())
-      .then((data) => {
-        const sampleJob = data.gigs[0];
-        setJobDetails({
-          title: sampleJob.title,
-          description: sampleJob.description,
-          budget: sampleJob.price,
-          image: null, // No image initially
-        });
-      });
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,10 +20,19 @@ const PostJob = () => {
     setJobDetails((prev) => ({ ...prev, image: e.target.files[0] }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log(jobDetails);
+    try {
+      const budgetInZAR = convertToZAR(jobDetails.budget, 'USD');
+      const jobDetailsWithZAR = { ...jobDetails, budget: budgetInZAR };
+      await createJob(jobDetailsWithZAR);
+      alert('Job posted successfully!');
+      // Optionally, you can redirect the user to another page
+      // navigate('/client/dashboard');
+    } catch (error) {
+      console.error('Failed to post job:', error);
+      alert('Failed to post job. Please try again.');
+    }
   };
 
   return (
@@ -73,7 +70,7 @@ const PostJob = () => {
           </div>
           <div>
             <label htmlFor="budget" className="block text-sm font-medium text-gray-700">
-              Budget (R)
+              Budget (USD)
             </label>
             <input
               type="number"

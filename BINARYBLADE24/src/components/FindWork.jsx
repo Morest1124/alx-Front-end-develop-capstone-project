@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 import { useRouter } from "../contexts/Routers"; // Import the router hook
+import { getGigs } from "../api";
+import { convertToZAR } from "../utils/currency";
 
 // A new component for a single, animated gig card
 const GigCard = ({ gig, handleViewGig }) => {
   // Use our custom hook to get a ref and the intersecting state
   const [ref, isIntersecting] = useIntersectionObserver({ threshold: 0.1 });
+  const priceInZAR = convertToZAR(gig.price, "USD");
 
   return (
     <div
@@ -31,7 +34,9 @@ const GigCard = ({ gig, handleViewGig }) => {
           <p className="ml-2 text-gray-600">{gig.freelancer}</p>
         </div>
         <div className="flex justify-between items-center mt-4">
-          <p className="text-lg font-bold text-green-600">${gig.price}</p>
+          <p className="text-lg font-bold text-green-600">
+            {priceInZAR ? `R${priceInZAR.toFixed(2)}` : `$${gig.price}`}
+          </p>
           <div className="flex items-center">
             <span className="text-yellow-500">★</span>
             <span className="ml-1 text-gray-600">
@@ -50,9 +55,12 @@ const FindWork = () => {
   const { navigate } = useRouter(); // Get the navigate function
 
   useEffect(() => {
-    fetch("/db.json")
-      .then((res) => res.json())
-      .then((data) => setGigs(data.gigs));
+    const fetchGigs = async () => {
+      const gigsData = await getGigs();
+      setGigs(gigsData);
+    };
+
+    fetchGigs();
   }, []);
 
   const handleViewGig = (gig) => {
