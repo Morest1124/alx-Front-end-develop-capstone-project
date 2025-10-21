@@ -29,27 +29,28 @@ const PublicNavLinks = () => {
 
   return (
     <>
-      <Link to="/jobs" className={isActive("/jobs")}>
+      <Link key="/jobs" to="/jobs" className={`${isActive("/jobs")} text-sm md:text-base`}>
         <Briefcase size={16} className="inline mr-1" /> Find Work
       </Link>
-      <Link to="/talent" className={isActive("/talent")}>
+      <Link key="/talent" to="/talent" className={`${isActive("/talent")} text-sm md:text-base`}>
         <Search size={16} className="inline mr-1" /> Find Talent
       </Link>
-      <Link to="/about" className={isActive("/about")}>
+      <Link key="/about" to="/about" className={`${isActive("/about")} text-sm md:text-base`}>
         How It Works
       </Link>
 
       {/* Auth Links */}
       <div className="flex items-center space-x-3 ml-4">
         <Link
+          key="/login"
           to="/login"
-          className="text-gray-600 hover:text-indigo-600 border-r pr-3 border-gray-200"
+          className="text-gray-600 hover:text-indigo-600 border-r pr-3 border-gray-200 text-sm md:text-base"
         >
           <LogIn size={16} className="inline mr-1" /> Log In
         </Link>
         <button
           onClick={() => login("client")}
-          className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/50 transform transition duration-300 hover:scale-105 px-4 py-2 rounded-lg"
+          className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/50 transform transition duration-300 hover:scale-105 px-4 py-2 rounded-lg text-sm md:text-base"
         >
           Sign Up
         </button>
@@ -68,19 +69,20 @@ const ClientNavLinks = () => {
 
   return (
     <>
-      <Link to="/client/projects" className={isActive("/client/projects")}>
+      <Link key="/client/projects" to="/client/projects" className={`${isActive("/client/projects")} text-sm md:text-base`}>
         <LayoutDashboard size={16} className="inline mr-1" /> My Dashboard
       </Link>
-      <Link to="/client/talent" className={isActive("/talent")}>
+      <Link key="/client/talent" to="/client/talent" className={`${isActive("/talent")} text-sm md:text-base`}>
         <Search size={16} className="inline mr-1" /> Find Talent
       </Link>
-      <Link to="/client/messages" className={isActive("/client/messages")}>
+      <Link key="/client/messages" to="/client/messages" className={`${isActive("/client/messages")} text-sm md:text-base`}>
         <Inbox size={16} className="inline mr-1" />
         Messages
       </Link>
       <Link
+        key="/client/post-job"
         to="/client/post-job"
-        className="bg-green-500 hover:bg-green-600 text-white shadow-md shadow-green-500/50 transform transition duration-300 hover:scale-[1.02] ml-4"
+        className="bg-green-500 hover:bg-green-600 text-white shadow-md shadow-green-500/50 transform transition duration-300 hover:scale-[1.02] ml-4 text-sm md:text-base"
       >
         Post a Job
       </Link>
@@ -98,30 +100,34 @@ const FreelancerNavLinks = () => {
 
   return (
     <>
-      <Link to="/freelancer/jobs" className={isActive("/freelancer/jobs")}>
+      <Link key="/freelancer/jobs" to="/freelancer/jobs" className={`${isActive("/freelancer/jobs")} text-sm md:text-base`}>
         <Briefcase size={16} className="inline mr-1" /> My Dashboard
       </Link>
       <Link
+        key="/freelancer/projects"
         to="/freelancer/projects"
-        className={isActive("/freelancer/projects")}
+        className={`${isActive("/freelancer/projects")} text-sm md:text-base`}
       >
         <Folder size={16} className="inline mr-1" /> My Projects
       </Link>
       <Link
+        key="/freelancer/proposals"
         to="/freelancer/proposals"
-        className={isActive("/freelancer/proposals")}
+        className={`${isActive("/freelancer/proposals")} text-sm md:text-base`}
       >
         <Send size={16} className="inline mr-1" /> My Proposals
       </Link>
       <Link
+        key="/freelancer/earnings"
         to="/freelancer/earnings"
-        className={isActive("/freelancer/earnings")}
+        className={`${isActive("/freelancer/earnings")} text-sm md:text-base`}
       >
         <DollarSign size={16} className="inline mr-1" /> Earnings
       </Link>
       <Link
+        key="/freelancer/messages"
         to="/freelancer/messages"
-        className={isActive("/freelancer/messages")}
+        className={`${isActive("/freelancer/messages")} text-sm md:text-base`}
       >
         <Inbox size={16} className="inline mr-1" /> Messages
       </Link>
@@ -155,15 +161,15 @@ const Navbar = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center h-16">
           {/* Logo/Home Link */}
           <div className="flex-shrink-0">
             <Link
               to={user.isLoggedIn ? `/${user.role}/dashboard` : "/"}
-              className="text-2xl mr-10 pr-10 font-extrabold text-indigo-600 tracking-tight flex items-center"
+              className="text-2xl font-extrabold text-indigo-600 tracking-tight flex items-center"
             >
-              <img className="w-30 h-auto mr-0" src="logo6.11.png" alt="Logo" />
+              <img className="w-30 h-auto" src="logo6.11.png" alt="Logo" />
             </Link>
           </div>
 

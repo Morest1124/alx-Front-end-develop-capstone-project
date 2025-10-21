@@ -18,6 +18,7 @@ import Messages from "./components/Messages";
 import { GigsProvider } from "./contexts/GigsContext";
 import GigDetailsPage from "./pages/GigDetailsPage";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
+import PostJob from "./pages/PostJob";
 
 // The main App component which combines all parts
 const AppContent = () => {
@@ -58,7 +59,7 @@ const AppContent = () => {
         if (currentPath.startsWith("/client/post-job"))
           return (
             <PageWrapper title="Post New Job">
-              Form to create a job listing here.
+              <PostJob />
             </PageWrapper>
           );
       }

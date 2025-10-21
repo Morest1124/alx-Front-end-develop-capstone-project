@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
+import { useRouter } from "../contexts/Routers"; // Import the router hook
 
 // A new component for a single, animated gig card
-const GigCard = ({ gig }) => {
+const GigCard = ({ gig, handleViewGig }) => {
   // Use our custom hook to get a ref and the intersecting state
   const [ref, isIntersecting] = useIntersectionObserver({ threshold: 0.1 });
 
   return (
     <div
       ref={ref}
-      className={`bg-white rounded-lg shadow-md overflow-hidden transition-all duration-500 ease-in-out ${
+      onClick={() => handleViewGig(gig)} // Add the onClick handler
+      className={`bg-white rounded-lg shadow-md overflow-hidden transition-all duration-500 ease-in-out cursor-pointer ${
         isIntersecting ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
       }`}
     >
@@ -45,12 +47,17 @@ const GigCard = ({ gig }) => {
 const FindWork = () => {
   const [gigs, setGigs] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const { navigate } = useRouter(); // Get the navigate function
 
   useEffect(() => {
     fetch("/db.json")
       .then((res) => res.json())
       .then((data) => setGigs(data.gigs));
   }, []);
+
+  const handleViewGig = (gig) => {
+    navigate(`/gigs/${gig.id}`);
+  };
 
   const filteredGigs = gigs.filter((gig) =>
     gig.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -70,7 +77,7 @@ const FindWork = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredGigs.map((gig) => (
-          <GigCard key={gig.id} gig={gig} />
+          <GigCard key={gig.id} gig={gig} handleViewGig={handleViewGig} />
         ))}
       </div>
     </div>
