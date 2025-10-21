@@ -47,10 +47,12 @@ const Proposals = () => {
             <div>
               <h3 className="text-xl font-semibold">{proposal.projectTitle}</h3>
               <p className="text-gray-600">From: {proposal.clientName}</p>
-              <p className="text-lg font-bold text-gray-800">Offer: ${proposal.offer}</p>
+              <p className="text-lg font-bold text-gray-800">
+                Offer: R{proposal.offer}
+              </p>
               <p className="text-gray-500">Status: {proposal.status}</p>
             </div>
-            {proposal.status === 'Pending' && (
+            {proposal.status === "Pending" && (
               <div className="flex space-x-4">
                 <button
                   onClick={() => handleAccept(proposal.id)}

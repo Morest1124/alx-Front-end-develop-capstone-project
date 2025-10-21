@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import GigsContent from "../pages/GigsContent";
+import { useRouter } from "../contexts/Routers";
 
 const ProjectsPage = () => {
+  const { navigate } = useRouter();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -44,8 +46,7 @@ const ProjectsPage = () => {
   };
 
   const handleViewProject = (project) => {
-    alert(`Navigating to overview for gig: ${project.title}`);
-    alert(`Navigating to payment for gig: ${project.title}`);
+    navigate(`/projects/${project.id}`);
   };
 
   if (loading) {
@@ -198,4 +199,3 @@ const ProjectsPage = () => {
 };
 
 export default ProjectsPage;
-

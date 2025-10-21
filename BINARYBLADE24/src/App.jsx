@@ -16,6 +16,8 @@ import FindWork from "./components/FindWork";
 import ProposalForm from "./components/Proposals";
 import Messages from "./components/Messages";
 import { GigsProvider } from "./contexts/GigsContext";
+import GigDetailsPage from "./pages/GigDetailsPage";
+import ProjectDetailsPage from "./pages/ProjectDetailsPage";
 
 // The main App component which combines all parts
 const AppContent = () => {
@@ -24,6 +26,18 @@ const AppContent = () => {
 
   // routing logic (like a switch/case block)
   const renderPage = () => {
+    // Handle Gig Details Page
+    if (currentPath.startsWith("/gigs/")) {
+      const gigId = currentPath.split("/")[2];
+      return <GigDetailsPage gigId={gigId} />;
+    }
+
+    // Handle Project Details Page
+    if (currentPath.startsWith("/projects/")) {
+      const projectId = currentPath.split("/")[2];
+      return <ProjectDetailsPage projectId={projectId} />;
+    }
+    
     // PUBLIC PAGES
     if (currentPath === "/") return <FindWork />;
     if (currentPath === "/jobs") return <FindWork />;

@@ -1,19 +1,21 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { GigsContext } from "../contexts/GigsContext";
+import { useRouter } from "../contexts/Routers"; // Import the router hook
 
 const Gigs = () => {
   const { user } = useContext(AuthContext);
   const { gigs, loading } = useContext(GigsContext);
+  const { navigate } = useRouter(); // Get the navigate function
 
   const handleContact = (e, gig) => {
     e.stopPropagation();
     alert(`Contacting ${gig.freelancer}`);
   };
 
+  // This function will now navigate to the details page
   const handleViewGig = (gig) => {
-    alert(`Navigating to overview for gig: ${gig.title}`);
-    alert(`Navigating to payment for gig: ${gig.title}`);
+    navigate(`/gigs/${gig.id}`);
   };
 
   if (loading) {
@@ -29,7 +31,7 @@ const Gigs = () => {
           <div
             key={gig.id}
             className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform duration-200 hover:scale-105"
-            onClick={() => handleViewGig(gig)}
+            onClick={() => handleViewGig(gig)} // This remains the same
           >
             <img
               src={gig.image}
