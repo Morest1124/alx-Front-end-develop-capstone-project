@@ -25,10 +25,10 @@ const SignUp = () => {
       identity_number: identityNumber,
       email,
       password,
-      role: [role.toUpperCase()], // User Role if IsClient or IsFreelancer
+      role: role.toUpperCase(), // User Role if IsClient or IsFreelancer
     };
     try {
-      await register(userData);
+      await register(userData, role);
       // The context will navigate to /login on success
     } catch (err) {
       console.error("Caught registration error in component:", err);

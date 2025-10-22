@@ -11,7 +11,7 @@ const ProjectsPage = () => {
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
-    fetch("/db.json")
+    fetch("/api")
       .then((res) => res.json())
       .then((data) => {
         setProjects(data.projects);

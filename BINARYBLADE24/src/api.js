@@ -45,8 +45,12 @@ export const login = async (credentials) => {
   return data;
 };
 //Export endpoints to dedicated pages
-export const register = (userData) => {
-  return apiClient.post("/auth/register/", userData);
+export const register = async (userData) => {
+  const data = await apiClient.post("/auth/register/", userData);
+  if (data.access) {
+    localStorage.setItem("token", data.access);
+  }
+  return data;
 };
 
 export const getGigs = () => {
