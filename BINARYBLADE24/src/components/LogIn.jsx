@@ -5,24 +5,17 @@ import { AuthContext } from '../contexts/AuthContext';
 const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useContext(AuthContext);
+  // Get loading and error states from the context
+  const { login, loading, error } = useContext(AuthContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/users');
-      const users = await response.json();
-      const user = users.find((user) => user.email === email);
-
-      if (user) {
-        const role = Math.random() > 0.5 ? 'client' : 'freelancer';
-        login(role);
-        console.log('Login successful:', user);
-      } else {
-        console.log('Login failed: Invalid email or password');
-      }
-    } catch (error) {
-      console.error('Error logging in:', error);
+      // The context now handles navigation and user state
+      await login({ email, password });
+    } catch (err) {
+      // The context will set the error state, so we just need to catch the rejection
+      console.error("Caught login error in component:", err);
     }
   };
 
@@ -31,6 +24,7 @@ const LogIn = () => {
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-900">Log In</h2>
         <form className="space-y-6" onSubmit={handleSubmit}>
+          {error && <p className="text-red-500 text-center">{error}</p>}
           <div>
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
@@ -39,6 +33,7 @@ const LogIn = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               required
+              disabled={loading}
             />
           </div>
           <div>
@@ -49,14 +44,16 @@ const LogIn = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               required
+              disabled={loading}
             />
           </div>
           <div>
             <button
               type="submit"
-              className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
+              disabled={loading}
             >
-              Log In
+              {loading ? 'Logging in...' : 'Log In'}
             </button>
           </div>
         </form>

@@ -13,11 +13,11 @@ import GigsPage from "./components/Gigs";
 import LogIn from "./components/LogIn";
 import SignUp from "./components/SignUp";
 import FindWork from "./components/FindWork";
-import ProposalForm from "./components/Proposals";
+import Proposals from "./components/Proposals";
 import Messages from "./components/Messages";
 import { GigsProvider } from "./contexts/GigsContext";
 import { EarningsProvider } from "./contexts/EarningsContext";
-import { ClientSpendingProvider } from "./contexts/ClientSpendingContext";
+import { ClientDashboardProvider } from "./contexts/ClientDashboardContext";
 import GigDetailsPage from "./pages/GigDetailsPage";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
 import PostJob from "./pages/PostJob";
@@ -30,7 +30,7 @@ const AppContent = () => {
   const { currentPath } = useRouter();
   const { user } = useContext(AuthContext);
 
-  // routing logic (like a switch/case block)
+  // routing logic
   const renderPage = () => {
     // Handle Gig Details Page
     if (currentPath.startsWith("/gigs/")) {
@@ -43,7 +43,7 @@ const AppContent = () => {
       const projectId = currentPath.split("/")[2];
       return <ProjectDetailsPage projectId={projectId} />;
     }
-    
+
     // PUBLIC PAGES
     if (currentPath === "/") return <FindWork />;
     if (currentPath === "/jobs") return <FindWork />;
@@ -77,7 +77,8 @@ const AppContent = () => {
           return <FreelancerDashboard />;
         if (currentPath.startsWith("/freelancer/projects")) return <Projects />;
         if (currentPath.startsWith("/freelancer/gigs")) return <GigsPage />;
-        if (currentPath.startsWith("/freelancer/proposals")) return <ProposalForm />;
+        if (currentPath.startsWith("/freelancer/proposals"))
+          return <ProposalForm />;
         if (currentPath.startsWith("/freelancer/earnings"))
           return (
             <PageWrapper title="Earnings">
@@ -96,7 +97,11 @@ const AppContent = () => {
           </PageWrapper>
         );
       if (currentPath === "/settings/tax") return <Tax />;
-      if (currentPath.startsWith("/client/messages") || currentPath.startsWith("/freelancer/messages")) return <Messages />;
+      if (
+        currentPath.startsWith("/client/messages") ||
+        currentPath.startsWith("/freelancer/messages")
+      )
+        return <Messages />;
     }
 
     // Default 404
@@ -110,8 +115,12 @@ const AppContent = () => {
       <footer className="p-4 text-center text-sm text-gray-500 bg-white border-t">
         <p>&copy; 2025 BINARYBLADE24. All rights reserved.</p>
         <div className="flex justify-center space-x-4 mt-2">
-          <a href="/terms" className="hover:text-indigo-600">Terms of Service</a>
-          <a href="/privacy" className="hover:text-indigo-600">Privacy Policy</a>
+          <a href="/terms" className="hover:text-indigo-600">
+            Terms of Service
+          </a>
+          <a href="/privacy" className="hover:text-indigo-600">
+            Privacy Policy
+          </a>
         </div>
       </footer>
     </>
@@ -138,11 +147,11 @@ const App = () => {
         <RouterProvider>
           <AuthProvider>
             <GigsProvider>
-              <ClientSpendingProvider>
+              <ClientDashboardProvider>
                 <EarningsProvider>
                   <AppContent />
                 </EarningsProvider>
-              </ClientSpendingProvider>
+              </ClientDashboardProvider>
             </GigsProvider>
           </AuthProvider>
         </RouterProvider>

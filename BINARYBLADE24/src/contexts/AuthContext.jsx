@@ -1,54 +1,90 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { useRouter } from './Routers';
+import { login as apiLogin, register as apiRegister } from "../api";
 
 // Create the context
 export const AuthContext = createContext();
 
-//check the current state of the user and if the user is not logged In only a caritain can be viewed. No proposal, no messages etc
-const LogInUserState = {
+// Define the initial state for a logged-out user
+const LoggedOutUserState = {
   isLoggedIn: false,
-  role: null, // 'client', 'freelancer', or GuestUser
-  name: "GuestUser",
+  role: null,
+  name: "Guest",
   userId: null,
 };
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(() => {
-    const storedUser = localStorage.getItem('user');
-    return storedUser ? JSON.parse(storedUser) : LogInUserState;
+    // Initialize state from localStorage to keep user logged in across sessions
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : LoggedOutUserState;
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const { navigate } = useRouter();
 
   useEffect(() => {
-    localStorage.setItem('user', JSON.stringify(user));
+    // Persist user state changes to localStorage
+    localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
-  // Login function setting a successful session
-
-  const login = (role) => {
-    setUser({
-      isLoggedIn: true,
-      role: role,
-      name: role === "client" ? "Morest" : "BinaryBlade24",
-      userId: "user-" + Math.random().toString(24).substring(2, 9),
-    });
+  const login = async (credentials) => {
+    try {
+      setLoading(true);
+      setError(null);
+      // The API login response includes the user object with role, name, and id
+      const userData = await apiLogin(credentials);
+      setUser({
+        isLoggedIn: true, // Access nested user object
+        role: userData.user.role,
+        name: userData.user.username,
+        userId: userData.user.id,
+      });
+      // Navigate to the appropriate dashboard after login
+      navigate(
+        userData.user.role === "client"
+          ? "/client/dashboard"
+          : "/freelancer/dashboard"
+      );
+    } catch (error) {
+      console.error("Login failed:", error);
+      setError(error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  //Logout function
+  const register = async (userData) => {
+    try {
+      setLoading(true);
+      setError(null);
+      // After successful registration navigate user to the dashboard page.
+      await apiRegister(userData);
+      navigate("client " ? "/client/dashboard" : "/freelancer/dashboard");
+    } catch (error) {
+      console.error("Registration failed:", error);
+      setError(error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
-    setUser(LogInUserState);
-    navigate('/');
-  };
-
-  //settings page
-  const switchRole = () => {
-    const newRole = user.role === "client" ? "freelancer" : "client";
-    login(newRole);
-    navigate(`/${newRole}/dashboard`);
+    // Clear user state
+    setUser(LoggedOutUserState);
+    // Remove token and user data from localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    // Navigate to home page
+    navigate("/");
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, switchRole }}>
+    <AuthContext.Provider
+      value={{ user, login, register, logout, loading, error }}
+    >
       {children}
     </AuthContext.Provider>
   );
