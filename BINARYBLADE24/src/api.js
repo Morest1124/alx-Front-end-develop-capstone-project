@@ -27,11 +27,35 @@ apiClient.interceptors.response.use(
   (response) => response.data, // Return the data part of the response
   (error) => {
     // Handle errors globally
-    const message =
-      error.response?.data?.detail ||
-      error.response?.data?.message ||
-      error.message ||
-      "Something went wrong";
+    let message;
+    if (error.response?.status === 401) {
+      message = "Invalid email or password. Please try again.";
+    } else if (error.response?.status === 400) {
+      const errorData = error.response.data;
+      if (errorData.email) {
+        message = "Email error: " + errorData.email[0];
+      } else if (errorData.password) {
+        message = "Password error: " + errorData.password[0];
+      } else if (errorData.username) {
+        message = "Username error: " + errorData.username[0];
+      } else {
+        message =
+          errorData.detail ||
+          errorData.message ||
+          "Please check your input and try again.";
+      }
+    } else if (error.response?.status === 409) {
+      message =
+        "This email or username is already registered. Please try another one.";
+    } else if (error.response?.status >= 500) {
+      message = "Server error. Please try again later.";
+    } else {
+      message =
+        error.response?.data?.detail ||
+        error.response?.data?.message ||
+        error.message ||
+        "Something went wrong. Please try again.";
+    }
     return Promise.reject(new Error(message));
   }
 );
@@ -46,23 +70,51 @@ export const login = async (credentials) => {
 };
 //Export endpoints to dedicated pages
 export const register = async (userData) => {
-  const data = await apiClient.post("/auth/register/", userData);
-  if (data.access) {
-    localStorage.setItem("token", data.access);
+  try {
+    const data = await apiClient.post("/auth/register/", userData);
+    if (data.access) {
+      localStorage.setItem("token", data.access);
+    }
+    return data;
+  } catch (error) {
+    const message =
+      error.response?.data?.detail ||
+      error.response?.data?.message ||
+      error.message ||
+      "Registration failed";
+    throw new Error(message);
   }
-  return data;
 };
 
-export const getGigs = () => {
-  return apiClient.get("/projects/");
+export const getGigs = async () => {
+  try {
+    const response = await apiClient.get("/projects/");
+    return Array.isArray(response) ? response : [];
+  } catch (error) {
+    console.error("Error fetching gigs:", error);
+    throw new Error("Failed to fetch gigs. Please try again.");
+  }
 };
 
 export const getGig = (gigId) => {
   return apiClient.get(`/projects/${gigId}/`);
 };
 
-export const createJob = (jobDetails) => {
-  return apiClient.post("/projects/", jobDetails);
+export const createJob = async (jobDetails) => {
+  try {
+    const response = await apiClient.post("/projects/", jobDetails);
+    if (!response) {
+      throw new Error("No response received from server");
+    }
+    return response;
+  } catch (error) {
+    console.error("Error creating project:", error);
+    throw new Error(
+      error.response?.data?.message ||
+        error.response?.data?.detail ||
+        "Failed to create project. Please try again."
+    );
+  }
 };
 
 export const getFreelancerDashboard = () => {
@@ -87,4 +139,29 @@ export const updateProposalStatus = (proposalId, status) => {
 
 export const getUserProfile = (userId) => {
   return apiClient.get(`/users/${userId}/`);
+};
+
+// Get all freelancers
+export const getFreelancers = () => {
+  return apiClient.get("/users/freelancers/");
+};
+
+// Get all clients
+export const getClients = () => {
+  return apiClient.get("/users/clients/");
+};
+
+// Get all projects
+export const getProjects = () => {
+  return apiClient.get("/projects/");
+};
+
+// Get project by id with all details
+export const getProjectDetails = (projectId) => {
+  return apiClient.get(`/projects/${projectId}/`);
+};
+
+// Update user profile
+export const updateUserProfile = (userId, profileData) => {
+  return apiClient.put(`/users/${userId}/`, profileData);
 };

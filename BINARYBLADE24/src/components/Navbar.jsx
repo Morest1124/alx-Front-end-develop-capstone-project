@@ -29,13 +29,25 @@ const PublicNavLinks = () => {
 
   return (
     <>
-      <Link key="/jobs" to="/jobs" className={`${isActive("/jobs")} text-sm md:text-base`}>
+      <Link
+        key="/jobs"
+        to="/jobs"
+        className={`${isActive("/jobs")} text-sm md:text-base`}
+      >
         <Briefcase size={16} className="inline mr-1" /> Find Work
       </Link>
-      <Link key="/talent" to="/talent" className={`${isActive("/talent")} text-sm md:text-base`}>
+      <Link
+        key="/talent"
+        to="/talent"
+        className={`${isActive("/talent")} text-sm md:text-base`}
+      >
         <Search size={16} className="inline mr-1" /> Find Talent
       </Link>
-      <Link key="/about" to="/about" className={`${isActive("/about")} text-sm md:text-base`}>
+      <Link
+        key="/about"
+        to="/about"
+        className={`${isActive("/about")} text-sm md:text-base`}
+      >
         How It Works
       </Link>
 
@@ -48,12 +60,12 @@ const PublicNavLinks = () => {
         >
           <LogIn size={16} className="inline mr-1" /> Log In
         </Link>
-        <button
-          onClick={() => login("client")}
+        <Link
+          to="/signup"
           className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/50 transform transition duration-300 hover:scale-105 px-4 py-2 rounded-lg text-sm md:text-base"
         >
           Sign Up
-        </button>
+        </Link>
       </div>
     </>
   );
@@ -69,13 +81,25 @@ const ClientNavLinks = () => {
 
   return (
     <>
-      <Link key="/client/projects" to="/client/projects" className={`${isActive("/client/projects")} text-sm md:text-base`}>
+      <Link
+        key="/client/projects"
+        to="/client/projects"
+        className={`${isActive("/client/projects")} text-sm md:text-base`}
+      >
         <LayoutDashboard size={16} className="inline mr-1" /> My Dashboard
       </Link>
-      <Link key="/client/talent" to="/client/talent" className={`${isActive("/talent")} text-sm md:text-base`}>
+      <Link
+        key="/client/talent"
+        to="/client/talent"
+        className={`${isActive("/talent")} text-sm md:text-base`}
+      >
         <Search size={16} className="inline mr-1" /> Find Talent
       </Link>
-      <Link key="/client/messages" to="/client/messages" className={`${isActive("/client/messages")} text-sm md:text-base`}>
+      <Link
+        key="/client/messages"
+        to="/client/messages"
+        className={`${isActive("/client/messages")} text-sm md:text-base`}
+      >
         <Inbox size={16} className="inline mr-1" />
         Messages
       </Link>
@@ -100,7 +124,11 @@ const FreelancerNavLinks = () => {
 
   return (
     <>
-      <Link key="/freelancer/jobs" to="/freelancer/jobs" className={`${isActive("/freelancer/jobs")} text-sm md:text-base`}>
+      <Link
+        key="/freelancer/jobs"
+        to="/freelancer/jobs"
+        className={`${isActive("/freelancer/jobs")} text-sm md:text-base`}
+      >
         <Briefcase size={16} className="inline mr-1" /> My Dashboard
       </Link>
       <Link
@@ -186,12 +214,15 @@ const Navbar = () => {
                 >
                   <User size={20} className="text-gray-700" />
                   <span className="text-xs font-semibold text-gray-900 hidden lg:inline">
-                    {user.name} (
-                    {user.role.charAt(0).toUpperCase() + user.role.slice(1)})
+                    {user.username || "Guest"}
+                    {user.role &&
+                      ` (${user.role.charAt(0).toUpperCase()}${user.role
+                        .slice(1)
+                        .toLowerCase()})`}
                   </span>
                   <span>
                     <img
-                      className=" h-auto rounded-4xl w-10"
+                      className=" h-auto rounded-4xl w-5"
                       src="https://s3-figma-hubfile-images-production.figma.com/hub/file/carousel/img/3a5bd9c55f194c0af002a43912a5c643a3743107/f442a1ccf0d3c93dae3f42c751c1d51cfc9194da"
                     ></img>
                   </span>
@@ -199,7 +230,7 @@ const Navbar = () => {
 
                 {/* Profile Dropdown Menu */}
                 {isProfileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black ring-opacity-5">
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black ring-opacity-5 transition-0.9">
                     <Link
                       to="/settings"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 w-full"
@@ -212,7 +243,9 @@ const Navbar = () => {
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 w-full text-left"
                     >
                       <User size={16} className="mr-2" /> Switch to{" "}
-                      {user.role === "client" ? "Freelancer" : "Client"}
+                      {user.role.toUpperCase() === "CLIENT"
+                        ? "Freelancer"
+                        : "Client"}
                     </button>
                     <button
                       onClick={handleLogout}

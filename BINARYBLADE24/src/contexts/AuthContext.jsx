@@ -33,19 +33,32 @@ const AuthProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       // The API login response includes the user object with role, name, and id
-      const userData = await apiLogin(credentials);
-      const userRole = userData.role
-        ? userData.role
-        : userData.user?.role || "FREELANCER";
+      const response = await apiLogin(credentials);
+      const userData = response.user || response;
+
+      // Handle different response formats
+      const userRole = (
+        userData.role ||
+        userData.roles?.[0] ||
+        "FREELANCER"
+      ).toUpperCase();
+      const userName =
+        userData.username ||
+        (userData.first_name && userData.last_name
+          ? `${userData.first_name} ${userData.last_name}`
+          : "User");
+
+      // Set user state with verified data
       setUser({
         isLoggedIn: true,
-        role: userRole.toUpperCase(),
-        name: userData.username || userData.user?.username,
-        userId: userData.id || userData.user?.id,
+        role: userRole,
+        name: userName,
+        userId: userData.id,
       });
+
       // Navigate to the appropriate dashboard after login
       navigate(
-        userData.user.role === "client"
+        userRole.toLowerCase() === "client"
           ? "/client/dashboard"
           : "/freelancer/dashboard"
       );
@@ -62,17 +75,24 @@ const AuthProvider = ({ children }) => {
     try {
       setLoading(true);
       setError(null);
-      // After successful registration navigate user to the dashboard page.
+      // First, try to register the user
       const response = await apiRegister(userData);
+
+      // If registration is successful, set up the user session
       setUser({
         isLoggedIn: true,
-        role: userData.role.toUpperCase(),
-        name: response.username || response.user?.username,
+        role: role.toUpperCase(),
+        name:
+          userData.username || userData.first_name + " " + userData.last_name,
         userId: response.id || response.user?.id,
       });
-      navigate(
-        role === "client" ? "/client/dashboard" : "/freelancer/dashboard"
-      );
+
+      // Show success message and navigate to login
+      setError("Registration successful! Please log in.");
+      setTimeout(() => {
+        setError(null);
+        navigate("/login");
+      }, 2000);
     } catch (error) {
       console.error("Registration failed:", error);
       setError(error.message);
@@ -92,9 +112,24 @@ const AuthProvider = ({ children }) => {
     navigate("/");
   };
 
+  const switchRole = () => {
+    const newRole =
+      user.role.toUpperCase() === "CLIENT" ? "FREELANCER" : "CLIENT";
+    setUser({
+      ...user,
+      role: newRole,
+    });
+    // Navigate to the appropriate dashboard
+    navigate(
+      newRole.toLowerCase() === "client"
+        ? "/client/dashboard"
+        : "/freelancer/dashboard"
+    );
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, login, register, logout, loading, error }}
+      value={{ user, login, register, logout, loading, error, switchRole }}
     >
       {children}
     </AuthContext.Provider>

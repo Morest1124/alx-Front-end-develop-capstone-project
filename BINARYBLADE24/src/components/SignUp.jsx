@@ -25,7 +25,7 @@ const SignUp = () => {
       identity_number: identityNumber,
       email,
       password,
-      role: role.toUpperCase(), // User Role if IsClient or IsFreelancer
+      role: [role.toUpperCase()], // User Role if IsClient or IsFreelancer
     };
     try {
       await register(userData, role);
