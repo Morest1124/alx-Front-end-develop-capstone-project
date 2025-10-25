@@ -19,9 +19,11 @@ import { GigsProvider } from "./contexts/GigsContext";
 import { EarningsProvider } from "./contexts/EarningsContext";
 import { ClientDashboardProvider } from "./contexts/ClientDashboardContext";
 import GigDetailsPage from "./pages/GigDetailsPage";
+import ClientProjects from "./pages/ClientProjects";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
 import PostJob from "./pages/PostJob";
 import Earnings from "./pages/Earnings";
+import Settings from "./components/Settings";
 import Tax from "./pages/Tax";
 import { fetchRates } from "./utils/currency";
 
@@ -85,11 +87,10 @@ const AppContent = () => {
       const userRole = user.role?.toLowerCase();
 
       if (userRole === "client") {
-        if (
-          currentPath.startsWith("/client/dashboard") ||
-          currentPath.startsWith("/client/projects")
-        )
+        if (currentPath.startsWith("/client/dashboard"))
           return <ClientDashboard />;
+        if (currentPath.startsWith("/client/projects"))
+          return <ClientProjects />;
         if (currentPath.startsWith("/client/talent")) return <Talent />;
         if (currentPath.startsWith("/client/post-job"))
           return (
@@ -118,14 +119,7 @@ const AppContent = () => {
       }
 
       // Shared authenticated pages
-      if (currentPath === "/settings")
-        return (
-          <PageWrapper title="Settings">
-            Manage your account preferences.
-            <br />
-            <Link to="/settings/tax">Tax Information</Link>
-          </PageWrapper>
-        );
+      if (currentPath === "/settings") return <Settings />;
       if (currentPath === "/settings/tax") return <Tax />;
       if (
         currentPath.startsWith("/client/messages") ||

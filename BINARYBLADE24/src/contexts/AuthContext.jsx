@@ -87,12 +87,12 @@ const AuthProvider = ({ children }) => {
         userId: response.id || response.user?.id,
       });
 
-      // Show success message and navigate to login
-      setError("Registration successful! Please log in.");
-      setTimeout(() => {
-        setError(null);
-        navigate("/login");
-      }, 2000);
+      // Navigate to the appropriate dashboard after registration
+      navigate(
+        role.toLowerCase() === "client"
+          ? "/client/dashboard"
+          : "/freelancer/dashboard"
+      );
     } catch (error) {
       console.error("Registration failed:", error);
       setError(error.message);
@@ -129,7 +129,7 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, register, logout, loading, error, switchRole }}
+      value={{ user, login, register, logout, loading, error, switchRole, setError }}
     >
       {children}
     </AuthContext.Provider>

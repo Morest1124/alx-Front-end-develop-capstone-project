@@ -78,7 +78,7 @@ const FreelancerDashboard = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             <DashboardCard
               title="Total Monthly Earnings (ZAR)"
-              value={formatToZAR(dashboardData.total_earnings, 'ZAR')}
+              value={formatToZAR(dashboardData.total_earnings, "ZAR")}
               icon="TrendingUp"
               to="/freelancer/earnings"
               bgColor="bg-green-50"
@@ -86,7 +86,7 @@ const FreelancerDashboard = () => {
             />
             <DashboardCard
               title="Estimated Monthly Tax"
-              value={formatToZAR(dashboardData.estimated_tax, 'ZAR')}
+              value={formatToZAR(dashboardData.estimated_tax, "ZAR")}
               icon="CreditCard"
               to="/freelancer/tax"
               bgColor="bg-red-50"
@@ -130,7 +130,7 @@ const FreelancerDashboard = () => {
             />
             <DashboardCard
               title="Response Rate"
-              value={`${dashboardData.response_rate}%`}
+              value={`${dashboardData.response_rate}`}
               icon="MailCheck"
               to="/messages"
               bgColor="bg-green-50"
@@ -162,7 +162,9 @@ const FreelancerDashboard = () => {
                   key={index}
                   className="flex justify-between items-center py-2 border-b last:border-b-0 text-gray-600"
                 >
-                  <span>{proposal.title} ({proposal.status})</span>
+                  <span>
+                    {proposal.title} ({proposal.status})
+                  </span>
                   <span className="text-sm text-gray-400">{proposal.date}</span>
                 </li>
               ))}

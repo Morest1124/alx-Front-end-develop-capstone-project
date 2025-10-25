@@ -197,7 +197,11 @@ const Navbar = () => {
               to={user.isLoggedIn ? `/${user.role}/dashboard` : "/"}
               className="text-2xl font-extrabold text-indigo-600 tracking-tight flex items-center"
             >
-              <img className="w-30 h-auto" src="logo6.11.png" alt="Logo" />
+              <img
+                className="w-30 h-auto"
+                src="BinaryBlade-official.png"
+                alt="Logo "
+              />
             </Link>
           </div>
 

@@ -40,6 +40,14 @@ const ClientDashboard = () => {
                 textColor="text-blue-700"
               />
               <DashboardCard
+                title="Completed Projects"
+                value={dashboardData.completed_projects}
+                icon="CheckCircle"
+                to="/client/projects/concluded"
+                bgColor="bg-green-50"
+                textColor="text-green-700"
+              />
+              <DashboardCard
                 title="Total Spent"
                 value={formatToZAR(dashboardData.total_spent, 'ZAR')}
                 icon="DollarSign"

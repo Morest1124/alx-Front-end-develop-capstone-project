@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { getProjects } from "../api";
-import GigsContent from "../pages/GigsContent";
 import { useRouter } from "../contexts/Routers";
 
-const ProjectsPage = () => {
+const ClientProjects = () => {
   const { navigate, currentPath } = useRouter();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +45,7 @@ const ProjectsPage = () => {
 
   const handleContact = (e, project) => {
     e.stopPropagation();
-    alert(`Contacting ${project.client}`);
+    alert(`Contacting freelancer for project: ${project.title}`);
   };
 
   const handleViewProject = (project) => {
@@ -118,14 +117,6 @@ const ProjectsPage = () => {
                       {project.status}
                     </span>
                     <div className="absolute bottom-0 left-0 p-4 flex items-center">
-                      <img
-                        src={project.client_avatar}
-                        alt={project.client}
-                        className="w-12 h-12 rounded-full border-2 border-white"
-                      />
-                      <h2 className="text-lg font-bold text-white ml-2">
-                        {project.client}
-                      </h2>
                     </div>
                   </div>
                   <div className="p-4">
@@ -157,7 +148,7 @@ const ProjectsPage = () => {
                         onClick={(e) => handleContact(e, project)}
                         className="bg-green-500 text-white px-4 py-2 rounded-lg"
                       >
-                        Contact Client
+                        Contact Freelancer
                       </button>
                     </div>
                   </div>
@@ -189,4 +180,4 @@ const ProjectsPage = () => {
   );
 };
 
-export default ProjectsPage;
+export default ClientProjects;

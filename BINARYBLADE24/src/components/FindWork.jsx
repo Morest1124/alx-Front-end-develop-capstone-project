@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 import { useRouter } from "../contexts/Routers"; // Import the router hook
-import { getGigs } from "../api";
+import { getProjects } from "../api";
 import { formatToZAR } from "../utils/currency";
 
 // A new component for a single, animated gig card
@@ -55,7 +55,7 @@ const FindWork = () => {
 
   useEffect(() => {
     const fetchGigs = async () => {
-      const gigsData = await getGigs();
+      const gigsData = await getProjects();
       setGigs(gigsData);
     };
 

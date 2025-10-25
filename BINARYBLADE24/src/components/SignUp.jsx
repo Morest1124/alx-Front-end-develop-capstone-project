@@ -1,6 +1,8 @@
 import React, { useState, useContext } from "react";
 import { Link } from "../contexts/Routers";
 import { AuthContext } from "../contexts/AuthContext";
+import AuthLayout from "./AuthLayout";
+import SignUpForm from "./SignUpForm";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -11,12 +13,27 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("freelancer");
-
-  // Destructure the error variable from the context
-  const { register, loading, error } = useContext(AuthContext);
+  const { register, loading, error: apiError, setError: setApiError } = useContext(AuthContext);
+  const [errors, setErrors] = useState({});
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrors({}); // Clear previous errors
+
+    const newErrors = {};
+    if (!username) newErrors.username = "Username is required.";
+    if (!firstName) newErrors.first_name = "First name is required.";
+    if (!lastName) newErrors.last_name = "Last name is required.";
+    if (!country) newErrors.country_origin = "Country is required.";
+    if (!identityNumber) newErrors.identity_number = "ID number is required.";
+    if (!email) newErrors.email = "Email is required.";
+    if (!password) newErrors.password = "Password is required.";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     const userData = {
       username,
       first_name: firstName,
@@ -29,173 +46,52 @@ const SignUp = () => {
     };
     try {
       await register(userData, role);
-      // The context will navigate to /login on success
+      // The context will navigate to the appropriate dashboard on success
     } catch (err) {
       console.error("Caught registration error in component:", err);
+      if (err.response && err.response.data) {
+        setErrors(err.response.data);
+      } else {
+        setApiError("An unexpected error occurred.");
+      }
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100 py-12">
-      <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold text-center text-gray-900">
-          Sign Up
-        </h2>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          {error && <p className="text-red-500 text-center">{error}</p>}
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Username
-            </label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              required
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              First Name
-            </label>
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              required
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Last Name
-            </label>
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              required
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Country
-            </label>
-            <input
-              type="text"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              required
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              ID Number
-            </label>
-            <input
-              type="text"
-              value={identityNumber}
-              onChange={(e) => setIdentityNumber(e.target.value)}
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              required
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              required
-              disabled={loading}
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              required
-              disabled={loading}
-            />
-          </div>
-          <div>
-            {" "}
-            <label className="block text-sm font-medium text-gray-700">
-              Register as
-            </label>
-            <div className="flex items-center mt-1">
-              <input
-                id="freelancer"
-                name="role"
-                type="radio"
-                value="freelancer"
-                checked={role === "freelancer"}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-              />
-              <label
-                htmlFor="freelancer"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Freelancer
-              </label>
-            </div>
-            <div className="flex items-center mt-1">
-              <input
-                id="client"
-                name="role"
-                type="radio"
-                value="client"
-                checked={role === "client"}
-                onChange={(e) => setRole(e.target.value)}
-                className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-              />
-              <label
-                htmlFor="client"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Client
-              </label>
-            </div>
-          </div>{" "}
-          <div>
-            {" "}
-            <button
-              type="submit"
-              className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
-              disabled={loading}
-            >
-              {loading ? "Signing up..." : "Sign Up"}
-            </button>
-          </div>
-        </form>
-        <p className="text-sm text-center text-gray-600">
-          Already have an account?{" "}
-          <Link
-            to="/login"
-            className="font-medium text-indigo-600 hover:text-indigo-500"
-          >
-            Log In
-          </Link>
-        </p>
-      </div>
-    </div>
+    <AuthLayout title="Sign Up">
+      <SignUpForm
+        username={username}
+        setUsername={setUsername}
+        firstName={firstName}
+        setFirstName={setFirstName}
+        lastName={lastName}
+        setLastName={setLastName}
+        country={country}
+        setCountry={setCountry}
+        identityNumber={identityNumber}
+        setIdentityNumber={setIdentityNumber}
+        email={email}
+        setEmail={setEmail}
+        password={password}
+        setPassword={setPassword}
+        role={role}
+        setRole={setRole}
+        handleSubmit={handleSubmit}
+        errors={errors}
+        loading={loading}
+        apiError={apiError}
+        setApiError={setApiError}
+      />
+      <p className="text-sm text-center text-gray-600">
+        Already have an account?{" "}
+        <Link
+          to="/login"
+          className="font-medium text-indigo-600 hover:text-indigo-500"
+        >
+          Log In
+        </Link>
+      </p>
+    </AuthLayout>
   );
 };
 

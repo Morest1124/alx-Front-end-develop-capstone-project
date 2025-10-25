@@ -153,7 +153,7 @@ export const getClients = () => {
 
 // Get all projects
 export const getProjects = () => {
-  return apiClient.get("/projects/");
+  return apiClient.get("/projects/projects/");
 };
 
 // Get project by id with all details
@@ -164,4 +164,15 @@ export const getProjectDetails = (projectId) => {
 // Update user profile
 export const updateUserProfile = (userId, profileData) => {
   return apiClient.put(`/users/${userId}/`, profileData);
+};
+
+export const updateUserProfilePicture = (userId, file) => {
+  const formData = new FormData();
+  formData.append('profile_picture', file);
+
+  return apiClient.patch(`/users/${userId}/`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
 };

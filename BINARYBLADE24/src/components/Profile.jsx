@@ -1,19 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext"; // Import AuthContext
 import { getUserProfile } from "../api"; //Import the api endpoint
 
 const ProfilePage = () => {
-  // 2. Set up state to hold the user data, loading status, and any errors
+  const { user: authUser } = useContext(AuthContext); // Get user from AuthContext
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 3. Fetch the data when the component is first rendered
   useEffect(() => {
     const fetchUserProfile = async () => {
+      if (!authUser || !authUser.userId) {
+        setLoading(false);
+        setError("No user ID found. Please log in.");
+        return;
+      }
+
       try {
-        // For this example, we'll fetch user with ID 1
-        const userId = user.ID;
-        const userData = await getUserProfile(userId);
+        const userData = await getUserProfile(authUser.userId);
         setUser(userData);
       } catch (err) {
         setError(err.message);
@@ -23,7 +27,7 @@ const ProfilePage = () => {
     };
 
     fetchUserProfile();
-  }, []); // The empty array ensures this runs only once
+  }, [authUser]); // Dependency array ensures this runs when authUser changes
 
   // Show a loading message while fetching data
   if (loading) {
@@ -36,8 +40,17 @@ const ProfilePage = () => {
   }
 
   // 6. Display the user's profile information
+  if (!user) {
+    return <div>No user data found.</div>;
+  }
+
   return (
     <div>
+      <img
+        src={user.profile_picture || 'https://via.placeholder.com/150'}
+        alt="Profile"
+        className="w-24 h-24 rounded-full mr-4"
+      />
       <h1>{user.username}'s Profile</h1>
       <p>Email: {user.email}</p>
       <p>Bio: {user.bio}</p>
