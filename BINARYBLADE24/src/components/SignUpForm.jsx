@@ -13,6 +13,8 @@ const SignUpForm = ({
   setCountry,
   identityNumber,
   setIdentityNumber,
+  phoneNumber,
+  setPhoneNumber,
   email,
   setEmail,
   password,
@@ -68,7 +70,7 @@ const SignUpForm = ({
         onChange={(e) => setFirstName(e.target.value)}
         required
         disabled={loading}
-        error={errors.first_name}
+        error={errors.firstName}
       />
       <InputField
         label="Last Name"
@@ -77,7 +79,7 @@ const SignUpForm = ({
         onChange={(e) => setLastName(e.target.value)}
         required
         disabled={loading}
-        error={errors.last_name}
+        error={errors.lastName}
       />
       <InputField
         label="Country"
@@ -86,7 +88,7 @@ const SignUpForm = ({
         onChange={(e) => setCountry(e.target.value)}
         required
         disabled={loading}
-        error={errors.country_origin}
+        error={errors.country}
       />
       <InputField
         label="ID Number"
@@ -95,7 +97,16 @@ const SignUpForm = ({
         onChange={(e) => setIdentityNumber(e.target.value)}
         required
         disabled={loading}
-        error={errors.identity_number}
+        error={errors.identityNumber}
+      />
+      <InputField
+        label="Phone Number"
+        type="text"
+        value={phoneNumber}
+        onChange={(e) => setPhoneNumber(e.target.value)}
+        required
+        disabled={loading}
+        error={errors.phoneNumber}
       />
       <InputField
         label="Email"

@@ -13,8 +13,15 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("freelancer");
-  const { register, loading, error: apiError, setError: setApiError } = useContext(AuthContext);
+  const {
+    register,
+    loading,
+    error: apiError,
+    setError: setApiError,
+  } = useContext(AuthContext);
   const [errors, setErrors] = useState({});
+
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -22,10 +29,11 @@ const SignUp = () => {
 
     const newErrors = {};
     if (!username) newErrors.username = "Username is required.";
-    if (!firstName) newErrors.first_name = "First name is required.";
-    if (!lastName) newErrors.last_name = "Last name is required.";
-    if (!country) newErrors.country_origin = "Country is required.";
-    if (!identityNumber) newErrors.identity_number = "ID number is required.";
+    if (!firstName) newErrors.firstName = "First name is required.";
+    if (!lastName) newErrors.lastName = "Last name is required.";
+    if (!country) newErrors.country = "Country is required.";
+    if (!identityNumber) newErrors.identityNumber = "ID number is required.";
+    if (!phoneNumber) newErrors.phoneNumber = "Phone number is required.";
     if (!email) newErrors.email = "Email is required.";
     if (!password) newErrors.password = "Password is required.";
 
@@ -36,13 +44,14 @@ const SignUp = () => {
 
     const userData = {
       username,
-      first_name: firstName,
-      last_name: lastName,
-      country_origin: country,
-      identity_number: identityNumber,
+      firstName,
+      lastName,
+      country,
+      identityNumber,
+      phoneNumber,
       email,
       password,
-role: role.toUpperCase(), // User Role if IsClient or IsFreelancer
+      roles: [role.toUpperCase()], // User Role if IsClient or IsFreelancer
     };
     try {
       await register(userData, role);
@@ -75,6 +84,8 @@ role: role.toUpperCase(), // User Role if IsClient or IsFreelancer
         setCountry={setCountry}
         identityNumber={identityNumber}
         setIdentityNumber={setIdentityNumber}
+        phoneNumber={phoneNumber}
+        setPhoneNumber={setPhoneNumber}
         email={email}
         setEmail={setEmail}
         password={password}
