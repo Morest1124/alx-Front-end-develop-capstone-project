@@ -86,16 +86,6 @@ export const register = async (userData) => {
   }
 };
 
-export const getGigs = async () => {
-  try {
-    const response = await apiClient.get("/projects/projects/");
-    return Array.isArray(response) ? response : [];
-  } catch (error) {
-    console.error("Error fetching gigs:", error);
-    throw new Error("Failed to fetch gigs. Please try again.");
-  }
-};
-
 export const getGig = (gigId) => {
   return apiClient.get(`/projects/${gigId}/`);
 };

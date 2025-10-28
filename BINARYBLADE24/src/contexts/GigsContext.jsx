@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { getGigs, createJob } from '../api';
+import { getProjects, createJob } from '../api';
 
 const GigsContext = createContext();
 
@@ -9,7 +9,7 @@ const GigsProvider = ({ children }) => {
 
   const fetchGigs = async () => {
     try {
-      const gigsData = await getGigs();
+      const gigsData = await getProjects();
       setGigs(gigsData);
     } catch (error) {
       console.error("Error fetching gigs:", error);
