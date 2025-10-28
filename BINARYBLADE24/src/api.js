@@ -77,12 +77,8 @@ export const register = async (userData) => {
     }
     return data;
   } catch (error) {
-    const message =
-      error.response?.data?.detail ||
-      error.response?.data?.message ||
-      error.message ||
-      "Registration failed";
-    throw new Error(message);
+    // Re-throw the error so the interceptor can handle it
+    throw error;
   }
 };
 

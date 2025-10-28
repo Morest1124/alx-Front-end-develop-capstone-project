@@ -50,7 +50,12 @@ role: role.toUpperCase(), // User Role if IsClient or IsFreelancer
     } catch (err) {
       console.error("Caught registration error in component:", err);
       if (err.response && err.response.data) {
-        setErrors(err.response.data);
+        const apiErrors = err.response.data;
+        const newErrors = {};
+        for (const key in apiErrors) {
+          newErrors[key] = apiErrors[key][0]; // Take the first error message for each field
+        }
+        setErrors(newErrors);
       } else {
         setApiError("An unexpected error occurred.");
       }
