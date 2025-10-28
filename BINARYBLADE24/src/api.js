@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create a pre-configured axios instance
 const apiClient = axios.create({
-  baseURL: "https://binaryblade24-api.onrender.com/api",
+  baseURL: "https://binaryblade2411.pythonanywhere.com/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -88,7 +88,7 @@ export const register = async (userData) => {
 
 export const getGigs = async () => {
   try {
-    const response = await apiClient.get("/projects/");
+    const response = await apiClient.get("/projects/projects/");
     return Array.isArray(response) ? response : [];
   } catch (error) {
     console.error("Error fetching gigs:", error);
@@ -168,11 +168,32 @@ export const updateUserProfile = (userId, profileData) => {
 
 export const updateUserProfilePicture = (userId, file) => {
   const formData = new FormData();
-  formData.append('profile_picture', file);
+  formData.append("profile_picture", file);
 
   return apiClient.patch(`/users/${userId}/`, formData, {
     headers: {
-      'Content-Type': 'multipart/form-data',
+      "Content-Type": "multipart/form-data",
     },
   });
+};
+
+export const createGig = async (gigData) => {
+  try {
+    const response = await apiClient.post("/projects/gigs/", gigData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    if (!response) {
+      throw new Error("No response received from server");
+    }
+    return response;
+  } catch (error) {
+    console.error("Error creating gig:", error);
+    throw new Error(
+      error.response?.data?.message ||
+        error.response?.data?.detail ||
+        "Failed to create gig. Please try again."
+    );
+  }
 };

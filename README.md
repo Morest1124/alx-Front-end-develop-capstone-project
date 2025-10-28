@@ -1,4 +1,11 @@
 # BINARYBLADE24
+API Integration Note
+This project was initially developed using mock data while the backend API was still in development.
+
+An api-integration branch was created to incorporate the live API. The API was deployed on Render's free tier for this purpose. However, services on the free tier are subject to "sleeping" after periods of inactivity, which can cause significant delays and unreliability during initial requests.
+
+Due to these performance issues with the free hosting, the api-integration branch has not been merged into the main branch. The application in the main branch continues to use the mock data to ensure a smooth and responsive user experience for demonstration purposes. Unfortunately I wasted more time trying to deploy or rather host my API on a web service
+
 
 
 ## Project Overview
@@ -41,7 +48,7 @@ The core concept is inspired by a "Book Library," where users can search for pro
 
 	- **Secure User Authentication:**
 		- Multi-step registration and login pages.
-		- Supports third-party login (e.g., Google, LinkedIn).
+		- Supports third-party login (e.g., Google, LinkedIn). [Have note been implemented due api delays from]
 		- **Crucial Feature:** Users are required to use their **real names** and **verify their identity with an ID** before engaging with other users.
 	- **Project Browsing & Search:**
 		- View a comprehensive list of all available projects.

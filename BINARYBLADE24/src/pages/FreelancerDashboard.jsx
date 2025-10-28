@@ -6,6 +6,8 @@ import { LucideIcon, DashboardCard } from "./DashboardUtils";
 import CreateGigForm from "../components/CreateGigForm";
 import { formatToZAR } from "../utils/currency";
 
+import { Link } from "../contexts/Routers";
+
 const FreelancerDashboard = () => {
   const { user } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -60,8 +62,8 @@ const FreelancerDashboard = () => {
         >
           Dashboard
         </button>
-        {/* <button
-          onClick={() => setActiveTab("create-gig")}
+        <Link
+          to="/freelancer/create-gig"
           className={`py-2 px-4 text-lg ${
             activeTab === "create-gig"
               ? "border-b-2 border-blue-500 text-blue-600"
@@ -69,7 +71,7 @@ const FreelancerDashboard = () => {
           }`}
         >
           Create Gig
-        </button> */}
+        </Link>
       </div>
 
       {activeTab === "dashboard" && dashboardData && (
