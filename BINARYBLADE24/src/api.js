@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create a pre-configured axios instance
 const apiClient = axios.create({
-  baseURL: "https://binaryblade2411.pythonanywhere.com/api",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api",
   headers: {
     "Content-Type": "application/json",
   },

@@ -37,11 +37,7 @@ const AuthProvider = ({ children }) => {
       const userData = response.user || response;
 
       // Handle different response formats
-      const userRole = (
-        userData.role ||
-        userData.roles?.[0] ||
-        "FREELANCER"
-      ).toUpperCase();
+      const userRole = (userData.role || (userData.roles && userData.roles[0]))?.toUpperCase();
       const userName =
         userData.username ||
         (userData.first_name && userData.last_name

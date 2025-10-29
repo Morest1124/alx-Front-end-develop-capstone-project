@@ -1,6 +1,5 @@
 # BINARYBLADE24
 
-
 ## Project Overview
 BINARYBLADE24 is a front-end capstone project built with React and Vite, styled using Tailwind CSS. The application provides a platform for freelancers and clients to connect, post jobs, find talent, and manage projects.
 
@@ -59,9 +58,11 @@ The core concept is inspired by a "Book Library," where users can search for pro
 	| Technology | Purpose |
 	| :--- | :--- |
 	| **React** | Core JavaScript library for building the SPA user interface. |
+	| **Vite** | Next-generation frontend tooling for fast development and build. |
 	| **Tailwind CSS** | Utility-first CSS framework for rapid and responsive styling. |
 	| **React Router** | For client-side routing and seamless page navigation. |
 	| **Context API** | (See `AuthContext.jsx`) For global state management, specifically authentication. |
+	| **Axios** | Promise-based HTTP client for making API requests. |
 
 	### Project Structure Overview
 
@@ -86,6 +87,53 @@ The core concept is inspired by a "Book Library," where users can search for pro
 	| `/api/projects/<id>/` | `GET` | Fetch detailed information for a specific project. |
 	| `/api/profiles/<id>/` | `GET` | Get a user's profile details. |
 	| `/api/register/` & `/api/login/` | `POST` | User authentication. |
+
+	---
+
+	## Environment Variables
+
+	To run this project, you will need to set up environment variables. Vite exposes environment variables to your client-side code if they are prefixed with `VITE_`.
+
+	1.  Create a `.env` file in the root of the `BINARYBLADE24` directory (e.g., `d:\alx-Front-end-develop-capstone-project\BINARYBLADE24\.env`).
+	2.  Add your API base URL to this file. For example:
+
+		```
+		VITE_API_BASE_URL="https://binaryblade2411.pythonanywhere.com/api"
+		```
+
+		*Note: Ensure your `.env` file is listed in `.gitignore` to prevent it from being committed to version control.*
+
+	---
+
+	## Getting Started
+
+	To get a local copy up and running, follow these simple steps.
+
+	### Prerequisites
+
+	*   Node.js (LTS version recommended)
+	*   npm or yarn
+
+	### Installation
+
+	1.  Clone the repository:
+		```sh
+		git clone <repository_url>
+		cd BINARYBLADE24
+		```
+	2.  Install NPM packages:
+		```sh
+		npm install
+		```
+	3.  Set up your `.env` file as described in the [Environment Variables](#environment-variables) section.
+
+	### Running the Application
+
+	To start the development server:
+	```sh
+	npm run dev
+	```
+	This will typically start the application on `http://localhost:5173` (or another available port).
 
 	---
 
@@ -125,19 +173,6 @@ The core concept is inspired by a "Book Library," where users can search for pro
 	- Add more advanced features (notifications, messaging, earnings tracking).
 	- Improve UI/UX and accessibility.
 	- Backend development will be handled separately and combined later as needed.
-
-	## Getting Started
-	1. Install dependencies:
-	   ```sh
-	   npm install
-	   ```
-	2. Start the development server:
-	   ```sh
-	   npm run dev
-	   ```
-
-	---
-
 
 	---
 
