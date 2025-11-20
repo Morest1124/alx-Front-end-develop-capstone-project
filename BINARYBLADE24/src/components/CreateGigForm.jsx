@@ -36,7 +36,7 @@ const CreateGigForm = () => {
         budget: parseFloat(formData.budget),
       };
 
-      const newGig = await addGig(projectData);
+      await addGig(projectData);
       setSuccess(true);
       setFormData({
         title: "",

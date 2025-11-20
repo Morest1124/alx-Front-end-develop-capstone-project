@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useCallback } from "react";
 import AuthProvider, { AuthContext } from "./contexts/AuthContext";
 import { RouterProvider, useRouter, Link } from "./contexts/Routers";
 import Navbar from "./components/Navbar";
@@ -44,10 +44,10 @@ const AppContent = () => {
   };
 
   // Get appropriate dashboard path based on user role
-  const getDashboardPath = () => {
+  const getDashboardPath = useCallback(() => {
     const role = user.role?.toLowerCase();
     return role === "client" ? "/client/dashboard" : "/freelancer/dashboard";
-  };
+  }, [user.role]);
 
   useEffect(() => {
     // Redirect to appropriate dashboard if user is logged in and tries to access auth pages
@@ -57,7 +57,7 @@ const AppContent = () => {
     ) {
       navigate(getDashboardPath());
     }
-  }, [currentPath, user.isLoggedIn]);
+  }, [currentPath, user.isLoggedIn, navigate, getDashboardPath]);
 
   // routing logic
   const renderPage = () => {

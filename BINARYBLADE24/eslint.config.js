@@ -24,6 +24,16 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'react-refresh/only-export-components': 'off',
+    },
+  },
+  {
+    files: ['postcss.config.js'],
+    env: {
+      node: true,
+    },
+    rules: {
+      'no-undef': 'off',
     },
   },
 ])

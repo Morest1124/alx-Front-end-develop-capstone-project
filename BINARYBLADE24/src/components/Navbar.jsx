@@ -20,7 +20,7 @@ import { useRouter, Link } from "../contexts/Routers";
 // Links for unauthenticated users
 const PublicNavLinks = () => {
   const { currentPath } = useRouter();
-  const { login } = useContext(AuthContext);
+
 
   const isActive = (path) =>
     currentPath === path
@@ -218,7 +218,7 @@ const Navbar = () => {
                 >
                   <User size={20} className="text-gray-700" />
                   <span className="text-xs font-semibold text-gray-900 hidden lg:inline">
-                    {user.username || "Guest"}
+                    {user.username}
                     {user.role &&
                       ` (${user.role.charAt(0).toUpperCase()}${user.role
                         .slice(1)

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 const Messages = () => {
-  const [conversations, setConversations] = useState([
+  const [conversations] = useState([
     {
       id: 1,
       email: "john.doe@example.com",

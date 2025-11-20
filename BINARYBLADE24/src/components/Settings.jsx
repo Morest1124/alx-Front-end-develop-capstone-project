@@ -5,7 +5,6 @@ import { AuthContext } from '../contexts/AuthContext';
 const Settings = () => {
   const { user } = useContext(AuthContext);
   const [profilePicture, setProfilePicture] = useState(null);
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -49,10 +48,12 @@ const Settings = () => {
       </div>
       <button
         onClick={handleSave}
-        className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg"
+        className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg disabled:bg-blue-300"
+        disabled={loading}
       >
-        Save
+        {loading ? 'Saving...' : 'Save'}
       </button>
+      {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );
 };

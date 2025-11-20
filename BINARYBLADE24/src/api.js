@@ -29,6 +29,7 @@ apiClient.interceptors.response.use(
     // Handle errors globally
     let message;
     if (error.response?.status === 401) {
+      console.error("Authentication Error from backend:", error.response.data);
       message = "Invalid email or password. Please try again.";
     } else if (error.response?.status === 400) {
       const errorData = error.response.data;
@@ -70,16 +71,11 @@ export const login = async (credentials) => {
 };
 //Export endpoints to dedicated pages
 export const register = async (userData) => {
-  try {
-    const data = await apiClient.post("/auth/register/", userData);
-    if (data.access) {
-      localStorage.setItem("token", data.access);
-    }
-    return data;
-  } catch (error) {
-    // Re-throw the error so the interceptor can handle it
-    throw error;
+  const data = await apiClient.post("/auth/register/", userData);
+  if (data.access) {
+    localStorage.setItem("token", data.access);
   }
+  return data;
 };
 
 export const getGig = (gigId) => {
@@ -139,7 +135,7 @@ export const getClients = () => {
 
 // Get all projects
 export const getProjects = () => {
-  return apiClient.get("/projects/projects/");
+  return apiClient.get("/projects/");
 };
 
 // Get project by id with all details

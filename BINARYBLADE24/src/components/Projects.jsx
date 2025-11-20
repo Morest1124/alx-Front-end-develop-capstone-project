@@ -4,7 +4,7 @@ import GigsContent from "../pages/GigsContent";
 import { useRouter } from "../contexts/Routers";
 
 const ProjectsPage = () => {
-  const { navigate, currentPath } = useRouter();
+  const { navigate } = useRouter();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");

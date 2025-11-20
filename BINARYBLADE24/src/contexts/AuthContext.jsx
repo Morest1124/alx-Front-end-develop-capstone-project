@@ -9,7 +9,7 @@ export const AuthContext = createContext();
 const LoggedOutUserState = {
   isLoggedIn: false,
   role: null,
-  name: "Guest",
+  name: "",
   userId: null,
 };
 
