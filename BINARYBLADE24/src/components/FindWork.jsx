@@ -13,9 +13,8 @@ const GigCard = ({ gig, handleViewGig }) => {
     <div
       ref={ref}
       onClick={() => handleViewGig(gig)} // Add the onClick handler
-      className={`bg-white rounded-lg shadow-md overflow-hidden transition-all duration-500 ease-in-out cursor-pointer ${
-        isIntersecting ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-      }`}
+      className={`bg-white rounded-lg shadow-md overflow-hidden transition-all duration-500 ease-in-out cursor-pointer ${isIntersecting ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
     >
       <img
         src={gig.image}
@@ -55,8 +54,14 @@ const FindWork = () => {
 
   useEffect(() => {
     const fetchGigs = async () => {
-      const gigsData = await getProjects();
-      setGigs(gigsData);
+      try {
+        const gigsData = await getProjects();
+        setGigs(gigsData);
+      } catch (error) {
+        console.error("Failed to fetch gigs:", error);
+        // Optionally set an empty state or error state here
+        setGigs([]);
+      }
     };
 
     fetchGigs();

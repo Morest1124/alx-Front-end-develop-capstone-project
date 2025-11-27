@@ -2,7 +2,8 @@ import axios from "axios";
 
 // Create a pre-configured axios instance
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api",
+  // baseURL:    import.meta.env.VITE_API_BASE_URL ||    "https://binaryblade2411.pythonanywhere.com/api/",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -30,7 +31,15 @@ apiClient.interceptors.response.use(
     let message;
     if (error.response?.status === 401) {
       console.error("Authentication Error from backend:", error.response.data);
-      message = "Invalid email or password. Please try again.";
+      // Only show specific login message if we are actually logging in, 
+      // otherwise it might be an expired token or unauthorized access to a resource.
+      // For now, we'll keep it generic or check the URL if possible, 
+      // but to be safe and avoid confusing "Invalid email" on logout/home page:
+      if (error.config && error.config.url.includes("/auth/login/")) {
+        message = "Invalid email or password. Please try again.";
+      } else {
+        message = "You are not authorized. Please log in.";
+      }
     } else if (error.response?.status === 400) {
       const errorData = error.response.data;
       if (errorData.email) {
@@ -93,8 +102,8 @@ export const createJob = async (jobDetails) => {
     console.error("Error creating project:", error);
     throw new Error(
       error.response?.data?.message ||
-        error.response?.data?.detail ||
-        "Failed to create project. Please try again."
+      error.response?.data?.detail ||
+      "Failed to create project. Please try again."
     );
   }
 };
@@ -133,9 +142,19 @@ export const getClients = () => {
   return apiClient.get("/users/clients/");
 };
 
-// Get all projects
+// Get all projects (OPEN only - for Find Work)
 export const getProjects = () => {
   return apiClient.get("/projects/");
+};
+
+// Get client's own projects
+export const getClientProjects = () => {
+  return apiClient.get("/projects/my_projects/");
+};
+
+// Get freelancer's active jobs
+export const getFreelancerJobs = () => {
+  return apiClient.get("/projects/my_jobs/");
 };
 
 // Get project by id with all details
@@ -174,8 +193,8 @@ export const createGig = async (gigData) => {
     console.error("Error creating gig:", error);
     throw new Error(
       error.response?.data?.message ||
-        error.response?.data?.detail ||
-        "Failed to create gig. Please try again."
+      error.response?.data?.detail ||
+      "Failed to create gig. Please try again."
     );
   }
 };

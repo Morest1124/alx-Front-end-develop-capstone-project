@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getProjects } from "../api";
+import { getFreelancerJobs } from "../api";
 import GigsContent from "../pages/GigsContent";
 import { useRouter } from "../contexts/Routers";
 
@@ -15,7 +15,7 @@ const ProjectsPage = () => {
     const fetchProjects = async () => {
       try {
         setLoading(true);
-        const data = await getProjects();
+        const data = await getFreelancerJobs();
         setProjects(data);
         setLoading(false);
       } catch (error) {
@@ -73,21 +73,19 @@ const ProjectsPage = () => {
         <div className="flex border-b mb-6">
           <button
             onClick={() => setActiveTab("active")}
-            className={`py-2 px-4 text-lg ${
-              activeTab === "active"
+            className={`py-2 px-4 text-lg ${activeTab === "active"
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500"
-            }`}
+              }`}
           >
             Active Projects
           </button>
           <button
             onClick={() => setActiveTab("past")}
-            className={`py-2 px-4 text-lg ${
-              activeTab === "past"
+            className={`py-2 px-4 text-lg ${activeTab === "past"
                 ? "border-b-2 border-blue-500 text-blue-600"
                 : "text-gray-500"
-            }`}
+              }`}
           >
             Past Projects
           </button>
@@ -109,11 +107,10 @@ const ProjectsPage = () => {
                       className="w-full h-48 object-cover"
                     />
                     <span
-                      className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${
-                        project.status === "In Progress"
+                      className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${project.status === "In Progress"
                           ? "bg-yellow-500"
                           : "bg-green-500"
-                      }`}
+                        }`}
                     >
                       {project.status}
                     </span>

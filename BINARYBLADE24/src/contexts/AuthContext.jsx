@@ -28,6 +28,43 @@ const AuthProvider = ({ children }) => {
     localStorage.setItem("user", JSON.stringify(user));
   }, [user]);
 
+  // Auto-logout logic
+  useEffect(() => {
+    let inactivityTimer;
+    const INACTIVITY_LIMIT = 60 * 60 * 1000; // 1 hour in milliseconds
+
+    const resetTimer = () => {
+      if (user.isLoggedIn) {
+        clearTimeout(inactivityTimer);
+        inactivityTimer = setTimeout(() => {
+          console.log("User inactive for 1 hour. Logging out...");
+          logout();
+        }, INACTIVITY_LIMIT);
+      }
+    };
+
+    // Events to track activity
+    const events = ["mousemove", "keydown", "click", "scroll"];
+
+    if (user.isLoggedIn) {
+      // Set initial timer
+      resetTimer();
+
+      // Add event listeners
+      events.forEach((event) => {
+        window.addEventListener(event, resetTimer);
+      });
+    }
+
+    return () => {
+      // Cleanup
+      clearTimeout(inactivityTimer);
+      events.forEach((event) => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [user.isLoggedIn]);
+
   const login = async (credentials) => {
     try {
       setLoading(true);

@@ -13,6 +13,7 @@ const ClientDashboardProvider = ({ children }) => {
       try {
         setLoading(true);
         const data = await getClientDashboard();
+        console.log('Data from getClientDashboard:', data);
         setDashboardData(data); 
         setError(null);
       } catch (err) {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { getProjects } from "../api";
+import { getClientProjects } from "../api";
 import { useRouter } from "../contexts/Routers";
 import { AuthContext } from '../contexts/AuthContext';
 
@@ -17,7 +17,7 @@ const ClientProjects = () => {
     const fetchProjects = async () => {
       try {
         setLoading(true);
-        const data = await getProjects();
+        const data = await getClientProjects();
         console.log("Fetched projects:", data);
         setProjects(data);
         setLoading(false);
@@ -93,11 +93,10 @@ const ClientProjects = () => {
                   className="w-full h-48 object-cover"
                 />
                 <span
-                  className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${
-                    project.status === "IN_PROGRESS"
+                  className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${project.status === "IN_PROGRESS"
                       ? "bg-yellow-500"
                       : "bg-green-500"
-                  }`}
+                    }`}
                 >
                   {project.status}
                 </span>
@@ -157,11 +156,10 @@ const ClientProjects = () => {
                   className="w-full h-48 object-cover"
                 />
                 <span
-                  className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${
-                    project.status === "IN_PROGRESS"
+                  className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${project.status === "IN_PROGRESS"
                       ? "bg-yellow-500"
                       : "bg-green-500"
-                  }`}
+                    }`}
                 >
                   {project.status}
                 </span>

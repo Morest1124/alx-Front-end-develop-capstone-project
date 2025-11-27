@@ -2,16 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from '../contexts/Routers';
 import { formatToZAR } from '../utils/currency';
 
-// Mock function to fetch project details by ID from db.json
+import { getProjectDetails } from '../api';
+
 const fetchProjectById = async (id) => {
   try {
-    const response = await fetch('/db.json');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    const project = data.projects.find(p => p.id === parseInt(id));
-    return project;
+    const data = await getProjectDetails(id);
+    return data;
   } catch (error) {
     console.error("Failed to fetch project:", error);
     return null;
@@ -71,12 +67,25 @@ const ProjectDetailsPage = ({ projectId }) => {
         <div className="lg:col-span-1">
           <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 sticky top-8">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Project Details</h2>
-            
+
             <div className="flex items-center mb-4">
-              <img src={project.client_avatar} alt={project.client} className="w-12 h-12 rounded-full mr-4" />
+              <img src={project.client_avatar || "https://via.placeholder.com/150"} alt={project.client_details?.username || project.client} className="w-12 h-12 rounded-full mr-4" />
               <div>
-                <p className="font-bold text-gray-800">{project.client}</p>
+                <p className="font-bold text-gray-800">
+                  {project.client_details?.first_name
+                    ? `${project.client_details.first_name} ${project.client_details.last_name}`
+                    : (project.client_details?.username || project.client)}
+                </p>
                 <p className="text-sm text-gray-600">Client</p>
+                {/* Revealed Contact Info */}
+                {project.client_details?.email && (
+                  <div className="mt-2 text-sm text-indigo-600 bg-indigo-50 p-2 rounded">
+                    <p><strong>Email:</strong> {project.client_details.email}</p>
+                    {project.client_details.phone_number && (
+                      <p><strong>Phone:</strong> {project.client_details.phone_number}</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -93,7 +102,7 @@ const ProjectDetailsPage = ({ projectId }) => {
                 <span className="font-semibold">Status:</span>
                 <span className="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">{project.status}</span>
               </div>
-               <div className="flex justify-between">
+              <div className="flex justify-between">
                 <span className="font-semibold">Rating:</span>
                 <span className="flex items-center">{project.rating} &#9733;</span>
               </div>
