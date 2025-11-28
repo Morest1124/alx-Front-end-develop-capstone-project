@@ -220,3 +220,8 @@ export const getCategories = () => {
 export const createMilestone = (milestoneData) => {
   return apiClient.post("/projects/milestones/", milestoneData);
 };
+
+// Get all public proposals (for Find Work page)
+export const getPublicProposals = () => {
+  return apiClient.get("/proposals/public/");
+};

@@ -11,7 +11,7 @@ const Gigs = () => {
 
   const handleContact = (e, gig) => {
     e.stopPropagation();
-    alert(`Contacting ${gig.client_details?.first_name || 'freelancer'}`);
+    alert(`Contacting ${gig.owner_details?.first_name || 'freelancer'}`);
   };
 
   const handleViewGig = (gig) => {
@@ -70,14 +70,14 @@ const Gigs = () => {
                 {/* Freelancer Info */}
                 <div className="flex items-center mb-4">
                   <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold mr-3">
-                    {gig.client_details?.first_name?.charAt(0) || 'F'}
+                    {gig.owner_details?.first_name?.charAt(0) || 'F'}
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-gray-900 line-clamp-1">
                       {gig.title}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      By {gig.client_details?.first_name} {gig.client_details?.last_name}
+                      By {gig.owner_details?.first_name} {gig.owner_details?.last_name}
                     </p>
                   </div>
                 </div>

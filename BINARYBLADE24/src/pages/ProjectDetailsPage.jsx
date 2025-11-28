@@ -72,20 +72,22 @@ const ProjectDetailsPage = ({ projectId }) => {
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Project Details</h2>
 
             <div className="flex items-center mb-4">
-              <img src={project.client_avatar || "https://via.placeholder.com/150"} alt={project.client_details?.username || project.client} className="w-12 h-12 rounded-full mr-4" />
+              <img src={project.thumbnail || "https://via.placeholder.com/150"} alt={project.owner_details?.username || "User"} className="w-12 h-12 rounded-full mr-4 object-cover" />
               <div>
                 <p className="font-bold text-gray-800">
-                  {project.client_details?.first_name
-                    ? `${project.client_details.first_name} ${project.client_details.last_name}`
-                    : (project.client_details?.username || project.client)}
+                  {project.owner_details?.first_name
+                    ? `${project.owner_details.first_name} ${project.owner_details.last_name}`
+                    : (project.owner_details?.username || "Unknown User")}
                 </p>
-                <p className="text-sm text-gray-600">Client</p>
+                <p className="text-sm text-gray-600">
+                  {project.project_type === 'GIG' ? 'Freelancer' : 'Client'}
+                </p>
                 {/* Revealed Contact Info */}
-                {project.client_details?.email && (
+                {project.owner_details?.email && (
                   <div className="mt-2 text-sm text-indigo-600 bg-indigo-50 p-2 rounded">
-                    <p><strong>Email:</strong> {project.client_details.email}</p>
-                    {project.client_details.phone_number && (
-                      <p><strong>Phone:</strong> {project.client_details.phone_number}</p>
+                    <p><strong>Email:</strong> {project.owner_details.email}</p>
+                    {project.owner_details.phone_number && (
+                      <p><strong>Phone:</strong> {project.owner_details.phone_number}</p>
                     )}
                   </div>
                 )}
@@ -137,10 +139,20 @@ const ProjectDetailsPage = ({ projectId }) => {
               </button>
             )}
 
-            {/* Freelancer: Submit Proposal button */}
-            {user && user.role === 'freelancer' && project.status === 'OPEN' && (
+            {/* Freelancer: Submit Proposal button (Only for Jobs) */}
+            {user && user.role === 'freelancer' && project.project_type === 'JOB' && project.status === 'OPEN' && (
               <button className="mt-6 w-full bg-blue-500 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-transform transform hover:scale-105">
                 Submit a Proposal
+              </button>
+            )}
+
+            {/* Client: Contact Freelancer (Only for Gigs) */}
+            {user && user.role === 'client' && project.project_type === 'GIG' && (
+              <button
+                onClick={() => alert(`Contacting ${project.owner_details?.first_name || 'Freelancer'}...`)}
+                className="mt-6 w-full bg-indigo-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-indigo-700 transition-transform transform hover:scale-105"
+              >
+                Contact Freelancer
               </button>
             )}
           </div>
