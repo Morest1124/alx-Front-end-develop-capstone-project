@@ -153,11 +153,12 @@ const AuthProvider = ({ children }) => {
       role: newRole,
     });
     // Navigate to the appropriate dashboard
-    navigate(
-      newRole.toLowerCase() === "client"
-        ? "/client/dashboard"
-        : "/freelancer/dashboard"
-    );
+    const newPath = newRole.toLowerCase() === "client"
+      ? "/client/dashboard"
+      : "/freelancer/dashboard";
+
+    // Force page reload to refresh entire UI for the new role
+    window.location.href = newPath;
   };
 
   return (

@@ -82,18 +82,25 @@ const ClientNavLinks = () => {
   return (
     <>
       <Link
-        key="/client/projects"
-        to="/client/projects"
-        className={`${isActive("/client/projects")} text-sm md:text-base`}
+        key="/client/dashboard"
+        to="/client/dashboard"
+        className={`${isActive("/client/dashboard")} text-sm md:text-base`}
       >
         <LayoutDashboard size={16} className="inline mr-1" /> My Dashboard
       </Link>
       <Link
         key="/client/talent"
         to="/client/talent"
-        className={`${isActive("/talent")} text-sm md:text-base`}
+        className={`${isActive("/client/talent")} text-sm md:text-base`}
       >
         <Search size={16} className="inline mr-1" /> Find Talent
+      </Link>
+      <Link
+        key="/client/projects"
+        to="/client/projects"
+        className={`${isActive("/client/projects")} text-sm md:text-base`}
+      >
+        <Folder size={16} className="inline mr-1" /> My Projects
       </Link>
       <Link
         key="/client/messages"
@@ -164,7 +171,7 @@ const Navbar = () => {
 
   // Determine which links to show based on role
   const NavLinksComponent = user.isLoggedIn
-    ? user.role === "client"
+    ? user.role?.toUpperCase() === "CLIENT"
       ? ClientNavLinks
       : FreelancerNavLinks
     : PublicNavLinks;
@@ -280,7 +287,7 @@ const Navbar = () => {
                   className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 w-full text-left rounded-lg"
                 >
                   <User size={16} className="mr-2" /> Switch to{" "}
-                  {user.role === "client" ? "Freelancer" : "Client"}
+                  {user.role?.toUpperCase() === "CLIENT" ? "Freelancer" : "Client"}
                 </button>
                 <button
                   onClick={handleLogout}

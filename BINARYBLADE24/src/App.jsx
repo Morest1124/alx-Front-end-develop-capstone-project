@@ -93,6 +93,14 @@ const AppContent = () => {
         if (currentPath.startsWith("/client/projects"))
           return <ClientProjects />;
         if (currentPath.startsWith("/client/talent")) return <Talent />;
+        if (currentPath.startsWith("/client/proposals"))
+          return <Proposals />;
+        if (currentPath.startsWith("/client/earnings"))
+          return (
+            <PageWrapper title="Earnings">
+              <Earnings />
+            </PageWrapper>
+          );
         // Note: Clients CANNOT post jobs in Pure Fiverr Model
         // They browse and purchase gigs created by freelancers
       }
