@@ -9,6 +9,7 @@ export const AuthContext = createContext();
 const LoggedOutUserState = {
   isLoggedIn: false,
   role: null,
+  availableRoles: [],
   name: "",
   userId: null,
 };
@@ -85,6 +86,7 @@ const AuthProvider = ({ children }) => {
       setUser({
         isLoggedIn: true,
         role: userRole,
+        availableRoles: response.roles || [userRole],
         name: userName,
         userId: userData.id,
       });
@@ -115,6 +117,7 @@ const AuthProvider = ({ children }) => {
       setUser({
         isLoggedIn: true,
         role: role.toUpperCase(),
+        availableRoles: response.roles || [role.toUpperCase()],
         name:
           userData.username || userData.first_name + " " + userData.last_name,
         userId: response.id || response.user?.id,
@@ -146,6 +149,12 @@ const AuthProvider = ({ children }) => {
   };
 
   const switchRole = () => {
+    // Only allow switching if user has multiple roles
+    if (!user.availableRoles || user.availableRoles.length < 2) {
+      console.warn('User does not have multiple roles');
+      return;
+    }
+
     const newRole =
       user.role.toUpperCase() === "CLIENT" ? "FREELANCER" : "CLIENT";
     setUser({
