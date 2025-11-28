@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { getProjects, createJob } from '../api';
+import { getProjects, createProject } from '../api';
 
 const GigsContext = createContext();
 
@@ -24,7 +24,7 @@ const GigsProvider = ({ children }) => {
 
   const addGig = async (gig) => {
     try {
-      const newGig = await createJob(gig);
+      const newGig = await createProject(gig);
       await fetchGigs(); // Refresh gigs after creating new one
       return newGig;
     } catch (error) {

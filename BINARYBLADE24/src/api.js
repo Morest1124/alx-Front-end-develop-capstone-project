@@ -91,9 +91,9 @@ export const getGig = (gigId) => {
   return apiClient.get(`/projects/${gigId}/`);
 };
 
-export const createJob = async (jobDetails) => {
+export const createProject = async (projectData) => {
   try {
-    const response = await apiClient.post("/projects/", jobDetails);
+    const response = await apiClient.post("/projects/", projectData);
     if (!response) {
       throw new Error("No response received from server");
     }
@@ -178,26 +178,7 @@ export const updateUserProfilePicture = (userId, file) => {
   });
 };
 
-export const createGig = async (gigData) => {
-  try {
-    const response = await apiClient.post("/projects/gigs/", gigData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    if (!response) {
-      throw new Error("No response received from server");
-    }
-    return response;
-  } catch (error) {
-    console.error("Error creating gig:", error);
-    throw new Error(
-      error.response?.data?.message ||
-      error.response?.data?.detail ||
-      "Failed to create gig. Please try again."
-    );
-  }
-};
+
 
 // Get all categories with subcategories
 export const getCategories = () => {

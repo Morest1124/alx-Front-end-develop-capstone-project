@@ -13,7 +13,7 @@
 import React, { useState, useContext } from 'react';
 import { useRouter } from '../contexts/Routers';
 import { AuthContext } from '../contexts/AuthContext';
-import { createJob } from '../api';
+import { createProject } from '../api';
 import CategorySelector from '../components/CategorySelector';
 
 const CreateProject = () => {
@@ -93,7 +93,7 @@ const CreateProject = () => {
             }
 
             // Backend automatically sets project_type based on user role
-            await createJob(formData);
+            await createProject(formData);
 
             alert(successMessage);
             navigate(redirectPath);

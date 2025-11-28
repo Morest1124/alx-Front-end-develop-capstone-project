@@ -54,21 +54,19 @@ const FreelancerDashboard = () => {
       <div className="flex border-b mb-6">
         <button
           onClick={() => setActiveTab("dashboard")}
-          className={`py-2 px-4 text-lg ${
-            activeTab === "dashboard"
+          className={`py-2 px-4 text-lg ${activeTab === "dashboard"
               ? "border-b-2 border-blue-500 text-blue-600"
               : "text-gray-500"
-          }`}
+            }`}
         >
           Dashboard
         </button>
         <Link
           to="/freelancer/create-gig"
-          className={`py-2 px-4 text-lg ${
-            activeTab === "create-gig"
+          className={`py-2 px-4 text-lg ${activeTab === "create-gig"
               ? "border-b-2 border-blue-500 text-blue-600"
               : "text-gray-500"
-          }`}
+            }`}
         >
           Create Gig
         </Link>
@@ -88,7 +86,7 @@ const FreelancerDashboard = () => {
             />
             <DashboardCard
               title="Estimated Monthly Tax"
-              value={formatToZAR(dashboardData.estimated_tax, "ZAR")}
+              value={formatToZAR(dashboardData.estimated_monthly_tax, "ZAR")}
               icon="CreditCard"
               to="/freelancer/tax"
               bgColor="bg-red-50"
