@@ -1,22 +1,12 @@
-/**
- * CreateProject Component - Hybrid Marketplace with 3-Level Category Selection
- * 
- * Adapts based on user role:
- * - Freelancers: Create service offerings (Gigs) - Fiverr-style
- * - Clients: Post work requirements (Jobs) - Upwork-style
- * 
- * Features:
- * - 3-Level hierarchical category selection using CategorySelector
- * - Backend automatically sets project_type based on user role
- */
-
 import React, { useState, useContext } from 'react';
 import { useRouter } from '../contexts/Routers';
 import { AuthContext } from '../contexts/AuthContext';
-import { createProject } from '../api';
 import CategorySelector from '../components/CategorySelector';
+import MilestoneManager from '../components/MilestoneManager';
+import { createProject, createMilestone } from '../api';
 
 const CreateProject = () => {
+    // 1. Context and Hooks
     const { user } = useContext(AuthContext);
     const { navigate } = useRouter();
 
@@ -24,7 +14,7 @@ const CreateProject = () => {
     const isFreelancer = user?.role === 'freelancer';
     const isClient = user?.role === 'client';
 
-    // Dynamic labels based on role
+    // 2. Dynamic Labels (Based on role)
     const pageTitle = isFreelancer ? 'Create a Gig' : 'Post a Job';
     const titleLabel = isFreelancer ? 'Gig Title' : 'Job Title';
     const descriptionLabel = isFreelancer ? 'What service do you offer?' : 'Job Description';
@@ -33,46 +23,59 @@ const CreateProject = () => {
     const successMessage = isFreelancer ? 'Gig created successfully!' : 'Job posted successfully!';
     const redirectPath = isFreelancer ? '/freelancer/gigs' : '/client/dashboard';
 
+    // 3. State Management
     const [selectedPath, setSelectedPath] = useState('');
     const [projectDetails, setProjectDetails] = useState({
         title: '',
         description: '',
         budget: '',
-        price: '', // Same as budget
-        category: '', // Will store subcategory ID
+        price: '', // Same as budget for simplicity, sent to API
+        category: '', // Stores subcategory ID
         thumbnail: null,
     });
+    // State for managing Milestones
+    const [milestones, setMilestones] = useState([]);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 
-    // Handle category selection from CategorySelector
+    // 4. Handlers
+
+    // Handle 3-Level category selection
     const handleCategorySelect = (mainName, subName, subId) => {
         const fullPath = `${mainName} / ${subName}`;
         setSelectedPath(fullPath);
+        // Store the final category ID (subId) in projectDetails.category
         setProjectDetails(prev => ({ ...prev, category: subId }));
     };
 
+    // Handle form field changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setProjectDetails((prev) => ({
             ...prev,
             [name]: value,
-            // Keep price in sync with budget
+            // Keep price in sync with budget for the API payload
             ...(name === 'budget' ? { price: value } : {})
         }));
     };
 
+    // Handle file selection
     const handleFileChange = (e) => {
         setProjectDetails((prev) => ({ ...prev, thumbnail: e.target.files[0] }));
     };
 
+    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         // Validation
         if (!projectDetails.category) {
-            setError('Please select a category');
+            setError('Please select a category.');
+            return;
+        }
+        if (!projectDetails.title || !projectDetails.description || !projectDetails.budget) {
+            setError('Please fill out all required fields.');
             return;
         }
 
@@ -80,21 +83,39 @@ const CreateProject = () => {
         setError('');
 
         try {
-            // Create FormData for file upload support
+            // Prepare FormData for API call (necessary for file upload)
             const formData = new FormData();
             formData.append('title', projectDetails.title);
             formData.append('description', projectDetails.description);
+            // Use the numeric budget value
             formData.append('budget', projectDetails.budget);
-            formData.append('price', projectDetails.budget); // Same as budget
+            formData.append('price', projectDetails.budget); 
             formData.append('category', projectDetails.category); // Subcategory ID
 
             if (projectDetails.thumbnail) {
                 formData.append('thumbnail', projectDetails.thumbnail);
             }
 
-            // Backend automatically sets project_type based on user role
-            await createProject(formData);
+            // 1. Create the main Project/Gig/Job
+            // Backend will automatically set project_type based on user role
+            const newProject = await createProject(formData);
 
+            // 2. Create milestones if any were added
+            if (milestones.length > 0 && newProject.id) {
+                const milestonePromises = milestones.map(milestone => {
+                    return createMilestone({
+                        project: newProject.id, // Link to the newly created project
+                        title: milestone.title,
+                        description: milestone.description,
+                        amount: milestone.amount,
+                        due_date: milestone.due_date,
+                        status: 'PENDING'
+                    });
+                });
+                await Promise.all(milestonePromises);
+            }
+
+            // Success feedback and redirection
             alert(successMessage);
             navigate(redirectPath);
         } catch (error) {
@@ -105,6 +126,7 @@ const CreateProject = () => {
         }
     };
 
+    // 5. Render
     return (
         <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto">
@@ -124,6 +146,7 @@ const CreateProject = () => {
                         )}
 
                         <form onSubmit={handleSubmit} className="space-y-6">
+                            {/* Title Field */}
                             <div>
                                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
                                     {titleLabel} *
@@ -140,6 +163,7 @@ const CreateProject = () => {
                                 />
                             </div>
 
+                            {/* Description Field */}
                             <div>
                                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
                                     {descriptionLabel} *
@@ -158,7 +182,7 @@ const CreateProject = () => {
                                 />
                             </div>
 
-                            {/* 3-Level Category Selection */}
+                            {/* 3-Level Category Selection Component */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Category *
@@ -170,6 +194,7 @@ const CreateProject = () => {
                                 />
                             </div>
 
+                            {/* Budget/Price Field */}
                             <div>
                                 <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">
                                     {budgetLabel} *
@@ -191,11 +216,12 @@ const CreateProject = () => {
                                 </div>
                                 {isFreelancer && (
                                     <p className="mt-1 text-sm text-gray-500">
-                                        This is the fixed price clients will pay for your service
+                                        This is the fixed price clients will pay for your service.
                                     </p>
                                 )}
                             </div>
 
+                            {/* Thumbnail Upload */}
                             <div>
                                 <label htmlFor="thumbnail" className="block text-sm font-medium text-gray-700 mb-1">
                                     {isFreelancer ? 'Gig Image (Optional)' : 'Project Image (Optional)'}
@@ -210,6 +236,17 @@ const CreateProject = () => {
                                 />
                             </div>
 
+                            {/* Milestone Manager Component */}
+                            <div className="border-t pt-6">
+                                <h3 className="text-xl font-semibold text-gray-900 mb-3">Project Milestones (Optional)</h3>
+                                <MilestoneManager
+                                    milestones={milestones}
+                                    setMilestones={setMilestones}
+                                    totalBudget={parseFloat(projectDetails.budget) || 0}
+                                />
+                            </div>
+
+                            {/* Submit Button */}
                             <div className="flex items-center justify-between pt-4">
                                 <button
                                     type="button"
@@ -230,7 +267,7 @@ const CreateProject = () => {
                     </div>
                 </div>
 
-                {/* Display selected category */}
+                {/* Display selected category (for debugging/visual confirmation) */}
                 {selectedPath && (
                     <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
                         <h3 className="font-semibold text-green-900 mb-2">✓ Category Selected:</h3>
@@ -246,17 +283,17 @@ const CreateProject = () => {
                     <ul className="text-sm text-blue-800 space-y-1">
                         {isFreelancer ? (
                             <>
-                                <li>• Choose the most specific category for better visibility</li>
-                                <li>• Be specific about what you deliver</li>
-                                <li>• Price competitively to attract clients</li>
-                                <li>• Use a clear, eye-catching image</li>
+                                <li>• Choose the most specific category for better visibility.</li>
+                                <li>• Be specific about what you deliver.</li>
+                                <li>• Price competitively to attract clients.</li>
+                                <li>• Use a clear, eye-catching image.</li>
                             </>
                         ) : (
                             <>
-                                <li>• Select the right category to reach qualified freelancers</li>
-                                <li>• Clearly describe your requirements</li>
-                                <li>• Set a realistic budget</li>
-                                <li>• Include any specific skills needed</li>
+                                <li>• Select the right category to reach qualified freelancers.</li>
+                                <li>• Clearly describe your requirements.</li>
+                                <li>• Set a realistic budget.</li>
+                                <li>• Include any specific skills needed.</li>
                             </>
                         )}
                     </ul>

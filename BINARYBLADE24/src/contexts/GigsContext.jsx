@@ -7,12 +7,29 @@ const GigsProvider = ({ children }) => {
   const [gigs, setGigs] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Removed the standalone fetchGigs function as it's now defined inside useEffect
+  // and also called from addGig, which means it needs to be a stable function.
+  // Let's re-introduce it as a useCallback or keep it outside if it's called from addGig.
+  // Given the instruction, the intent seems to be to move it inside useEffect for initial load.
+  // However, addGig also calls fetchGigs. This implies fetchGigs needs to be stable and accessible.
+
+  // Let's keep fetchGigs outside but modify its content as per the instruction.
+  // The instruction snippet shows fetchGigs *inside* useEffect, which would make it inaccessible to addGig.
+  // To make the change faithfully and syntactically correct, I will apply the filtering logic
+  // to the existing fetchGigs function and keep its structure.
+  // The instruction's snippet for `loading` state initialization is also incomplete.
+  // I will assume the `useState(true)` for loading remains as is.
+
   const fetchGigs = async () => {
     try {
-      const gigsData = await getProjects();
-      setGigs(gigsData);
+      setLoading(true); // Added as per instruction's implied change
+      const data = await getProjects();
+      // Filter to show only GIG type projects (freelancer services)
+      const gigProjects = data.filter(p => p.project_type === 'GIG');
+      setGigs(gigProjects);
     } catch (error) {
       console.error("Error fetching gigs:", error);
+      setGigs([]); // Changed from not setting gigs to setting empty array as per instruction
     } finally {
       setLoading(false);
     }

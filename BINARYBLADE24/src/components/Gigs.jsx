@@ -1,82 +1,114 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { GigsContext } from "../contexts/GigsContext";
-import { useRouter } from "../contexts/Routers"; // Import the router hook
+import { useRouter } from "../contexts/Routers";
 import { formatToZAR } from "../utils/currency";
 
 const Gigs = () => {
   const { user } = useContext(AuthContext);
   const { gigs, loading } = useContext(GigsContext);
-  const { navigate } = useRouter(); // Get the navigate function
+  const { navigate } = useRouter();
 
   const handleContact = (e, gig) => {
     e.stopPropagation();
-    alert(`Contacting ${gig.freelancer}`);
+    alert(`Contacting ${gig.client_details?.first_name || 'freelancer'}`);
   };
 
-  // This function will now navigate to the details page
   const handleViewGig = (gig) => {
-    navigate(`/gigs/${gig.id}`);
+    navigate(`/projects/${gig.id}`);
   };
 
   if (loading) {
-    return <div className="p-8 text-center">Loading gigs...</div>;
+    return (
+      <div className="p-8 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Loading gigs...</p>
+      </div>
+    );
+  }
+
+  if (gigs.length === 0) {
+    return (
+      <div className="p-8 text-center">
+        <h2 className="text-2xl font-bold text-gray-700 mb-2">No Gigs Available</h2>
+        <p className="text-gray-500">Check back soon for freelancer services!</p>
+      </div>
+    );
   }
 
   return (
     <div className="p-8">
-      <h2 className="text-3xl font-bold mb-6">Gigs</h2>
+      <h2 className="text-3xl font-bold mb-2">Find Talent - Browse Freelancer Services</h2>
+      <p className="text-gray-600 mb-6">
+        Browse {gigs.length} available {gigs.length === 1 ? 'service' : 'services'} from freelancers
+      </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {gigs.map((gig) => {
           return (
             <div
               key={gig.id}
-              className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform duration-200 hover:scale-105"
-              onClick={() => handleViewGig(gig)} // This remains the same
+              className="bg-white rounded-lg shadow-md hover:shadow-xl overflow-hidden cursor-pointer transition-all duration-200"
+              onClick={() => handleViewGig(gig)}
             >
-              <img
-                src={gig.image}
-                alt={gig.title}
-                className="w-full h-48 object-cover"
-              />
-              <div className="p-6">
-                <div className="flex items-center mb-4">
-                  <img
-                    src={gig.avatar}
-                    alt={gig.freelancer}
-                    className="w-10 h-10 rounded-full mr-4"
-                  />
-                  <h3 className="text-xl font-semibold">{gig.title}</h3>
+              {/* Thumbnail or Gradient Placeholder */}
+              {gig.thumbnail ? (
+                <img
+                  src={gig.thumbnail}
+                  alt={gig.title}
+                  className="w-full h-48 object-cover"
+                />
+              ) : (
+                <div className="w-full h-48 bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                  <span className="text-white text-4xl font-bold">
+                    {gig.title.charAt(0)}
+                  </span>
                 </div>
-                <p className="text-gray-600 mb-4">By {gig.freelancer}</p>
-                <div className="flex justify-between items-center">
-                  <p className="text-lg font-bold text-gray-800">
-                    {formatToZAR(gig.price)}
-                  </p>
-                  <div className="flex items-center">
-                    <svg
-                      className="w-5 h-5 text-yellow-500 mr-1"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                    </svg>
-                    <p className="text-gray-600">
-                      {gig.rating} ({gig.reviews} reviews)
+              )}
+
+              <div className="p-6">
+                {/* Freelancer Info */}
+                <div className="flex items-center mb-4">
+                  <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold mr-3">
+                    {gig.client_details?.first_name?.charAt(0) || 'F'}
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-gray-900 line-clamp-1">
+                      {gig.title}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      By {gig.client_details?.first_name} {gig.client_details?.last_name}
                     </p>
                   </div>
                 </div>
-                <div className="mt-4">
-                  {user.isLoggedIn && user.role === "client" && (
-                    <button
-                      onClick={(e) => handleContact(e, gig)}
-                      className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      Contact Freelancer
-                    </button>
-                  )}
+
+                {/* Description */}
+                <p className="text-gray-600 mb-4 line-clamp-2 text-sm">
+                  {gig.description}
+                </p>
+
+                {/* Price and Badge */}
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="text-xs text-gray-500">Starting at</p>
+                    <p className="text-lg font-bold text-green-600">
+                      {formatToZAR(gig.budget || gig.price)}
+                    </p>
+                  </div>
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                    GIG
+                  </span>
                 </div>
+
+                {/* Contact Button for Clients */}
+                {user.isLoggedIn && user.role === "client" && (
+                  <button
+                    onClick={(e) => handleContact(e, gig)}
+                    className="w-full mt-4 px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+                  >
+                    Contact Freelancer
+                  </button>
+                )}
               </div>
             </div>
           );

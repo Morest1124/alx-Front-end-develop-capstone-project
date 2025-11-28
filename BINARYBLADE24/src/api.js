@@ -180,7 +180,43 @@ export const updateUserProfilePicture = (userId, file) => {
 
 
 
+
+// ===== MESSAGING API =====
+
+// Get all conversations for the authenticated user
+export const getConversations = () => {
+  return apiClient.get("/messages/conversations/");
+};
+
+// Get messages for a specific conversation
+export const getMessages = (conversationId) => {
+  return apiClient.get(`/messages/messages/?conversation=${conversationId}`);
+};
+
+// Send a new message
+export const sendMessage = (conversationId, body) => {
+  return apiClient.post("/messages/messages/", {
+    conversation: conversationId,
+    body: body
+  });
+};
+
+// Mark conversation as read
+export const markConversationRead = (conversationId) => {
+  return apiClient.post(`/messages/conversations/${conversationId}/mark_read/`);
+};
+
+// Approve completed work and release payment
+export const approveProject = (projectId) => {
+  return apiClient.post(`/projects/${projectId}/approve_work/`);
+};
+
 // Get all categories with subcategories
 export const getCategories = () => {
   return apiClient.get("/projects/categories/");
+};
+
+// Create a milestone for a project
+export const createMilestone = (milestoneData) => {
+  return apiClient.post("/projects/milestones/", milestoneData);
 };

@@ -22,6 +22,7 @@ import GigDetailsPage from "./pages/GigDetailsPage";
 import ClientProjects from "./pages/ClientProjects";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
 import CreateProject from "./pages/CreateProject";
+import MyProjects from "./pages/MyProjects";
 import Earnings from "./pages/Earnings";
 import Settings from "./components/Settings";
 import Tax from "./pages/Tax";
@@ -102,7 +103,7 @@ const AppContent = () => {
           currentPath.startsWith("/freelancer/jobs")
         )
           return <FreelancerDashboard />;
-        if (currentPath.startsWith("/freelancer/projects")) return <Projects />;
+        if (currentPath.startsWith("/freelancer/projects")) return <MyProjects />;
         if (currentPath.startsWith("/freelancer/gigs")) return <GigsPage />;
         if (currentPath.startsWith("/freelancer/proposals"))
           return <Proposals />;

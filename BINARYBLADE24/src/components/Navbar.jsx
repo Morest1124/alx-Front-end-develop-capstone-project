@@ -103,13 +103,6 @@ const ClientNavLinks = () => {
         <Inbox size={16} className="inline mr-1" />
         Messages
       </Link>
-      <Link
-        key="/client/post-job"
-        to="/client/post-job"
-        className="bg-green-500 hover:bg-green-600 text-white shadow-md shadow-green-500/50 transform transition duration-300 hover:scale-[1.02] ml-4 text-sm md:text-base"
-      >
-        Post a Job
-      </Link>
     </>
   );
 };

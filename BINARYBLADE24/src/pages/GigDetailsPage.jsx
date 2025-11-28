@@ -45,7 +45,7 @@ const GigDetailsPage = ({ gigId }) => {
       <button onClick={() => navigate('/find-work')} className="mb-6 bg-gray-200 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-300 transition-colors">
         &larr; Back to Gigs
       </button>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Image Gallery */}
         <div className="lg:col-span-2">
@@ -77,7 +77,7 @@ const GigDetailsPage = ({ gigId }) => {
             <span>&#9733;</span>
             <span className="text-gray-600 ml-2">({gig.reviews} reviews)</span>
           </div>
-          
+
           <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
             <h2 className="text-2xl font-semibold text-gray-800 mb-3">Project Details</h2>
             <p className="text-gray-600 mb-4">

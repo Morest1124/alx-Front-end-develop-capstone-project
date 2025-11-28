@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from '../contexts/Routers';
 import { formatToZAR } from '../utils/currency';
+import { AuthContext } from '../contexts/AuthContext';
 
-import { getProjectDetails } from '../api';
+import { getProjectDetails, approveProject } from '../api';
 
 const fetchProjectById = async (id) => {
   try {
@@ -16,8 +17,10 @@ const fetchProjectById = async (id) => {
 
 const ProjectDetailsPage = ({ projectId }) => {
   const { navigate } = useRouter();
+  const { user } = useContext(AuthContext);
   const [project, setProject] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isApproving, setIsApproving] = useState(false);
 
   useEffect(() => {
     if (projectId) {
@@ -108,9 +111,38 @@ const ProjectDetailsPage = ({ projectId }) => {
               </div>
             </div>
 
-            <button className="mt-6 w-full bg-blue-500 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-transform transform hover:scale-105">
-              Submit a Proposal
-            </button>
+            {/* Client-only: Approve Work button for IN_PROGRESS projects */}
+            {user && user.role === 'client' && project.status === 'IN_PROGRESS' && (
+              <button
+                onClick={async () => {
+                  if (window.confirm('Approve this work and release payment to the freelancer?')) {
+                    setIsApproving(true);
+                    try {
+                      await approveProject(projectId);
+                      alert('Work approved! Payment released to freelancer.');
+                      // Refresh project data
+                      const updatedProject = await getProjectDetails(projectId);
+                      setProject(updatedProject);
+                    } catch (error) {
+                      alert(error.message || 'Failed to approve work.');
+                    } finally {
+                      setIsApproving(false);
+                    }
+                  }
+                }}
+                disabled={isApproving}
+                className="mt-6 w-full bg-green-500 text-white py-3 rounded-lg text-lg font-semibold hover:bg-green-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isApproving ? 'Approving...' : '✓ Approve Work & Release Payment'}
+              </button>
+            )}
+
+            {/* Freelancer: Submit Proposal button */}
+            {user && user.role === 'freelancer' && project.status === 'OPEN' && (
+              <button className="mt-6 w-full bg-blue-500 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-transform transform hover:scale-105">
+                Submit a Proposal
+              </button>
+            )}
           </div>
         </div>
       </div>
