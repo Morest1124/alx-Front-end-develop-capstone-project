@@ -5,47 +5,40 @@ import CategorySelector from '../components/CategorySelector';
 import MilestoneManager from '../components/MilestoneManager';
 import { createProject, createMilestone } from '../api';
 
+/**
+ * CreateProject Component - Gig Creation for Freelancers
+ * 
+ * Pure Fiverr Model:
+ * - ONLY Freelancers can create gigs (service offerings)
+ * - Accessed via /freelancer/create-gig route
+ * - Clients browse and purchase gigs, they don't post jobs
+ */
+
 const CreateProject = () => {
     // 1. Context and Hooks
     const { user } = useContext(AuthContext);
     const { navigate } = useRouter();
 
-    // Determine if user is a freelancer or client
-    const isFreelancer = user?.role === 'freelancer';
-    const isClient = user?.role === 'client';
-
-    // 2. Dynamic Labels (Based on role)
-    const pageTitle = isFreelancer ? 'Create a Gig' : 'Post a Job';
-    const titleLabel = isFreelancer ? 'Gig Title' : 'Job Title';
-    const descriptionLabel = isFreelancer ? 'What service do you offer?' : 'Job Description';
-    const budgetLabel = isFreelancer ? 'Price (R)' : 'Budget (R)';
-    const submitButtonText = isFreelancer ? 'Create Gig' : 'Post Job';
-    const successMessage = isFreelancer ? 'Gig created successfully!' : 'Job posted successfully!';
-    const redirectPath = isFreelancer ? '/freelancer/gigs' : '/client/dashboard';
-
-    // 3. State Management
+    // 2. State Management
     const [selectedPath, setSelectedPath] = useState('');
     const [projectDetails, setProjectDetails] = useState({
         title: '',
         description: '',
         budget: '',
-        price: '', // Same as budget for simplicity, sent to API
+        price: '', // Same as budget for simplicity
         category: '', // Stores subcategory ID
         thumbnail: null,
     });
-    // State for managing Milestones
     const [milestones, setMilestones] = useState([]);
-
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 
-    // 4. Handlers
+    // 3. Handlers
 
     // Handle 3-Level category selection
     const handleCategorySelect = (mainName, subName, subId) => {
         const fullPath = `${mainName} / ${subName}`;
         setSelectedPath(fullPath);
-        // Store the final category ID (subId) in projectDetails.category
         setProjectDetails(prev => ({ ...prev, category: subId }));
     };
 
@@ -55,7 +48,7 @@ const CreateProject = () => {
         setProjectDetails((prev) => ({
             ...prev,
             [name]: value,
-            // Keep price in sync with budget for the API payload
+            // Keep price in sync with budget
             ...(name === 'budget' ? { price: value } : {})
         }));
     };
@@ -83,28 +76,26 @@ const CreateProject = () => {
         setError('');
 
         try {
-            // Prepare FormData for API call (necessary for file upload)
+            // Prepare FormData for API call
             const formData = new FormData();
             formData.append('title', projectDetails.title);
             formData.append('description', projectDetails.description);
-            // Use the numeric budget value
             formData.append('budget', projectDetails.budget);
-            formData.append('price', projectDetails.budget); 
-            formData.append('category', projectDetails.category); // Subcategory ID
+            formData.append('price', projectDetails.budget);
+            formData.append('category', projectDetails.category);
 
             if (projectDetails.thumbnail) {
                 formData.append('thumbnail', projectDetails.thumbnail);
             }
 
-            // 1. Create the main Project/Gig/Job
-            // Backend will automatically set project_type based on user role
+            // 1. Create the gig
             const newProject = await createProject(formData);
 
             // 2. Create milestones if any were added
             if (milestones.length > 0 && newProject.id) {
                 const milestonePromises = milestones.map(milestone => {
                     return createMilestone({
-                        project: newProject.id, // Link to the newly created project
+                        project: newProject.id,
                         title: milestone.title,
                         description: milestone.description,
                         amount: milestone.amount,
@@ -116,27 +107,25 @@ const CreateProject = () => {
             }
 
             // Success feedback and redirection
-            alert(successMessage);
-            navigate(redirectPath);
+            alert('Gig created successfully!');
+            navigate('/freelancer/gigs');
         } catch (error) {
-            console.error('Failed to create project:', error);
-            setError(error.message || 'Failed to create. Please try again.');
+            console.error('Failed to create gig:', error);
+            setError(error.message || 'Failed to create gig. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    // 5. Render
+    // 4. Render
     return (
         <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto">
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden">
                     <div className="px-6 py-8">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-2">{pageTitle}</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 mb-2">Create a Gig</h2>
                         <p className="text-gray-600 mb-6">
-                            {isFreelancer
-                                ? 'Showcase your skills and attract clients'
-                                : 'Find the perfect freelancer for your project'}
+                            Showcase your skills and attract clients
                         </p>
 
                         {error && (
@@ -149,7 +138,7 @@ const CreateProject = () => {
                             {/* Title Field */}
                             <div>
                                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                                    {titleLabel} *
+                                    Gig Title *
                                 </label>
                                 <input
                                     type="text"
@@ -157,7 +146,7 @@ const CreateProject = () => {
                                     id="title"
                                     value={projectDetails.title}
                                     onChange={handleChange}
-                                    placeholder={isFreelancer ? "e.g., I will design a professional logo" : "e.g., Need a React developer"}
+                                    placeholder="e.g., I will design a professional logo"
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                                     required
                                 />
@@ -166,7 +155,7 @@ const CreateProject = () => {
                             {/* Description Field */}
                             <div>
                                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                                    {descriptionLabel} *
+                                    What service do you offer? *
                                 </label>
                                 <textarea
                                     name="description"
@@ -174,15 +163,13 @@ const CreateProject = () => {
                                     rows="6"
                                     value={projectDetails.description}
                                     onChange={handleChange}
-                                    placeholder={isFreelancer
-                                        ? "Describe what you offer, your experience, and what's included..."
-                                        : "Describe what you need, required skills, deliverables..."}
+                                    placeholder="Describe what you offer, your experience, and what's included..."
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
                                     required
                                 />
                             </div>
 
-                            {/* 3-Level Category Selection Component */}
+                            {/* 3-Level Category Selection */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
                                     Category *
@@ -190,14 +177,14 @@ const CreateProject = () => {
                                 <CategorySelector
                                     selectedPath={selectedPath}
                                     onSelect={handleCategorySelect}
-                                    label="Select Project Category..."
+                                    label="Select Gig Category..."
                                 />
                             </div>
 
-                            {/* Budget/Price Field */}
+                            {/* Price Field */}
                             <div>
                                 <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">
-                                    {budgetLabel} *
+                                    Price (R) *
                                 </label>
                                 <div className="relative">
                                     <span className="absolute left-3 top-2 text-gray-500">R</span>
@@ -214,17 +201,15 @@ const CreateProject = () => {
                                         required
                                     />
                                 </div>
-                                {isFreelancer && (
-                                    <p className="mt-1 text-sm text-gray-500">
-                                        This is the fixed price clients will pay for your service.
-                                    </p>
-                                )}
+                                <p className="mt-1 text-sm text-gray-500">
+                                    This is the fixed price clients will pay for your service.
+                                </p>
                             </div>
 
                             {/* Thumbnail Upload */}
                             <div>
                                 <label htmlFor="thumbnail" className="block text-sm font-medium text-gray-700 mb-1">
-                                    {isFreelancer ? 'Gig Image (Optional)' : 'Project Image (Optional)'}
+                                    Gig Image (Optional)
                                 </label>
                                 <input
                                     type="file"
@@ -236,9 +221,9 @@ const CreateProject = () => {
                                 />
                             </div>
 
-                            {/* Milestone Manager Component */}
+                            {/* Milestone Manager */}
                             <div className="border-t pt-6">
-                                <h3 className="text-xl font-semibold text-gray-900 mb-3">Project Milestones (Optional)</h3>
+                                <h3 className="text-xl font-semibold text-gray-900 mb-3">Gig Milestones (Optional)</h3>
                                 <MilestoneManager
                                     milestones={milestones}
                                     setMilestones={setMilestones}
@@ -246,7 +231,7 @@ const CreateProject = () => {
                                 />
                             </div>
 
-                            {/* Submit Button */}
+                            {/* Submit Buttons */}
                             <div className="flex items-center justify-between pt-4">
                                 <button
                                     type="button"
@@ -260,14 +245,14 @@ const CreateProject = () => {
                                     disabled={isSubmitting}
                                     className="px-8 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                 >
-                                    {isSubmitting ? 'Creating...' : submitButtonText}
+                                    {isSubmitting ? 'Creating...' : 'Create Gig'}
                                 </button>
                             </div>
                         </form>
                     </div>
                 </div>
 
-                {/* Display selected category (for debugging/visual confirmation) */}
+                {/* Display selected category */}
                 {selectedPath && (
                     <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
                         <h3 className="font-semibold text-green-900 mb-2">✓ Category Selected:</h3>
@@ -275,27 +260,16 @@ const CreateProject = () => {
                     </div>
                 )}
 
-                {/* Info section */}
+                {/* Tips section */}
                 <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
                     <h3 className="font-semibold text-blue-900 mb-2">
-                        {isFreelancer ? '💡 Tip for success:' : '💡 Tip for best results:'}
+                        💡 Tips for success:
                     </h3>
                     <ul className="text-sm text-blue-800 space-y-1">
-                        {isFreelancer ? (
-                            <>
-                                <li>• Choose the most specific category for better visibility.</li>
-                                <li>• Be specific about what you deliver.</li>
-                                <li>• Price competitively to attract clients.</li>
-                                <li>• Use a clear, eye-catching image.</li>
-                            </>
-                        ) : (
-                            <>
-                                <li>• Select the right category to reach qualified freelancers.</li>
-                                <li>• Clearly describe your requirements.</li>
-                                <li>• Set a realistic budget.</li>
-                                <li>• Include any specific skills needed.</li>
-                            </>
-                        )}
+                        <li>• Choose the most specific category for better visibility.</li>
+                        <li>• Be specific about what you deliver.</li>
+                        <li>• Price competitively to attract clients.</li>
+                        <li>• Use a clear, eye-catching image.</li>
                     </ul>
                 </div>
             </div>
