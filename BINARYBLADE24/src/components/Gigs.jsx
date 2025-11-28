@@ -101,7 +101,7 @@ const Gigs = () => {
                 </div>
 
                 {/* Contact Button for Clients */}
-                {user.isLoggedIn && user.role === "client" && (
+                {user.isLoggedIn && user.role?.toUpperCase() === "CLIENT" && (
                   <button
                     onClick={(e) => handleContact(e, gig)}
                     className="w-full mt-4 px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"

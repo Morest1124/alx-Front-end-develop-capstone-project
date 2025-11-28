@@ -114,7 +114,7 @@ const ProjectDetailsPage = ({ projectId }) => {
             </div>
 
             {/* Client-only: Approve Work button for IN_PROGRESS projects */}
-            {user && user.role === 'client' && project.status === 'IN_PROGRESS' && (
+            {user && user.role?.toUpperCase() === 'CLIENT' && project.status === 'IN_PROGRESS' && (
               <button
                 onClick={async () => {
                   if (window.confirm('Approve this work and release payment to the freelancer?')) {
@@ -140,14 +140,14 @@ const ProjectDetailsPage = ({ projectId }) => {
             )}
 
             {/* Freelancer: Submit Proposal button (Only for Jobs) */}
-            {user && user.role === 'freelancer' && project.project_type === 'JOB' && project.status === 'OPEN' && (
+            {user && user.role?.toUpperCase() === 'FREELANCER' && project.project_type === 'JOB' && project.status === 'OPEN' && (
               <button className="mt-6 w-full bg-blue-500 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-transform transform hover:scale-105">
                 Submit a Proposal
               </button>
             )}
 
             {/* Client: Contact Freelancer (Only for Gigs) */}
-            {user && user.role === 'client' && project.project_type === 'GIG' && (
+            {user && user.role?.toUpperCase() === 'CLIENT' && project.project_type === 'GIG' && (
               <button
                 onClick={() => alert(`Contacting ${project.owner_details?.first_name || 'Freelancer'}...`)}
                 className="mt-6 w-full bg-indigo-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-indigo-700 transition-transform transform hover:scale-105"
