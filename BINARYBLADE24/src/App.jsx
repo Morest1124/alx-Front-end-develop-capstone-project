@@ -21,12 +21,11 @@ import { ClientDashboardProvider } from "./contexts/ClientDashboardContext";
 import GigDetailsPage from "./pages/GigDetailsPage";
 import ClientProjects from "./pages/ClientProjects";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
-import PostJob from "./pages/PostJob";
+import CreateProject from "./pages/CreateProject";
 import Earnings from "./pages/Earnings";
 import Settings from "./components/Settings";
 import Tax from "./pages/Tax";
 import { fetchRates } from "./utils/currency";
-import CreateGig from "./pages/CreateGig";
 
 // The main App component which combines all parts
 const AppContent = () => {
@@ -94,11 +93,7 @@ const AppContent = () => {
           return <ClientProjects />;
         if (currentPath.startsWith("/client/talent")) return <Talent />;
         if (currentPath.startsWith("/client/post-job"))
-          return (
-            <PageWrapper title="Post New Job">
-              <PostJob />
-            </PageWrapper>
-          );
+          return <CreateProject />;
       }
 
       if (userRole === "freelancer") {
@@ -112,11 +107,7 @@ const AppContent = () => {
         if (currentPath.startsWith("/freelancer/proposals"))
           return <Proposals />;
         if (currentPath.startsWith("/freelancer/create-gig"))
-          return (
-            <PageWrapper title="Create New Gig">
-              <CreateGig />
-            </PageWrapper>
-          );
+          return <CreateProject />;
         if (currentPath.startsWith("/freelancer/earnings"))
           return (
             <PageWrapper title="Earnings">

@@ -198,3 +198,8 @@ export const createGig = async (gigData) => {
     );
   }
 };
+
+// Get all categories with subcategories
+export const getCategories = () => {
+  return apiClient.get("/projects/categories/");
+};
