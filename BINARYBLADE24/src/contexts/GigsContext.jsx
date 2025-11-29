@@ -22,14 +22,20 @@ const GigsProvider = ({ children }) => {
 
   const fetchGigs = async () => {
     try {
-      setLoading(true); // Added as per instruction's implied change
+      setLoading(true);
       const data = await getProjects();
+      console.log('All projects fetched:', data); // Debug log
       // Filter to show only GIG type projects (freelancer services)
-      const gigProjects = data.filter(p => p.project_type === 'GIG');
+      // Make it case-insensitive and handle null/undefined
+      const gigProjects = data.filter(p => {
+        const projectType = p.project_type?.toUpperCase();
+        return projectType === 'GIG';
+      });
+      console.log('Filtered GIG projects:', gigProjects); // Debug log
       setGigs(gigProjects);
     } catch (error) {
       console.error("Error fetching gigs:", error);
-      setGigs([]); // Changed from not setting gigs to setting empty array as per instruction
+      setGigs([]);
     } finally {
       setLoading(false);
     }

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from '../contexts/Routers';
 import { formatToZAR } from '../utils/currency';
 import { AuthContext } from '../contexts/AuthContext';
+import { ShoppingCart, MessageCircle, Check } from 'lucide-react';
 
 import { getProjectDetails, approveProject } from '../api';
 
@@ -21,6 +22,8 @@ const ProjectDetailsPage = ({ projectId }) => {
   const [project, setProject] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isApproving, setIsApproving] = useState(false);
+  const [showPricingModal, setShowPricingModal] = useState(false);
+  const [selectedTier, setSelectedTier] = useState(null);
 
   useEffect(() => {
     if (projectId) {
@@ -146,18 +149,199 @@ const ProjectDetailsPage = ({ projectId }) => {
               </button>
             )}
 
-            {/* Client: Contact Freelancer (Only for Gigs) */}
+            {/* Client: Buy Gig & Contact Freelancer (Only for Gigs) */}
             {user && user.role?.toUpperCase() === 'CLIENT' && project.project_type === 'GIG' && (
-              <button
-                onClick={() => alert(`Contacting ${project.owner_details?.first_name || 'Freelancer'}...`)}
-                className="mt-6 w-full bg-indigo-600 text-white py-3 rounded-lg text-lg font-semibold hover:bg-indigo-700 transition-transform transform hover:scale-105"
-              >
-                Contact Freelancer
-              </button>
+              <div className="mt-6 space-y-3">
+                {/* Buy Gig Button - More Prominent */}
+                <button
+                  onClick={() => setShowPricingModal(true)}
+                  className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-lg text-xl font-bold hover:from-green-600 hover:to-green-700 transition-all transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2"
+                >
+                  <ShoppingCart size={24} />
+                  <span>Buy This Gig</span>
+                </button>
+
+                {/* Contact Freelancer Button - Secondary */}
+                <button
+                  onClick={() => navigate('/messages')} // Or open messaging interface
+                  className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2 border border-gray-300"
+                >
+                  <MessageCircle size={20} />
+                  <span>Contact Freelancer</span>
+                </button>
+              </div>
             )}
           </div>
         </div>
       </div>
+
+      {/* Pricing Tier Modal */}
+      {showPricingModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-4xl w-full p-8 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl font-bold text-gray-900">Select Your Package</h2>
+              <button
+                onClick={() => {
+                  setShowPricingModal(false);
+                  setSelectedTier(null);
+                }}
+                className="text-gray-500 hover:text-gray-700 text-2xl font-bold"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Simple Tier */}
+              <div
+                className={`border-2 rounded-xl p-6 cursor-pointer transition-all transform hover:scale-105 ${selectedTier === 'simple'
+                    ? 'border-green-500 bg-green-50 shadow-lg'
+                    : 'border-gray-200 hover:border-green-300'
+                  }`}
+                onClick={() => setSelectedTier('simple')}
+              >
+                <div className="text-center mb-4">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Simple</h3>
+                  <p className="text-gray-600 text-sm mb-4">Basic package for simple needs</p>
+                  <div className="text-4xl font-bold text-green-600 mb-2">
+                    {formatToZAR(project.budget)}
+                  </div>
+                  <p className="text-gray-500 text-sm">Base price</p>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>Standard delivery time</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>Basic features</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>1 revision included</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Medium Tier */}
+              <div
+                className={`border-2 rounded-xl p-6 cursor-pointer transition-all transform hover:scale-105 relative ${selectedTier === 'medium'
+                    ? 'border-green-500 bg-green-50 shadow-lg'
+                    : 'border-green-400 hover:border-green-500'
+                  }`}
+                onClick={() => setSelectedTier('medium')}
+              >
+                <div className="absolute top-0 right-0 bg-green-500 text-white px-3 py-1 rounded-bl-xl rounded-tr-xl text-xs font-semibold">
+                  POPULAR
+                </div>
+                <div className="text-center mb-4">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Medium</h3>
+                  <p className="text-gray-600 text-sm mb-4">Enhanced package with more features</p>
+                  <div className="text-4xl font-bold text-green-600 mb-2">
+                    {formatToZAR(project.budget * 1.5)}
+                  </div>
+                  <p className="text-gray-500 text-sm">+50% from base</p>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>Priority delivery</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>Advanced features</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>3 revisions included</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>Priority support</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* Expert Tier */}
+              <div
+                className={`border-2 rounded-xl p-6 cursor-pointer transition-all transform hover:scale-105 ${selectedTier === 'expert'
+                    ? 'border-green-500 bg-green-50 shadow-lg'
+                    : 'border-gray-200 hover:border-green-300'
+                  }`}
+                onClick={() => setSelectedTier('expert')}
+              >
+                <div className="text-center mb-4">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Expert</h3>
+                  <p className="text-gray-600 text-sm mb-4">Premium package with all features</p>
+                  <div className="text-4xl font-bold text-green-600 mb-2">
+                    {formatToZAR(project.budget * 2)}
+                  </div>
+                  <p className="text-gray-500 text-sm">+100% from base</p>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-700">
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>Express delivery</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>Premium features</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>Unlimited revisions</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>24/7 priority support</span>
+                  </li>
+                  <li className="flex items-start">
+                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <span>Source files included</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="mt-8 flex justify-end space-x-4">
+              <button
+                onClick={() => {
+                  setShowPricingModal(false);
+                  setSelectedTier(null);
+                }}
+                className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-semibold"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  if (!selectedTier) {
+                    alert('Please select a package tier');
+                    return;
+                  }
+                  const prices = {
+                    simple: project.budget,
+                    medium: project.budget * 1.5,
+                    expert: project.budget * 2
+                  };
+                  alert(`Proceeding to checkout with ${selectedTier.toUpperCase()} package for ${formatToZAR(prices[selectedTier])}`);
+                  // TODO: Navigate to checkout/payment page
+                  setShowPricingModal(false);
+                  setSelectedTier(null);
+                }}
+                disabled={!selectedTier}
+                className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+              >
+                <ShoppingCart size={20} />
+                <span>Continue to Checkout</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
