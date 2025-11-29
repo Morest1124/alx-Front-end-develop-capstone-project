@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from '../contexts/Routers';
 import { formatToZAR } from '../utils/currency';
 import { AuthContext } from '../contexts/AuthContext';
-import { ShoppingCart, MessageCircle, Check } from 'lucide-react';
+import { ShoppingCart, MessageCircle, Check, Star } from 'lucide-react';
 
 import { getProjectDetails, approveProject } from '../api';
 
@@ -99,20 +99,55 @@ const ProjectDetailsPage = ({ projectId }) => {
 
             <div className="space-y-3 text-gray-700">
               <div className="flex justify-between">
-                <span className="font-semibold">Budget:</span>
-                <span className="font-bold text-green-600 text-lg">{formatToZAR(project.budget)}</span>
+                <span className="font-medium">Budget:</span>
+                <span className="font-bold text-green-600">{formatToZAR(project.budget)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold">Deadline:</span>
-                <span>{new Date(project.deadline).toLocaleDateString()}</span>
+                <span className="font-medium">Deadline:</span>
+                <span>
+                  {project.delivery_days
+                    ? new Date(project.delivery_days).toLocaleDateString()
+                    : 'Flexible'}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="font-semibold">Status:</span>
-                <span className="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-800">{project.status}</span>
+                <span className="font-medium">Status:</span>
+                <span className={`font-bold ${project.status === 'OPEN' ? 'text-green-600' :
+                  project.status === 'IN_PROGRESS' ? 'text-blue-600' : 'text-gray-600'
+                  }`}>
+                  {project.status}
+                </span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-semibold">Rating:</span>
-                <span className="flex items-center">{project.rating} &#9733;</span>
+              {/* Gig Rating */}
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Gig Rating:</span>
+                <div className="flex items-center text-yellow-500">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${i < Math.round(project.average_rating || 0) ? 'fill-current' : 'text-gray-300 fill-none'}`}
+                    />
+                  ))}
+                  <span className="ml-1 text-sm text-gray-600">
+                    ({project.review_count || 0})
+                  </span>
+                </div>
+              </div>
+
+              {/* Freelancer Rating */}
+              <div className="flex justify-between items-center">
+                <span className="font-medium">Freelancer Rating:</span>
+                <div className="flex items-center text-blue-500">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-4 h-4 ${i < Math.round(project.owner_details?.avg_rating || 0) ? 'fill-current' : 'text-gray-300 fill-none'}`}
+                    />
+                  ))}
+                  <span className="ml-1 text-sm text-gray-600">
+                    ({project.owner_details?.avg_rating || 'New'})
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -196,8 +231,8 @@ const ProjectDetailsPage = ({ projectId }) => {
               {/* Simple Tier */}
               <div
                 className={`border-2 rounded-xl p-6 cursor-pointer transition-all transform hover:scale-105 ${selectedTier === 'simple'
-                    ? 'border-green-500 bg-green-50 shadow-lg'
-                    : 'border-gray-200 hover:border-green-300'
+                  ? 'border-green-500 bg-green-50 shadow-lg'
+                  : 'border-gray-200 hover:border-green-300'
                   }`}
                 onClick={() => setSelectedTier('simple')}
               >
@@ -228,8 +263,8 @@ const ProjectDetailsPage = ({ projectId }) => {
               {/* Medium Tier */}
               <div
                 className={`border-2 rounded-xl p-6 cursor-pointer transition-all transform hover:scale-105 relative ${selectedTier === 'medium'
-                    ? 'border-green-500 bg-green-50 shadow-lg'
-                    : 'border-green-400 hover:border-green-500'
+                  ? 'border-green-500 bg-green-50 shadow-lg'
+                  : 'border-green-400 hover:border-green-500'
                   }`}
                 onClick={() => setSelectedTier('medium')}
               >
@@ -267,8 +302,8 @@ const ProjectDetailsPage = ({ projectId }) => {
               {/* Expert Tier */}
               <div
                 className={`border-2 rounded-xl p-6 cursor-pointer transition-all transform hover:scale-105 ${selectedTier === 'expert'
-                    ? 'border-green-500 bg-green-50 shadow-lg'
-                    : 'border-gray-200 hover:border-green-300'
+                  ? 'border-green-500 bg-green-50 shadow-lg'
+                  : 'border-gray-200 hover:border-green-300'
                   }`}
                 onClick={() => setSelectedTier('expert')}
               >

@@ -3,6 +3,7 @@ import { AuthContext } from "../contexts/AuthContext";
 import { GigsContext } from "../contexts/GigsContext";
 import { useRouter } from "../contexts/Routers";
 import { formatToZAR } from "../utils/currency";
+import { Star } from "lucide-react";
 
 const Gigs = () => {
   const { user } = useContext(AuthContext);
@@ -76,9 +77,28 @@ const Gigs = () => {
                     <h3 className="text-xl font-semibold text-gray-900 line-clamp-1">
                       {gig.title}
                     </h3>
-                    <p className="text-sm text-gray-600">
-                      By {gig.owner_details?.first_name} {gig.owner_details?.last_name}
-                    </p>
+                    <div className="flex items-center">
+                      <p className="text-sm text-gray-600 mr-2">
+                        By {gig.owner_details?.first_name} {gig.owner_details?.last_name}
+                      </p>
+                      {/* Rating Display */}
+                      <div className="flex items-center text-yellow-500">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-4 h-4 ${i < Math.round(gig.average_rating || 0) ? 'fill-current' : 'text-gray-300 fill-none'}`}
+                          />
+                        ))}
+                        <span className="ml-1 text-sm font-medium text-gray-700">
+                          {gig.average_rating || 'New'}
+                        </span>
+                        {gig.review_count > 0 && (
+                          <span className="ml-1 text-xs text-gray-500">
+                            ({gig.review_count})
+                          </span>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
 
