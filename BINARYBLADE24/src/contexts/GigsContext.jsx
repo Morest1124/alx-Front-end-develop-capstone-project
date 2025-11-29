@@ -23,8 +23,21 @@ const GigsProvider = ({ children }) => {
   const fetchGigs = async () => {
     try {
       setLoading(true);
-      const data = await getProjects();
-      console.log('All projects fetched:', data); // Debug log
+      let data = await getProjects();
+      console.log('Raw API response:', data); // Debug log
+
+      // Handle potential pagination (results array)
+      if (!Array.isArray(data) && data.results && Array.isArray(data.results)) {
+        console.log('Detected paginated response, using .results');
+        data = data.results;
+      }
+
+      if (!Array.isArray(data)) {
+        console.error('API response is not an array:', data);
+        setGigs([]);
+        return;
+      }
+
       // Filter to show only GIG type projects (freelancer services)
       // Make it case-insensitive and handle null/undefined
       const gigProjects = data.filter(p => {
