@@ -236,3 +236,25 @@ export const getPublicProposals = () => {
 export const getOpenJobs = () => {
   return apiClient.get("/projects/");
 };
+
+// ===== ORDER API =====
+
+// Create a new order (purchase a gig)
+export const createOrder = (orderData) => {
+  return apiClient.post("/orders/orders/", orderData);
+};
+
+// Get all orders for the current user
+export const getOrders = () => {
+  return apiClient.get("/orders/orders/");
+};
+
+// Get specific order details
+export const getOrderDetails = (orderId) => {
+  return apiClient.get(`/orders/orders/${orderId}/`);
+};
+
+// Mark order as paid (simulate payment)
+export const markOrderPaid = (orderId) => {
+  return apiClient.post(`/orders/orders/${orderId}/mark_paid/`);
+};

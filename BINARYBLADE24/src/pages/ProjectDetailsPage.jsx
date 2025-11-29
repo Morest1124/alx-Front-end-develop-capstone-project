@@ -4,7 +4,7 @@ import { formatToZAR } from '../utils/currency';
 import { AuthContext } from '../contexts/AuthContext';
 import { ShoppingCart, MessageCircle, Check, Star } from 'lucide-react';
 
-import { getProjectDetails, approveProject } from '../api';
+import { getProjectDetails, approveProject, createOrder, markOrderPaid } from '../api';
 
 const fetchProjectById = async (id) => {
   try {
@@ -352,20 +352,60 @@ const ProjectDetailsPage = ({ projectId }) => {
                 Cancel
               </button>
               <button
-                onClick={() => {
+                onClick={async () => {
                   if (!selectedTier) {
                     alert('Please select a package tier');
                     return;
                   }
-                  const prices = {
-                    simple: project.budget,
-                    medium: project.budget * 1.5,
-                    expert: project.budget * 2
-                  };
-                  alert(`Proceeding to checkout with ${selectedTier.toUpperCase()} package for ${formatToZAR(prices[selectedTier])}`);
-                  // TODO: Navigate to checkout/payment page
-                  setShowPricingModal(false);
-                  setSelectedTier(null);
+
+                  try {
+                    setIsLoading(true);
+
+                    // Step 1: Create the order
+                    const orderData = {
+                      items_data: [{
+                        project_id: project.id,
+                        tier: selectedTier.toUpperCase()
+                      }]
+                    };
+
+                    console.log('Creating order...', orderData);
+                    const order = await createOrder(orderData);
+                    console.log('Order created:', order);
+
+                    // Step 2: Simulate payment (mark as paid)
+                    console.log('Processing payment...');
+                    await markOrderPaid(order.id);
+                    console.log('Payment successful!');
+
+                    // Step 3: Close modal and show success
+                    setShowPricingModal(false);
+                    setSelectedTier(null);
+
+                    const prices = {
+                      simple: project.budget,
+                      medium: project.budget * 1.5,
+                      expert: project.budget * 2
+                    };
+
+                    alert(
+                      `✅ Order Successful!\n\n` +
+                      `Order #: ${order.order_number}\n` +
+                      `Package: ${selectedTier.toUpperCase()}\n` +
+                      `Amount Paid: ${formatToZAR(prices[selectedTier])}\n\n` +
+                      `The freelancer has been notified and will start working on your project!`
+                    );
+
+                    // Refresh project data
+                    const updatedProject = await getProjectDetails(projectId);
+                    setProject(updatedProject);
+
+                  } catch (error) {
+                    console.error('Checkout failed:', error);
+                    alert(`❌ Payment Failed\n\n${error.message || 'Please try again later.'}`);
+                  } finally {
+                    setIsLoading(false);
+                  }
                 }}
                 disabled={!selectedTier}
                 className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"

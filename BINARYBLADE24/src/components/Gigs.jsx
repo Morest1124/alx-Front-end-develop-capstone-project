@@ -31,8 +31,10 @@ const Gigs = () => {
   if (gigs.length === 0) {
     return (
       <div className="p-8 text-center">
-        <h2 className="text-2xl font-bold text-gray-700 mb-2">No Gigs Available</h2>
-        <p className="text-gray-500">Check back soon for freelancer services!</p>
+        <h2 className="text-3xl font-bold mb-2">Find Talent - Browse Freelancer Services</h2>
+        <p className="text-gray-600 mb-6">
+          No available services from freelancers. Check back soon!
+        </p>
       </div>
     );
   }
