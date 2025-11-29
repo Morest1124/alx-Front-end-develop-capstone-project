@@ -124,8 +124,14 @@ export const getProposalsForProject = (projectId) => {
   return apiClient.get(`/projects/${projectId}/proposals/`);
 };
 
-export const updateProposalStatus = (proposalId, status) => {
-  return apiClient.put(`/proposals/${proposalId}/status/`, { status });
+// Submit a new proposal to a project
+export const submitProposal = (projectId, proposalData) => {
+  return apiClient.post(`/projects/${projectId}/proposals/`, proposalData);
+};
+
+// Update proposal status (accept/reject)
+export const updateProposalStatus = (projectId, proposalId, status) => {
+  return apiClient.patch(`/projects/${projectId}/proposals/${proposalId}/status/`, { status });
 };
 
 export const getUserProfile = (userId) => {
@@ -224,4 +230,9 @@ export const createMilestone = (milestoneData) => {
 // Get all public proposals (for Find Work page)
 export const getPublicProposals = () => {
   return apiClient.get("/proposals/public/");
+};
+
+// Get all open projects (jobs) that freelancers can submit proposals to
+export const getOpenJobs = () => {
+  return apiClient.get("/projects/");
 };

@@ -14,6 +14,7 @@ import LogIn from "./components/LogIn";
 import SignUp from "./components/SignUp";
 import FindWork from "./components/FindWork";
 import Proposals from "./components/Proposals";
+import ProposalsPage from "./pages/ProposalsPage";
 import Messages from "./components/Messages";
 import { GigsProvider } from "./contexts/GigsContext";
 import { EarningsProvider } from "./contexts/EarningsContext";
@@ -94,7 +95,7 @@ const AppContent = () => {
           return <ClientProjects />;
         if (currentPath.startsWith("/client/talent")) return <Talent />;
         if (currentPath.startsWith("/client/proposals"))
-          return <Proposals />;
+          return <ProposalsPage />;
         if (currentPath.startsWith("/client/earnings"))
           return (
             <PageWrapper title="Earnings">
@@ -114,7 +115,7 @@ const AppContent = () => {
         if (currentPath.startsWith("/freelancer/projects")) return <MyProjects />;
         if (currentPath.startsWith("/freelancer/gigs")) return <GigsPage />;
         if (currentPath.startsWith("/freelancer/proposals"))
-          return <Proposals />;
+          return <ProposalsPage />;
         if (currentPath.startsWith("/freelancer/create-gig"))
           return <CreateProject />;
         if (currentPath.startsWith("/freelancer/earnings"))
