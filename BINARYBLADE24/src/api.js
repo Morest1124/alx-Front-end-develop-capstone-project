@@ -258,3 +258,8 @@ export const getOrderDetails = (orderId) => {
 export const markOrderPaid = (orderId) => {
   return apiClient.post(`/orders/orders/${orderId}/mark_paid/`);
 };
+
+// Release payment from escrow to freelancer (client approves work)
+export const releasePayment = (orderId) => {
+  return apiClient.post(`/orders/orders/${orderId}/release_payment/`);
+};
