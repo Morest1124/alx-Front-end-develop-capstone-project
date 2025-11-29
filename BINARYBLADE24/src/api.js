@@ -263,3 +263,8 @@ export const markOrderPaid = (orderId) => {
 export const releasePayment = (orderId) => {
   return apiClient.post(`/orders/orders/${orderId}/release_payment/`);
 };
+
+// Cancel order and refund if applicable
+export const cancelOrder = (orderId) => {
+  return apiClient.post(`/orders/orders/${orderId}/cancel_order/`);
+};

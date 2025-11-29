@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getOrders, releasePayment } from '../api';
+import { getOrders, releasePayment, cancelOrder } from '../api';
 import { formatToZAR } from '../utils/currency';
 import { Package, Clock, CheckCircle, XCircle, DollarSign, User, Calendar } from 'lucide-react';
 
@@ -37,6 +37,24 @@ const MyOrders = () => {
         } catch (error) {
             console.error('Failed to release payment:', error);
             alert('❌ Failed to release payment. ' + (error.message || 'Please try again.'));
+        } finally {
+            setProcessingOrderId(null);
+        }
+    };
+
+    const handleCancelOrder = async (orderId) => {
+        if (!window.confirm('Are you sure you want to cancel this order? If paid, funds will be refunded.')) {
+            return;
+        }
+
+        try {
+            setProcessingOrderId(orderId);
+            await cancelOrder(orderId);
+            alert('✅ Order cancelled successfully!');
+            await fetchOrders(); // Refresh orders
+        } catch (error) {
+            console.error('Failed to cancel order:', error);
+            alert('❌ Failed to cancel order. ' + (error.message || 'Please try again.'));
         } finally {
             setProcessingOrderId(null);
         }
@@ -164,8 +182,8 @@ const MyOrders = () => {
                                                     </p>
                                                 </div>
                                                 <span className={`px-3 py-1 rounded-full text-sm font-semibold ${order.escrow.status === 'HELD' ? 'bg-yellow-100 text-yellow-800' :
-                                                        order.escrow.status === 'RELEASED' ? 'bg-green-100 text-green-800' :
-                                                            'bg-gray-100 text-gray-800'
+                                                    order.escrow.status === 'RELEASED' ? 'bg-green-100 text-green-800' :
+                                                        'bg-gray-100 text-gray-800'
                                                     }`}>
                                                     {order.escrow.status}
                                                 </span>
@@ -174,7 +192,7 @@ const MyOrders = () => {
                                     )}
 
                                     {/* Action Buttons */}
-                                    <div className="mt-6 flex space-x-3">
+                                    <div className="mt-6 flex flex-col sm:flex-row gap-3">
                                         {order.status === 'PAID' && order.escrow?.status === 'HELD' && (
                                             <button
                                                 onClick={() => handleReleasePayment(order.id)}
@@ -190,6 +208,23 @@ const MyOrders = () => {
                                                     <>
                                                         <CheckCircle size={20} />
                                                         <span>Approve Work & Release Payment</span>
+                                                    </>
+                                                )}
+                                            </button>
+                                        )}
+
+                                        {['PENDING', 'PAID', 'IN_PROGRESS'].includes(order.status) && (
+                                            <button
+                                                onClick={() => handleCancelOrder(order.id)}
+                                                disabled={processingOrderId === order.id}
+                                                className="px-6 py-3 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+                                            >
+                                                {processingOrderId === order.id ? (
+                                                    <span>Processing...</span>
+                                                ) : (
+                                                    <>
+                                                        <XCircle size={20} />
+                                                        <span>Cancel Order</span>
                                                     </>
                                                 )}
                                             </button>

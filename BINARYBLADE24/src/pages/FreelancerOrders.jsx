@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { getOrders } from '../api';
+import { getOrders, cancelOrder } from '../api';
 import { formatToZAR } from '../utils/currency';
-import { Package, Clock, CheckCircle, DollarSign, User, Calendar, TrendingUp } from 'lucide-react';
+import { Package, Clock, CheckCircle, DollarSign, User, Calendar, TrendingUp, XCircle } from 'lucide-react';
 
 const FreelancerOrders = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [processingOrderId, setProcessingOrderId] = useState(null);
     const [stats, setStats] = useState({
         totalEarnings: 0,
         pendingEarnings: 0,
@@ -40,6 +41,24 @@ const FreelancerOrders = () => {
             console.error('Failed to fetch orders:', error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleCancelOrder = async (orderId) => {
+        if (!window.confirm('Are you sure you want to cancel this order? If paid, funds will be refunded to the client.')) {
+            return;
+        }
+
+        try {
+            setProcessingOrderId(orderId);
+            await cancelOrder(orderId);
+            alert('✅ Order cancelled successfully!');
+            await fetchOrders(); // Refresh orders
+        } catch (error) {
+            console.error('Failed to cancel order:', error);
+            alert('❌ Failed to cancel order. ' + (error.message || 'Please try again.'));
+        } finally {
+            setProcessingOrderId(null);
         }
     };
 
@@ -204,8 +223,8 @@ const FreelancerOrders = () => {
                                                     </p>
                                                 </div>
                                                 <span className={`px-3 py-1 rounded-full text-sm font-semibold ${order.escrow.status === 'HELD' ? 'bg-yellow-100 text-yellow-800' :
-                                                        order.escrow.status === 'RELEASED' ? 'bg-green-100 text-green-800' :
-                                                            'bg-gray-100 text-gray-800'
+                                                    order.escrow.status === 'RELEASED' ? 'bg-green-100 text-green-800' :
+                                                        'bg-gray-100 text-gray-800'
                                                     }`}>
                                                     {order.escrow.status}
                                                 </span>
@@ -213,22 +232,51 @@ const FreelancerOrders = () => {
                                         </div>
                                     )}
 
-                                    {/* Status Messages */}
-                                    <div className="mt-6">
-                                        {order.status === 'PENDING' && (
-                                            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
-                                                ⏳ Waiting for client to complete payment
-                                            </div>
-                                        )}
-                                        {order.status === 'PAID' && (
-                                            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-800">
-                                                🚀 Payment received! Start working on this order. Client will release payment when satisfied.
-                                            </div>
-                                        )}
-                                        {order.status === 'COMPLETED' && (
-                                            <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
-                                                ✅ Order completed! Payment has been released to you.
-                                            </div>
+                                    {/* Status Messages & Actions */}
+                                    <div className="mt-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                                        <div className="flex-1 w-full">
+                                            {order.status === 'PENDING' && (
+                                                <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
+                                                    ⏳ Waiting for client to complete payment
+                                                </div>
+                                            )}
+                                            {order.status === 'PAID' && (
+                                                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-800">
+                                                    🚀 Payment received! Start working on this order. Client will release payment when satisfied.
+                                                </div>
+                                            )}
+                                            {order.status === 'COMPLETED' && (
+                                                <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
+                                                    ✅ Order completed! Payment has been released to you.
+                                                </div>
+                                            )}
+                                            {order.status === 'CANCELLED' && (
+                                                <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-800">
+                                                    ❌ Order cancelled.
+                                                </div>
+                                            )}
+                                            {order.status === 'REFUNDED' && (
+                                                <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg text-gray-800">
+                                                    💸 Order refunded to client.
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {['PENDING', 'PAID', 'IN_PROGRESS'].includes(order.status) && (
+                                            <button
+                                                onClick={() => handleCancelOrder(order.id)}
+                                                disabled={processingOrderId === order.id}
+                                                className="w-full sm:w-auto px-6 py-3 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 whitespace-nowrap"
+                                            >
+                                                {processingOrderId === order.id ? (
+                                                    <span>Processing...</span>
+                                                ) : (
+                                                    <>
+                                                        <XCircle size={20} />
+                                                        <span>Cancel Order</span>
+                                                    </>
+                                                )}
+                                            </button>
                                         )}
                                     </div>
                                 </div>
