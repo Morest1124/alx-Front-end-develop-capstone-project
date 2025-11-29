@@ -1,0 +1,244 @@
+import React, { useState, useEffect } from 'react';
+import { getOrders } from '../api';
+import { formatToZAR } from '../utils/currency';
+import { Package, Clock, CheckCircle, DollarSign, User, Calendar, TrendingUp } from 'lucide-react';
+
+const FreelancerOrders = () => {
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [stats, setStats] = useState({
+        totalEarnings: 0,
+        pendingEarnings: 0,
+        completedOrders: 0,
+        activeOrders: 0
+    });
+
+    useEffect(() => {
+        fetchOrders();
+    }, []);
+
+    const fetchOrders = async () => {
+        try {
+            setLoading(true);
+            const data = await getOrders();
+            const ordersList = Array.isArray(data) ? data : data.results || [];
+            setOrders(ordersList);
+
+            // Calculate stats
+            const completed = ordersList.filter(o => o.status === 'COMPLETED');
+            const active = ordersList.filter(o => o.status === 'PAID');
+            const totalEarnings = completed.reduce((sum, o) => sum + parseFloat(o.total_amount), 0);
+            const pendingEarnings = active.reduce((sum, o) => sum + parseFloat(o.total_amount), 0);
+
+            setStats({
+                totalEarnings,
+                pendingEarnings,
+                completedOrders: completed.length,
+                activeOrders: active.length
+            });
+        } catch (error) {
+            console.error('Failed to fetch orders:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getStatusBadge = (status) => {
+        const statusConfig = {
+            PENDING: { color: 'bg-yellow-100 text-yellow-800', icon: Clock, text: 'Awaiting Payment' },
+            PAID: { color: 'bg-blue-100 text-blue-800', icon: DollarSign, text: 'In Progress' },
+            COMPLETED: { color: 'bg-green-100 text-green-800', icon: CheckCircle, text: 'Completed & Paid' },
+        };
+
+        const config = statusConfig[status] || statusConfig.PENDING;
+        const Icon = config.icon;
+
+        return (
+            <span className={`px-3 py-1 rounded-full text-sm font-semibold flex items-center space-x-1 ${config.color}`}>
+                <Icon size={16} />
+                <span>{config.text}</span>
+            </span>
+        );
+    };
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-indigo-600 mx-auto mb-4"></div>
+                    <p className="text-gray-600">Loading your orders...</p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-50 py-8 px-4">
+            <div className="max-w-7xl mx-auto">
+                {/* Header */}
+                <div className="mb-8">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center">
+                        <Package className="w-10 h-10 mr-3 text-indigo-600" />
+                        My Orders
+                    </h1>
+                    <p className="text-gray-600">Track your gig orders and earnings</p>
+                </div>
+
+                {/* Stats Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg p-6 text-white">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-green-100">Total Earnings</span>
+                            <TrendingUp className="w-6 h-6 text-green-200" />
+                        </div>
+                        <div className="text-3xl font-bold">{formatToZAR(stats.totalEarnings)}</div>
+                        <div className="text-sm text-green-200 mt-1">From completed orders</div>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-gray-600">Pending</span>
+                            <DollarSign className="w-6 h-6 text-yellow-500" />
+                        </div>
+                        <div className="text-3xl font-bold text-yellow-600">{formatToZAR(stats.pendingEarnings)}</div>
+                        <div className="text-sm text-gray-500 mt-1">In escrow</div>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-gray-600">Completed</span>
+                            <CheckCircle className="w-6 h-6 text-green-500" />
+                        </div>
+                        <div className="text-3xl font-bold text-green-600">{stats.completedOrders}</div>
+                        <div className="text-sm text-gray-500 mt-1">Orders finished</div>
+                    </div>
+
+                    <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-gray-600">Active</span>
+                            <Clock className="w-6 h-6 text-blue-500" />
+                        </div>
+                        <div className="text-3xl font-bold text-blue-600">{stats.activeOrders}</div>
+                        <div className="text-sm text-gray-500 mt-1">In progress</div>
+                    </div>
+                </div>
+
+                {/* Orders List */}
+                {orders.length === 0 ? (
+                    <div className="bg-white rounded-xl shadow-lg p-12 text-center">
+                        <Package className="w-20 h-20 text-gray-300 mx-auto mb-4" />
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">No Orders Yet</h2>
+                        <p className="text-gray-600 mb-6">You haven't received any orders yet.</p>
+                        <a
+                            href="/freelancer/gigs"
+                            className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold"
+                        >
+                            View My Gigs
+                        </a>
+                    </div>
+                ) : (
+                    <div className="space-y-6">
+                        {orders.map((order) => (
+                            <div key={order.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
+                                {/* Order Header */}
+                                <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <h3 className="text-2xl font-bold mb-1">Order #{order.order_number}</h3>
+                                            <p className="text-indigo-100 flex items-center">
+                                                <Calendar size={16} className="mr-2" />
+                                                {new Date(order.created_at).toLocaleDateString('en-US', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                })}
+                                            </p>
+                                            <p className="text-indigo-100 flex items-center mt-1">
+                                                <User size={16} className="mr-2" />
+                                                Client: {order.client_details?.first_name} {order.client_details?.last_name}
+                                            </p>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="text-3xl font-bold">{formatToZAR(order.total_amount)}</div>
+                                            <div className="mt-2">{getStatusBadge(order.status)}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Order Items */}
+                                <div className="p-6">
+                                    <h4 className="text-lg font-semibold text-gray-900 mb-4">Order Items</h4>
+                                    <div className="space-y-4">
+                                        {order.items?.map((item) => (
+                                            <div key={item.id} className="border border-gray-200 rounded-lg p-4 hover:border-indigo-300 transition">
+                                                <div className="flex justify-between items-start">
+                                                    <div className="flex-1">
+                                                        <h5 className="font-semibold text-gray-900 mb-2">
+                                                            {item.project_details?.title || 'Gig'}
+                                                        </h5>
+                                                        <div className="flex items-center space-x-4 text-sm text-gray-600">
+                                                            <span className="px-2 py-1 bg-indigo-100 text-indigo-800 rounded font-semibold">
+                                                                {item.tier} Package
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-right ml-4">
+                                                        <div className="text-xl font-bold text-gray-900">{formatToZAR(item.final_price)}</div>
+                                                        <div className="text-sm text-gray-500">Base: {formatToZAR(item.base_price)}</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* Escrow Status */}
+                                    {order.escrow && (
+                                        <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                                            <div className="flex items-center justify-between">
+                                                <div>
+                                                    <h5 className="font-semibold text-blue-900 mb-1">💰 Payment Status</h5>
+                                                    <p className="text-sm text-blue-700">
+                                                        {order.escrow.status === 'HELD' && 'Funds are held in escrow until client approves your work'}
+                                                        {order.escrow.status === 'RELEASED' && 'Payment has been released to you!'}
+                                                        {order.escrow.status === 'REFUNDED' && 'Payment was refunded to client'}
+                                                    </p>
+                                                </div>
+                                                <span className={`px-3 py-1 rounded-full text-sm font-semibold ${order.escrow.status === 'HELD' ? 'bg-yellow-100 text-yellow-800' :
+                                                        order.escrow.status === 'RELEASED' ? 'bg-green-100 text-green-800' :
+                                                            'bg-gray-100 text-gray-800'
+                                                    }`}>
+                                                    {order.escrow.status}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Status Messages */}
+                                    <div className="mt-6">
+                                        {order.status === 'PENDING' && (
+                                            <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
+                                                ⏳ Waiting for client to complete payment
+                                            </div>
+                                        )}
+                                        {order.status === 'PAID' && (
+                                            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-800">
+                                                🚀 Payment received! Start working on this order. Client will release payment when satisfied.
+                                            </div>
+                                        )}
+                                        {order.status === 'COMPLETED' && (
+                                            <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
+                                                ✅ Order completed! Payment has been released to you.
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+export default FreelancerOrders;

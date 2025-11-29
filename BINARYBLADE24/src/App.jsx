@@ -29,6 +29,7 @@ import Settings from "./components/Settings";
 import Tax from "./pages/Tax";
 import PaymentSimulator from "./pages/PaymentSimulator";
 import MyOrders from "./pages/MyOrders";
+import FreelancerOrders from "./pages/FreelancerOrders";
 import { fetchRates } from "./utils/currency";
 
 // The main App component which combines all parts
@@ -126,12 +127,14 @@ const AppContent = () => {
               <Earnings />
             </PageWrapper>
           );
+        if (currentPath.startsWith("/freelancer/billing"))
+          return <FreelancerOrders />;
       }
 
       // Client-specific pages
       if (currentPath === "/client/dashboard") return <ClientDashboard />;
       if (currentPath === "/client/projects") return <ClientProjects />;
-      if (currentPath === "/client/orders") return <MyOrders />;
+      if (currentPath === "/client/billing") return <MyOrders />;
       if (currentPath === "/payment-simulator") return <PaymentSimulator />;
       if (
         currentPath.startsWith("/client/messages") ||
