@@ -27,6 +27,7 @@ import MyProjects from "./pages/MyProjects";
 import Earnings from "./pages/Earnings";
 import Settings from "./components/Settings";
 import Tax from "./pages/Tax";
+import PaymentSimulator from "./pages/PaymentSimulator";
 import { fetchRates } from "./utils/currency";
 
 // The main App component which combines all parts
@@ -129,6 +130,7 @@ const AppContent = () => {
       // Shared authenticated pages
       if (currentPath === "/settings") return <Settings />;
       if (currentPath === "/settings/tax") return <Tax />;
+      if (currentPath === "/payment-simulator") return <PaymentSimulator />;
       if (
         currentPath.startsWith("/client/messages") ||
         currentPath.startsWith("/freelancer/messages")

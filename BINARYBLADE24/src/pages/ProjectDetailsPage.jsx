@@ -361,7 +361,7 @@ const ProjectDetailsPage = ({ projectId }) => {
                   try {
                     setIsLoading(true);
 
-                    // Step 1: Create the order
+                    // Step 1: Create the order (PENDING status)
                     const orderData = {
                       items_data: [{
                         project_id: project.id,
@@ -373,45 +373,51 @@ const ProjectDetailsPage = ({ projectId }) => {
                     const order = await createOrder(orderData);
                     console.log('Order created:', order);
 
-                    // Step 2: Simulate payment (mark as paid)
-                    console.log('Processing payment...');
-                    await markOrderPaid(order.id);
-                    console.log('Payment successful!');
-
-                    // Step 3: Close modal and show success
+                    // Step 2: Close modal
                     setShowPricingModal(false);
                     setSelectedTier(null);
 
+                    // Step 3: Redirect to Payment Simulator for approval
                     const prices = {
                       simple: project.budget,
                       medium: project.budget * 1.5,
                       expert: project.budget * 2
                     };
 
-                    alert(
-                      `✅ Order Successful!\n\n` +
-                      `Order #: ${order.order_number}\n` +
-                      `Package: ${selectedTier.toUpperCase()}\n` +
-                      `Amount Paid: ${formatToZAR(prices[selectedTier])}\n\n` +
-                      `The freelancer has been notified and will start working on your project!`
-                    );
+                    // Store order info in sessionStorage for payment simulator
+                    sessionStorage.setItem('pendingOrder', JSON.stringify({
+                      orderId: order.id,
+                      orderNumber: order.order_number,
+                      amount: prices[selectedTier],
+                      tier: selectedTier.toUpperCase(),
+                      gigTitle: project.title,
+                      freelancer: project.owner_details?.first_name + ' ' + project.owner_details?.last_name
+                    }));
 
-                    // Refresh project data
-                    const updatedProject = await getProjectDetails(projectId);
-                    setProject(updatedProject);
+                    // Navigate to payment simulator
+                    navigate('/payment-simulator');
 
                   } catch (error) {
                     console.error('Checkout failed:', error);
-                    alert(`❌ Payment Failed\n\n${error.message || 'Please try again later.'}`);
+                    alert(`❌ Order Creation Failed\n\n${error.message || 'Please try again later.'}`);
                   } finally {
                     setIsLoading(false);
                   }
                 }}
-                disabled={!selectedTier}
+                disabled={!selectedTier || isLoading}
                 className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
-                <ShoppingCart size={20} />
-                <span>Continue to Checkout</span>
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart size={20} />
+                    <span>Continue to Checkout</span>
+                  </>
+                )}
               </button>
             </div>
           </div>
