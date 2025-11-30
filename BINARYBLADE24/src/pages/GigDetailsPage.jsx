@@ -31,7 +31,7 @@ const GigDetailsPage = ({ gigId }) => {
       <div className="text-center py-10">
         <h2 className="text-2xl font-bold mb-4">Gig Not Found</h2>
         <p className="text-gray-600 mb-6">We couldn't find the gig you were looking for.</p>
-        <button onClick={() => navigate('/find-work')} className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
+        <button onClick={() => navigate('/find-work')} className="btn-primary py-2 px-4">
           &larr; Back to Gigs
         </button>
       </div>
@@ -58,7 +58,7 @@ const GigDetailsPage = ({ gigId }) => {
                 key={index}
                 src={img}
                 alt={`Thumbnail ${index + 1}`}
-                className={`w-full h-24 object-cover rounded-md cursor-pointer border-2 ${mainImage === img ? 'border-blue-500' : 'border-transparent'}`}
+                className={`w-full h-24 object-cover rounded-md cursor-pointer border-2 ${mainImage === img ? 'border-[var(--color-accent)]' : 'border-transparent'}`}
                 onClick={() => setMainImage(img)}
               />
             ))}
@@ -83,10 +83,10 @@ const GigDetailsPage = ({ gigId }) => {
             <p className="text-gray-600 mb-4">
               This is a placeholder description. A detailed overview of the project requirements, deliverables, and scope would be displayed here.
             </p>
-            <div className="price text-3xl font-bold text-green-600">
+            <div className="price text-3xl font-bold text-[var(--color-success)]">
               {formatToZAR(gig.price)}
             </div>
-            <button className="mt-6 w-full bg-green-500 text-white py-3 px-6 rounded-lg text-lg font-semibold hover:bg-green-600 transition-transform transform hover:scale-105">
+            <button className="mt-6 w-full btn-success py-3 px-6 text-lg font-semibold transition-transform transform hover:scale-105">
               Accept Offer
             </button>
           </div>

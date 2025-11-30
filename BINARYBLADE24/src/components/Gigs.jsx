@@ -22,7 +22,7 @@ const Gigs = () => {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)] mx-auto"></div>
         <p className="mt-4 text-gray-600">Loading gigs...</p>
       </div>
     );
@@ -62,7 +62,7 @@ const Gigs = () => {
                   className="w-full h-48 object-cover"
                 />
               ) : (
-                <div className="w-full h-48 bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                <div className="w-full h-48 bg-gradient-to-br from-[var(--color-secondary)] to-[var(--color-secondary-dark)] flex items-center justify-center">
                   <span className="text-white text-4xl font-bold">
                     {gig.title.charAt(0)}
                   </span>
@@ -72,7 +72,7 @@ const Gigs = () => {
               <div className="p-6">
                 {/* Freelancer Info */}
                 <div className="flex items-center mb-4">
-                  <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold mr-3">
+                  <div className="w-10 h-10 rounded-full bg-[var(--color-secondary)] flex items-center justify-center text-white font-semibold mr-3">
                     {gig.owner_details?.first_name?.charAt(0) || 'F'}
                   </div>
                   <div>
@@ -113,11 +113,11 @@ const Gigs = () => {
                 <div className="flex justify-between items-center">
                   <div>
                     <p className="text-xs text-gray-500">Starting at</p>
-                    <p className="text-lg font-bold text-green-600">
+                    <p className="text-lg font-bold text-[var(--color-success)]">
                       {formatToZAR(gig.budget || gig.price)}
                     </p>
                   </div>
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                  <span className="badge-info">
                     GIG
                   </span>
                 </div>
@@ -126,7 +126,7 @@ const Gigs = () => {
                 {user.isLoggedIn && user.role?.toUpperCase() === "CLIENT" && (
                   <button
                     onClick={(e) => handleContact(e, gig)}
-                    className="w-full mt-4 px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+                    className="w-full mt-4 btn-primary"
                   >
                     Contact Freelancer
                   </button>

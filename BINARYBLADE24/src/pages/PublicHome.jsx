@@ -25,7 +25,7 @@ const PublicHome = () => {
               Post a job and find the perfect freelancer for your project.
               Access a global pool of verified experts.
             </p>
-            <button className="bg-blue-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center mx-auto">
+            <button className="bg-[var(--color-accent)] text-white font-bold py-3 px-6 rounded-lg hover:bg-[var(--color-accent-hover)] transition-colors flex items-center justify-center mx-auto">
               Find Talent
               <ArrowRight className="ml-2 h-5 w-5" />
             </button>
@@ -38,7 +38,7 @@ const PublicHome = () => {
               Find your next project and showcase your skills to top clients.
               The best opportunities await.
             </p>
-            <button className="bg-green-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center mx-auto">
+            <button className="bg-[var(--color-success)] text-white font-bold py-3 px-6 rounded-lg hover:bg-[var(--color-success-hover)] transition-colors flex items-center justify-center mx-auto">
               Find Work
               <ArrowRight className="ml-2 h-5 w-5" />
             </button>

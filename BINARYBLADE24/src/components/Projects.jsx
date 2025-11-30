@@ -64,7 +64,7 @@ const ProjectsPage = () => {
           <input
             type="text"
             placeholder="Search..."
-            className="px-4 py-2 border rounded-lg w-full"
+            className="px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -74,8 +74,8 @@ const ProjectsPage = () => {
           <button
             onClick={() => setActiveTab("active")}
             className={`py-2 px-4 text-lg ${activeTab === "active"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-500"
+              ? "border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]"
+              : "text-gray-500"
               }`}
           >
             Active Projects
@@ -83,8 +83,8 @@ const ProjectsPage = () => {
           <button
             onClick={() => setActiveTab("past")}
             className={`py-2 px-4 text-lg ${activeTab === "past"
-                ? "border-b-2 border-blue-500 text-blue-600"
-                : "text-gray-500"
+              ? "border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]"
+              : "text-gray-500"
               }`}
           >
             Past Projects
@@ -108,8 +108,8 @@ const ProjectsPage = () => {
                     />
                     <span
                       className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${project.status === "In Progress"
-                          ? "bg-yellow-500"
-                          : "bg-green-500"
+                        ? "bg-[var(--color-warning)]"
+                        : "bg-[var(--color-success)]"
                         }`}
                     >
                       {project.status}
@@ -130,7 +130,7 @@ const ProjectsPage = () => {
                       {project.title}
                     </h2>
                     <div className="flex justify-between items-center mt-4">
-                      <p className="text-lg font-bold text-green-600">
+                      <p className="text-lg font-bold text-[var(--color-success)]">
                         R{project.budget}
                       </p>
                       <div className="flex items-center">
@@ -146,13 +146,13 @@ const ProjectsPage = () => {
                           e.stopPropagation();
                           openModal(project);
                         }}
-                        className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                        className="btn-secondary px-4 py-2"
                       >
                         Send
                       </button>
                       <button
                         onClick={(e) => handleContact(e, project)}
-                        className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                        className="btn-primary px-4 py-2"
                       >
                         Contact Client
                       </button>
@@ -175,7 +175,7 @@ const ProjectsPage = () => {
             <p><strong>Country of Origin:</strong> {selectedProject.countryOfOrigin}</p>
             <button
               onClick={closeModal}
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
+              className="mt-4 btn-danger px-4 py-2"
             >
               Close
             </button>

@@ -63,7 +63,7 @@ const ProjectDetailsPage = ({ projectId }) => {
       <div className="text-center py-10">
         <h2 className="text-2xl font-bold mb-4">Project Not Found</h2>
         <p className="text-gray-600 mb-6">We couldn't find the project you were looking for.</p>
-        <button onClick={() => navigate('/')} className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition-colors">
+        <button onClick={() => navigate('/')} className="btn-primary py-2 px-4">
           &larr; Back to Home
         </button>
       </div>
@@ -106,7 +106,7 @@ const ProjectDetailsPage = ({ projectId }) => {
                 </p>
                 {/* Revealed Contact Info */}
                 {project.owner_details?.email && (
-                  <div className="mt-2 text-sm text-indigo-600 bg-indigo-50 p-2 rounded">
+                  <div className="mt-2 text-sm text-[var(--color-accent)] bg-[var(--color-accent-light)] p-2 rounded">
                     <p><strong>Email:</strong> {project.owner_details.email}</p>
                     {project.owner_details.phone_number && (
                       <p><strong>Phone:</strong> {project.owner_details.phone_number}</p>
@@ -119,7 +119,7 @@ const ProjectDetailsPage = ({ projectId }) => {
             <div className="space-y-3 text-gray-700">
               <div className="flex justify-between">
                 <span className="font-medium">Budget:</span>
-                <span className="font-bold text-green-600">{formatToZAR(project.budget)}</span>
+                <span className="font-bold text-[var(--color-success)]">{formatToZAR(project.budget)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-medium">Deadline:</span>
@@ -131,8 +131,8 @@ const ProjectDetailsPage = ({ projectId }) => {
               </div>
               <div className="flex justify-between">
                 <span className="font-medium">Status:</span>
-                <span className={`font-bold ${project.status === 'OPEN' ? 'text-green-600' :
-                  project.status === 'IN_PROGRESS' ? 'text-blue-600' : 'text-gray-600'
+                <span className={`font-bold ${project.status === 'OPEN' ? 'text-[var(--color-success)]' :
+                  project.status === 'IN_PROGRESS' ? 'text-[var(--color-info)]' : 'text-gray-600'
                   }`}>
                   {project.status}
                 </span>
@@ -156,7 +156,7 @@ const ProjectDetailsPage = ({ projectId }) => {
               {/* Freelancer Rating */}
               <div className="flex justify-between items-center">
                 <span className="font-medium">Freelancer Rating:</span>
-                <div className="flex items-center text-blue-500">
+                <div className="flex items-center text-[var(--color-info)]">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
@@ -190,7 +190,7 @@ const ProjectDetailsPage = ({ projectId }) => {
                   }
                 }}
                 disabled={isApproving}
-                className="mt-6 w-full bg-green-500 text-white py-3 rounded-lg text-lg font-semibold hover:bg-green-600 transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="mt-6 w-full btn-success py-3 text-lg font-semibold transition-transform transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isApproving ? 'Approving...' : '✓ Approve Work & Release Payment'}
               </button>
@@ -199,7 +199,7 @@ const ProjectDetailsPage = ({ projectId }) => {
             {/* Freelancer: Submit Proposal & Contact Client (Only for Jobs) */}
             {user && user.role?.toUpperCase() === 'FREELANCER' && project.project_type === 'JOB' && project.status === 'OPEN' && (
               <div className="mt-6 space-y-3">
-                <button className="w-full bg-blue-500 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-transform transform hover:scale-105">
+                <button className="w-full btn-primary py-3 text-lg font-semibold transition-transform transform hover:scale-105">
                   Submit a Proposal
                 </button>
 
@@ -219,7 +219,7 @@ const ProjectDetailsPage = ({ projectId }) => {
                 {/* Buy Gig Button - More Prominent */}
                 <button
                   onClick={() => setShowPricingModal(true)}
-                  className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 rounded-lg text-xl font-bold hover:from-green-600 hover:to-green-700 transition-all transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2"
+                  className="w-full bg-gradient-to-r from-[var(--color-success)] to-[var(--color-success-hover)] text-white py-4 rounded-lg text-xl font-bold hover:from-[var(--color-success-hover)] hover:to-[var(--color-success)] transition-all transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2"
                 >
                   <ShoppingCart size={24} />
                   <span>Buy This Gig</span>
@@ -260,30 +260,30 @@ const ProjectDetailsPage = ({ projectId }) => {
               {/* Simple Tier */}
               <div
                 className={`border-2 rounded-xl p-6 cursor-pointer transition-all transform hover:scale-105 ${selectedTier === 'simple'
-                  ? 'border-green-500 bg-green-50 shadow-lg'
-                  : 'border-gray-200 hover:border-green-300'
+                  ? 'border-[var(--color-success)] bg-[var(--color-success-light)] shadow-lg'
+                  : 'border-gray-200 hover:border-[var(--color-success-light)]'
                   }`}
                 onClick={() => setSelectedTier('simple')}
               >
                 <div className="text-center mb-4">
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Simple</h3>
                   <p className="text-gray-600 text-sm mb-4">Basic package for simple needs</p>
-                  <div className="text-4xl font-bold text-green-600 mb-2">
+                  <div className="text-4xl font-bold text-[var(--color-success)] mb-2">
                     {formatToZAR(project.budget)}
                   </div>
                   <p className="text-gray-500 text-sm">Base price</p>
                 </div>
                 <ul className="space-y-2 text-sm text-gray-700">
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>Standard delivery time</span>
                   </li>
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>Basic features</span>
                   </li>
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>1 revision included</span>
                   </li>
                 </ul>
@@ -292,37 +292,37 @@ const ProjectDetailsPage = ({ projectId }) => {
               {/* Medium Tier */}
               <div
                 className={`border-2 rounded-xl p-6 cursor-pointer transition-all transform hover:scale-105 relative ${selectedTier === 'medium'
-                  ? 'border-green-500 bg-green-50 shadow-lg'
-                  : 'border-green-400 hover:border-green-500'
+                  ? 'border-[var(--color-success)] bg-[var(--color-success-light)] shadow-lg'
+                  : 'border-[var(--color-success-light)] hover:border-[var(--color-success)]'
                   }`}
                 onClick={() => setSelectedTier('medium')}
               >
-                <div className="absolute top-0 right-0 bg-green-500 text-white px-3 py-1 rounded-bl-xl rounded-tr-xl text-xs font-semibold">
+                <div className="absolute top-0 right-0 bg-[var(--color-success)] text-white px-3 py-1 rounded-bl-xl rounded-tr-xl text-xs font-semibold">
                   POPULAR
                 </div>
                 <div className="text-center mb-4">
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Medium</h3>
                   <p className="text-gray-600 text-sm mb-4">Enhanced package with more features</p>
-                  <div className="text-4xl font-bold text-green-600 mb-2">
+                  <div className="text-4xl font-bold text-[var(--color-success)] mb-2">
                     {formatToZAR(project.budget * 1.5)}
                   </div>
                   <p className="text-gray-500 text-sm">+50% from base</p>
                 </div>
                 <ul className="space-y-2 text-sm text-gray-700">
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>Priority delivery</span>
                   </li>
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>Advanced features</span>
                   </li>
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>3 revisions included</span>
                   </li>
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>Priority support</span>
                   </li>
                 </ul>
@@ -331,38 +331,38 @@ const ProjectDetailsPage = ({ projectId }) => {
               {/* Expert Tier */}
               <div
                 className={`border-2 rounded-xl p-6 cursor-pointer transition-all transform hover:scale-105 ${selectedTier === 'expert'
-                  ? 'border-green-500 bg-green-50 shadow-lg'
-                  : 'border-gray-200 hover:border-green-300'
+                  ? 'border-[var(--color-success)] bg-[var(--color-success-light)] shadow-lg'
+                  : 'border-gray-200 hover:border-[var(--color-success-light)]'
                   }`}
                 onClick={() => setSelectedTier('expert')}
               >
                 <div className="text-center mb-4">
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Expert</h3>
                   <p className="text-gray-600 text-sm mb-4">Premium package with all features</p>
-                  <div className="text-4xl font-bold text-green-600 mb-2">
+                  <div className="text-4xl font-bold text-[var(--color-success)] mb-2">
                     {formatToZAR(project.budget * 2)}
                   </div>
                   <p className="text-gray-500 text-sm">+100% from base</p>
                 </div>
                 <ul className="space-y-2 text-sm text-gray-700">
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>Express delivery</span>
                   </li>
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>Premium features</span>
                   </li>
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>Unlimited revisions</span>
                   </li>
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>24/7 priority support</span>
                   </li>
                   <li className="flex items-start">
-                    <Check size={16} className="text-green-500 mr-2 mt-1 flex-shrink-0" />
+                    <Check size={16} className="text-[var(--color-success)] mr-2 mt-1 flex-shrink-0" />
                     <span>Source files included</span>
                   </li>
                 </ul>
@@ -434,7 +434,7 @@ const ProjectDetailsPage = ({ projectId }) => {
                   }
                 }}
                 disabled={!selectedTier || isLoading}
-                className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
+                className="px-8 py-3 btn-success rounded-lg transition font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
               >
                 {isLoading ? (
                   <>

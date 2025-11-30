@@ -129,7 +129,7 @@ const CreateProject = () => {
                         </p>
 
                         {error && (
-                            <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                            <div className="mb-6 bg-[var(--color-error-light)] border border-[var(--color-error)] text-[var(--color-error)] px-4 py-3 rounded">
                                 {error}
                             </div>
                         )}
@@ -147,7 +147,7 @@ const CreateProject = () => {
                                     value={projectDetails.title}
                                     onChange={handleChange}
                                     placeholder="e.g., I will design a professional logo"
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-colors"
                                     required
                                 />
                             </div>
@@ -164,7 +164,7 @@ const CreateProject = () => {
                                     value={projectDetails.description}
                                     onChange={handleChange}
                                     placeholder="Describe what you offer, your experience, and what's included..."
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-colors"
                                     required
                                 />
                             </div>
@@ -197,7 +197,7 @@ const CreateProject = () => {
                                         placeholder="0.00"
                                         min="0"
                                         step="0.01"
-                                        className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
+                                        className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-colors"
                                         required
                                     />
                                 </div>
@@ -217,7 +217,7 @@ const CreateProject = () => {
                                     id="thumbnail"
                                     accept="image/*"
                                     onChange={handleFileChange}
-                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-colors"
+                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-accent-light)] file:text-[var(--color-accent)] hover:file:bg-[var(--color-accent-hover)] hover:file:text-white transition-colors"
                                 />
                             </div>
 
@@ -243,7 +243,7 @@ const CreateProject = () => {
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="px-8 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                    className="px-8 py-2 btn-primary focus:ring-4 focus:ring-[var(--color-accent-light)] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                 >
                                     {isSubmitting ? 'Creating...' : 'Create Gig'}
                                 </button>
@@ -254,18 +254,18 @@ const CreateProject = () => {
 
                 {/* Display selected category */}
                 {selectedPath && (
-                    <div className="mt-6 bg-green-50 border border-green-200 rounded-lg p-4">
-                        <h3 className="font-semibold text-green-900 mb-2">✓ Category Selected:</h3>
-                        <p className="text-green-800">{selectedPath}</p>
+                    <div className="mt-6 bg-[var(--color-success-light)] border border-[var(--color-success)] rounded-lg p-4">
+                        <h3 className="font-semibold text-[var(--color-success)] mb-2">✓ Category Selected:</h3>
+                        <p className="text-[var(--color-success)]">{selectedPath}</p>
                     </div>
                 )}
 
                 {/* Tips section */}
-                <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <h3 className="font-semibold text-blue-900 mb-2">
+                <div className="mt-6 bg-[var(--color-info-light)] border border-[var(--color-info)] rounded-lg p-4">
+                    <h3 className="font-semibold text-[var(--color-info)] mb-2">
                         💡 Tips for success:
                     </h3>
-                    <ul className="text-sm text-blue-800 space-y-1">
+                    <ul className="text-sm text-[var(--color-info)] space-y-1">
                         <li>• Choose the most specific category for better visibility.</li>
                         <li>• Be specific about what you deliver.</li>
                         <li>• Price competitively to attract clients.</li>
