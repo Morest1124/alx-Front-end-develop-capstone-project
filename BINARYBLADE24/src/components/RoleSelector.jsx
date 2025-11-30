@@ -15,7 +15,7 @@ const RoleSelector = ({ role, setRole }) => {
           value="freelancer"
           checked={role === "freelancer"}
           onChange={(e) => setRole(e.target.value)}
-          className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+          className="w-4 h-4 text-[var(--color-accent)] border-gray-300 focus:ring-[var(--color-accent)]"
         />
         <label
           htmlFor="freelancer"
@@ -32,7 +32,7 @@ const RoleSelector = ({ role, setRole }) => {
           value="client"
           checked={role === "client"}
           onChange={(e) => setRole(e.target.value)}
-          className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+          className="w-4 h-4 text-[var(--color-accent)] border-gray-300 focus:ring-[var(--color-accent)]"
         />
         <label htmlFor="client" className="ml-2 block text-sm text-gray-900">
           Client

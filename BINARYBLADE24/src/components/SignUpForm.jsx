@@ -32,7 +32,7 @@ const SignUpForm = ({
     <form className="space-y-4" onSubmit={handleSubmit}>
       {apiError && (
         <div
-          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
+          className="bg-[var(--color-error-light)] border border-[var(--color-error)] text-[var(--color-error)] px-4 py-3 rounded relative"
           role="alert"
         >
           <strong className="font-bold">Error:</strong>
@@ -131,7 +131,7 @@ const SignUpForm = ({
         {" "}
         <button
           type="submit"
-          className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
+          className="w-full px-4 py-2 font-medium text-white bg-[var(--color-accent)] rounded-md hover:bg-[var(--color-accent-hover)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent)] disabled:opacity-50"
           disabled={loading}
         >
           {loading ? (

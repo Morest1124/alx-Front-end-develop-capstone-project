@@ -116,7 +116,7 @@ const Messages = () => {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)]"></div>
       </div>
     );
   }
@@ -166,7 +166,7 @@ const Messages = () => {
                     )}
                   </div>
                   {conversation.unread_count > 0 && (
-                    <span className="ml-2 bg-indigo-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    <span className="ml-2 bg-[var(--color-accent)] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                       {conversation.unread_count}
                     </span>
                   )}
@@ -207,10 +207,10 @@ const Messages = () => {
                   >
                     <div
                       className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${message.sender === user.id
-                        ? "bg-green-100 text-gray-900"
-                        : "bg-white text-gray-900"
+                        ? "text-gray-100"
+                        : "bg-white text-black-900"
                         }`}
-                      style={message.sender === user.id ? { backgroundColor: '#DCF8C6' } : {}}
+                      style={message.sender === user.id ? { backgroundColor: 'var(--color-message-sent)' } : {}}
                     >
                       <p className="break-words text-sm">{message.body}</p>
                       <p
@@ -234,7 +234,7 @@ const Messages = () => {
                 <input
                   type="text"
                   placeholder="Type a message..."
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)]"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   disabled={sending}
@@ -242,10 +242,10 @@ const Messages = () => {
                 <button
                   type="submit"
                   disabled={sending || !newMessage.trim()}
-                  className="px-6 py-3 font-medium text-white rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  style={{ backgroundColor: '#25D366' }}
-                  onMouseEnter={(e) => !sending && newMessage.trim() && (e.target.style.backgroundColor = '#20BA5A')}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = '#25D366'}
+                  className="px-6 py-3 font-medium text-white rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  style={{ backgroundColor: 'var(--color-accent)' }}
+                  onMouseEnter={(e) => !sending && newMessage.trim() && (e.target.style.backgroundColor = 'var(--color-accent-hover)')}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-accent)'}
                 >
                   {sending ? "Sending..." : "Send"}
                 </button>

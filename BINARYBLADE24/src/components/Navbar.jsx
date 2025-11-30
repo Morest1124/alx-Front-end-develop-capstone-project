@@ -24,7 +24,7 @@ const PublicNavLinks = () => {
 
   const isActive = (path) =>
     currentPath === path
-      ? "text-indigo-600 bg-indigo-50"
+      ? "text-[var(--color-accent)] bg-[var(--color-accent-light)]"
       : "text-gray-600 hover:bg-gray-100";
 
   return (
@@ -56,13 +56,13 @@ const PublicNavLinks = () => {
         <Link
           key="/login"
           to="/login"
-          className="text-gray-600 hover:text-indigo-600 border-r pr-3 border-gray-200 text-sm md:text-base"
+          className="text-gray-600 hover:text-[var(--color-accent)] border-r pr-3 border-gray-200 text-sm md:text-base"
         >
           <LogIn size={16} className="inline mr-1" /> Log In
         </Link>
         <Link
           to="/signup"
-          className="bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-500/50 transform transition duration-300 hover:scale-105 px-4 py-2 rounded-lg text-sm md:text-base"
+          className="btn-primary transform transition duration-300 hover:scale-105 text-sm md:text-base"
         >
           Sign Up
         </Link>
@@ -76,8 +76,8 @@ const ClientNavLinks = () => {
   const { currentPath } = useRouter();
   const isActive = (path) =>
     currentPath.startsWith(path)
-      ? "text-indigo-600 font-bold"
-      : "text-gray-700 hover:text-indigo-600";
+      ? "text-[var(--color-accent)] font-bold"
+      : "text-gray-700 hover:text-[var(--color-accent)]";
 
   return (
     <>
@@ -195,7 +195,7 @@ const Navbar = () => {
           <div className="flex-shrink-0">
             <Link
               to={user.isLoggedIn ? `/${user.role}/dashboard` : "/"}
-              className="text-2xl font-extrabold text-indigo-600 tracking-tight flex items-center"
+              className="text-2xl font-extrabold text-[var(--color-accent)] tracking-tight flex items-center"
             >
               <img
                 className="w-30 h-auto"
@@ -237,7 +237,7 @@ const Navbar = () => {
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black ring-opacity-5 transition-0.9">
                     <Link
                       to="/settings"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 w-full"
+                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[var(--color-accent-light)] w-full"
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <Settings size={16} className="mr-2" /> Settings
@@ -245,7 +245,7 @@ const Navbar = () => {
                     {user.availableRoles?.length > 1 && (
                       <button
                         onClick={handleSwitchRole}
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 w-full text-left"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[var(--color-accent-light)] w-full text-left"
                       >
                         <User size={16} className="mr-2" /> Switch to{" "}
                         {user.role.toUpperCase() === "CLIENT"
@@ -269,7 +269,7 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+              className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--color-accent)]"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -287,7 +287,7 @@ const Navbar = () => {
                 {user.availableRoles?.length > 1 && (
                   <button
                     onClick={handleSwitchRole}
-                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 w-full text-left rounded-lg"
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[var(--color-accent-light)] w-full text-left rounded-lg"
                   >
                     <User size={16} className="mr-2" /> Switch to{" "}
                     {user.role?.toUpperCase() === "CLIENT" ? "Freelancer" : "Client"}

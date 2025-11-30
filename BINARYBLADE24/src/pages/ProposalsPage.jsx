@@ -162,17 +162,17 @@ const ProposalsPage = () => {
 
     const getStatusIcon = (status) => {
         switch (status) {
-            case 'ACCEPTED': return <CheckCircle className="text-green-600" size={20} />;
-            case 'REJECTED': return <XCircle className="text-red-600" size={20} />;
-            default: return <Clock className="text-yellow-600" size={20} />;
+            case 'ACCEPTED': return <CheckCircle className="text-[var(--color-success)]" size={20} />;
+            case 'REJECTED': return <XCircle className="text-[var(--color-error)]" size={20} />;
+            default: return <Clock className="text-[var(--color-warning)]" size={20} />;
         }
     };
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'ACCEPTED': return 'bg-green-100 text-green-800';
-            case 'REJECTED': return 'bg-red-100 text-red-800';
-            default: return 'bg-yellow-100 text-yellow-800';
+            case 'ACCEPTED': return 'badge-success';
+            case 'REJECTED': return 'badge-error';
+            default: return 'badge-warning';
         }
     };
 
@@ -190,7 +190,7 @@ const ProposalsPage = () => {
                 {isClient ? (
                     <button
                         onClick={() => setActiveTab('received')}
-                        className={`pb-3 px-4 font-semibold transition-colors ${activeTab === 'received' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                        className={`pb-3 px-4 font-semibold transition-colors ${activeTab === 'received' ? 'text-[var(--color-accent)] border-b-2 border-[var(--color-accent)]' : 'text-gray-500 hover:text-gray-700'}`}
                     >
                         <Inbox size={18} className="inline mr-2" />
                         Received ({receivedProposals.length})
@@ -199,14 +199,14 @@ const ProposalsPage = () => {
                     <>
                         <button
                             onClick={() => setActiveTab('submitted')}
-                            className={`pb-3 px-4 font-semibold transition-colors ${activeTab === 'submitted' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`pb-3 px-4 font-semibold transition-colors ${activeTab === 'submitted' ? 'text-[var(--color-accent)] border-b-2 border-[var(--color-accent)]' : 'text-gray-500 hover:text-gray-700'}`}
                         >
                             <FileText size={18} className="inline mr-2" />
                             My Submissions ({submittedProposals.length})
                         </button>
                         <button
                             onClick={() => setActiveTab('available')}
-                            className={`pb-3 px-4 font-semibold transition-colors ${activeTab === 'available' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`pb-3 px-4 font-semibold transition-colors ${activeTab === 'available' ? 'text-[var(--color-accent)] border-b-2 border-[var(--color-accent)]' : 'text-gray-500 hover:text-gray-700'}`}
                         >
                             <Briefcase size={18} className="inline mr-2" />
                             Available Work
@@ -220,7 +220,7 @@ const ProposalsPage = () => {
                 <div>
                     {receivedLoading ? (
                         <div className="text-center p-8">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)] mx-auto"></div>
                             <p className="mt-4 text-gray-600">Loading received proposals...</p>
                         </div>
                     ) : receivedError ? (
@@ -258,7 +258,7 @@ const ProposalsPage = () => {
                                     <div className="border-t pt-4 mt-4 flex justify-between items-center">
                                         <div>
                                             <p className="text-sm text-gray-500">Bid Amount</p>
-                                            <p className="text-2xl font-bold text-indigo-600">{formatToZAR(proposal.bid_amount)}</p>
+                                            <p className="text-2xl font-bold text-[var(--color-accent)]">{formatToZAR(proposal.bid_amount)}</p>
                                         </div>
                                         <div className="text-right">
                                             <p className="text-sm text-gray-500">Submitted</p>
@@ -270,14 +270,14 @@ const ProposalsPage = () => {
                                             <div className="flex space-x-3">
                                                 <button
                                                     onClick={() => handleUpdateProposalStatus(proposal, 'ACCEPTED')}
-                                                    className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold"
+                                                    className="px-6 py-2 bg-[var(--color-success)] text-white rounded-lg hover:opacity-90 transition font-semibold"
                                                 >
                                                     <CheckCircle size={18} className="inline mr-2" />
                                                     Accept
                                                 </button>
                                                 <button
                                                     onClick={() => handleUpdateProposalStatus(proposal, 'REJECTED')}
-                                                    className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition font-semibold"
+                                                    className="btn-danger"
                                                 >
                                                     <XCircle size={18} className="inline mr-2" />
                                                     Reject
@@ -297,7 +297,7 @@ const ProposalsPage = () => {
                 <div>
                     {submittedLoading ? (
                         <div className="text-center p-8">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)] mx-auto"></div>
                             <p className="mt-4 text-gray-600">Loading your proposals...</p>
                         </div>
                     ) : submittedError ? (
@@ -308,7 +308,7 @@ const ProposalsPage = () => {
                             <p className="text-gray-600 text-lg">You haven't submitted any proposals yet.</p>
                             <button
                                 onClick={() => setActiveTab('available')}
-                                className="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                                className="mt-4 btn-primary"
                             >
                                 Browse Available Work
                             </button>
@@ -337,7 +337,7 @@ const ProposalsPage = () => {
                                         <div className="flex justify-between items-center">
                                             <div>
                                                 <p className="text-sm text-gray-500">Your Bid</p>
-                                                <p className="text-2xl font-bold text-indigo-600">{formatToZAR(proposal.bid_amount)}</p>
+                                                <p className="text-2xl font-bold text-[var(--color-accent)]">{formatToZAR(proposal.bid_amount)}</p>
                                             </div>
                                             <div className="text-right">
                                                 <p className="text-sm text-gray-500">Submitted</p>
@@ -361,7 +361,7 @@ const ProposalsPage = () => {
                 <div>
                     {availableLoading ? (
                         <div className="text-center p-8">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)] mx-auto"></div>
                             <p className="mt-4 text-gray-600">Loading available jobs...</p>
                         </div>
                     ) : availableError ? (
@@ -381,12 +381,12 @@ const ProposalsPage = () => {
                                             <h3 className="text-2xl font-semibold text-gray-900 mb-2">{job.title}</h3>
                                             <p className="text-gray-600">{job.description}</p>
                                         </div>
-                                        <span className="ml-4 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">JOB</span>
+                                        <span className="ml-4 badge-info">JOB</span>
                                     </div>
                                     <div className="flex justify-between items-center border-t pt-4 mt-4">
                                         <div>
                                             <p className="text-sm text-gray-500">Budget</p>
-                                            <p className="text-2xl font-bold text-green-600">{formatToZAR(job.budget)}</p>
+                                            <p className="text-2xl font-bold text-[var(--color-success)]">{formatToZAR(job.budget)}</p>
                                         </div>
                                         <div className="text-right">
                                             <p className="text-sm text-gray-500">Deadline</p>
@@ -394,7 +394,7 @@ const ProposalsPage = () => {
                                         </div>
                                         <button
                                             onClick={() => openProposalModal(job)}
-                                            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold"
+                                            className="btn-primary"
                                         >
                                             Submit Proposal
                                         </button>
@@ -414,7 +414,7 @@ const ProposalsPage = () => {
                         <div className="mb-4 p-4 bg-gray-50 rounded-lg">
                             <h3 className="font-semibold text-lg">{selectedJob.title}</h3>
                             <p className="text-gray-600 text-sm mt-1">{selectedJob.description}</p>
-                            <p className="text-xl font-bold text-green-600 mt-2">{formatToZAR(selectedJob.budget)}</p>
+                            <p className="text-xl font-bold text-[var(--color-success)] mt-2">{formatToZAR(selectedJob.budget)}</p>
                         </div>
                         <form onSubmit={handleSubmitProposal}>
                             <div className="mb-4">
@@ -424,7 +424,7 @@ const ProposalsPage = () => {
                                     onChange={(e) => setCoverLetter(e.target.value)}
                                     required
                                     rows={8}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
                                     placeholder="Explain why you are the best fit for this project..."
                                 />
                                 <p className="text-xs text-gray-500 mt-1">
@@ -446,7 +446,7 @@ const ProposalsPage = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
                                     disabled={submitting || !coverLetter.trim()}
                                 >
                                     {submitting ? 'Submitting...' : 'Submit Proposal'}

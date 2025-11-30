@@ -55,8 +55,8 @@ const FreelancerDashboard = () => {
         <button
           onClick={() => setActiveTab("dashboard")}
           className={`py-2 px-4 text-lg ${activeTab === "dashboard"
-              ? "border-b-2 border-blue-500 text-blue-600"
-              : "text-gray-500"
+            ? "border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]"
+            : "text-gray-500"
             }`}
         >
           Dashboard
@@ -64,8 +64,8 @@ const FreelancerDashboard = () => {
         <Link
           to="/freelancer/create-gig"
           className={`py-2 px-4 text-lg ${activeTab === "create-gig"
-              ? "border-b-2 border-blue-500 text-blue-600"
-              : "text-gray-500"
+            ? "border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]"
+            : "text-gray-500"
             }`}
         >
           Create Gig
@@ -81,16 +81,16 @@ const FreelancerDashboard = () => {
               value={formatToZAR(dashboardData.total_earnings, "ZAR")}
               icon="TrendingUp"
               to="/freelancer/earnings"
-              bgColor="bg-green-50"
-              textColor="text-green-700"
+              bgColor="bg-[var(--color-success-light)]"
+              textColor="text-[var(--color-success)]"
             />
             <DashboardCard
               title="Estimated Monthly Tax"
               value={formatToZAR(dashboardData.estimated_monthly_tax, "ZAR")}
               icon="CreditCard"
               to="/freelancer/tax"
-              bgColor="bg-red-50"
-              textColor="text-red-700"
+              bgColor="bg-[var(--color-error-light)]"
+              textColor="text-[var(--color-error)]"
             />
             <DashboardCard
               title="Active Projects"
@@ -98,15 +98,15 @@ const FreelancerDashboard = () => {
               icon="Briefcase"
               to="/freelancer/projects/active"
               bgColor="bg-white"
-              textColor="text-indigo-700"
+              textColor="text-[var(--color-accent)]"
             />
             <DashboardCard
               title="Concluded Projects"
               value={dashboardData.concluded_projects}
               icon="CheckCircle"
               to="/freelancer/projects/concluded"
-              bgColor="bg-green-50"
-              textColor="text-green-700"
+              bgColor="bg-[var(--color-success-light)]"
+              textColor="text-[var(--color-success)]"
             />
           </div>
 
@@ -118,7 +118,7 @@ const FreelancerDashboard = () => {
               icon="ShoppingBag"
               to="/freelancer/projects"
               bgColor="bg-white"
-              textColor="text-indigo-700"
+              textColor="text-[var(--color-accent)]"
             />
             <DashboardCard
               title="Achievement Rating"
@@ -126,15 +126,15 @@ const FreelancerDashboard = () => {
               icon="Trophy"
               to="/freelancer/reviews"
               bgColor="bg-white"
-              textColor="text-green-700"
+              textColor="text-[var(--color-success)]"
             />
             <DashboardCard
               title="Response Rate"
               value={`${dashboardData.response_rate}`}
               icon="MailCheck"
               to="/messages"
-              bgColor="bg-green-50"
-              textColor="text-green-700"
+              bgColor="bg-[var(--color-success-light)]"
+              textColor="text-[var(--color-success)]"
             />
             <DashboardCard
               title="Total Impressions"
@@ -142,7 +142,7 @@ const FreelancerDashboard = () => {
               icon="Eye"
               to="/freelancer/analytics"
               bgColor="bg-white"
-              textColor="text-indigo-700"
+              textColor="text-[var(--color-accent)]"
             />
           </div>
 
@@ -152,7 +152,7 @@ const FreelancerDashboard = () => {
               <LucideIcon
                 name="Target"
                 size={20}
-                className="mr-2 text-indigo-500"
+                className="mr-2 text-[var(--color-accent)]"
               />{" "}
               Recent Proposals
             </h3>

@@ -1,8 +1,106 @@
 @import "tailwindcss";
 
+@layer base {
+	:root {
+		/* Primary Colors - Main backgrounds and surfaces */
+		--color-primary-bg: #F8FAFC;
+		--color-primary-surface: #FFFFFF;
+		--color-primary-dark: #0F172A;
+		
+		/* Secondary Colors - Links, secondary actions */
+		--color-secondary: #3B82F6;
+		--color-secondary-light: #E0F2FE;
+		--color-secondary-dark: #1E40AF;
+		--color-secondary-hover: #2563EB;
+		
+		/* Accent Colors - CTAs and important actions */
+		--color-accent: #25B9D3;
+		--color-accent-hover: #20A8BA;
+		--color-accent-light: #CFFAFE;
+		
+		/* Status Colors */
+		--color-success: #10B981;
+		--color-success-light: #D1FAE5;
+		--color-warning: #F59E0B;
+		--color-warning-light: #FEF3C7;
+		--color-error: #EF4444;
+		--color-error-light: #FEE2E2;
+		--color-info: #3B82F6;
+		--color-info-light: #DBEAFE;
+		
+		/* Text Colors */
+		--color-text-primary: #0F172A;
+		--color-text-secondary: #64748B;
+		--color-text-muted: #94A3B8;
+		--color-text-inverse: #FFFFFF;
+		
+		/* Border Colors */
+		--color-border: #E2E8F0;
+		--color-border-focus: #25B9D3;
+		--color-border-error: #EF4444;
+		
+		/* Message Colors (for chat) */
+		--color-message-sent: #DCF8C6;
+		--color-message-received: #FFFFFF;
+	}
+}
+
 @layer components {
 	.nav-link {
-		@apply text-xs text-gray-700 hover:text-indigo-600 px-5 py-3 font-medium transition-colors duration-250 rounded-lg;
+		@apply text-xs text-gray-700 hover:text-[var(--color-accent)] px-5 py-3 font-medium transition-colors duration-250 rounded-lg;
+	}
+	
+	/* Button Styles */
+	.btn-primary {
+		@apply px-6 py-3 font-medium text-white rounded-lg transition-colors shadow-sm;
+		background-color: var(--color-accent);
+	}
+	
+	.btn-primary:hover:not(:disabled) {
+		background-color: var(--color-accent-hover);
+	}
+	
+	.btn-secondary {
+		@apply px-6 py-3 font-medium text-white rounded-lg transition-colors shadow-sm;
+		background-color: var(--color-secondary);
+	}
+	
+	.btn-secondary:hover:not(:disabled) {
+		background-color: var(--color-secondary-hover);
+	}
+	
+	.btn-danger {
+		@apply px-6 py-3 font-medium text-white rounded-lg transition-colors shadow-sm;
+		background-color: var(--color-error);
+	}
+	
+	.btn-danger:hover:not(:disabled) {
+		@apply bg-red-600;
+	}
+	
+	/* Status Badges */
+	.badge-success {
+		@apply px-3 py-1 rounded-full text-sm font-semibold;
+		background-color: var(--color-success-light);
+		color: var(--color-success);
+	}
+	
+	.badge-warning {
+		@apply px-3 py-1 rounded-full text-sm font-semibold;
+		background-color: var(--color-warning-light);
+		color: var(--color-warning);
+	}
+	
+	.badge-error {
+		@apply px-3 py-1 rounded-full text-sm font-semibold;
+		background-color: var(--color-error-light);
+		color: var(--color-error);
+	}
+	
+	.badge-info {
+		@apply px-3 py-1 rounded-full text-sm font-semibold;
+		background-color: var(--color-info-light);
+		color: var(--color-info);
 	}
 }
 

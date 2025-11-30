@@ -30,7 +30,7 @@ const LogIn = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)]"
             required
             disabled={loading}
           />
@@ -41,7 +41,7 @@ const LogIn = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)]"
             required
             disabled={loading}
           />
@@ -49,7 +49,7 @@ const LogIn = () => {
         <div>
           <button
             type="submit"
-            className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
+            className="w-full px-4 py-2 font-medium text-white bg-[var(--color-accent)] rounded-md hover:bg-[var(--color-accent-hover)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent)] disabled:opacity-50"
             disabled={loading}
           >
             {loading ? 'Logging in...' : 'Log In'}
@@ -58,7 +58,7 @@ const LogIn = () => {
       </form>
       <p className="text-sm text-center text-gray-600">
         Don't have an account?{' '}
-        <Link to="/signup" className="font-medium text-indigo-600 hover:text-indigo-500">
+        <Link to="/signup" className="font-medium text-[var(--color-accent)] hover:text-[var(--color-accent-hover)]">
           Sign Up
         </Link>
       </p>

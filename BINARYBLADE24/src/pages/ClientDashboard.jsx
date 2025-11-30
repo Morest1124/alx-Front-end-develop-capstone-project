@@ -67,32 +67,32 @@ const ClientDashboard = () => {
               value={orderStats.activeOrders}
               icon="ShoppingCart"
               to="/client/billing"
-              bgColor="bg-blue-50"
-              textColor="text-blue-700"
+              bgColor="bg-[var(--color-info-light)]"
+              textColor="text-[var(--color-info)]"
             />
             <DashboardCard
               title="Completed Orders"
               value={orderStats.completedOrders}
               icon="CheckCircle"
               to="/client/billing"
-              bgColor="bg-green-50"
-              textColor="text-green-700"
+              bgColor="bg-[var(--color-success-light)]"
+              textColor="text-[var(--color-success)]"
             />
             <DashboardCard
               title="Total Spent"
               value={formatToZAR(orderStats.totalSpent)}
               icon="DollarSign"
               to="/client/billing"
-              bgColor="bg-green-50"
-              textColor="text-green-700"
+              bgColor="bg-[var(--color-success-light)]"
+              textColor="text-[var(--color-success)]"
             />
             <DashboardCard
               title="Proposals Received"
               value={dashboardData.proposals_received || 0}
               icon="Mail"
               to="/client/proposals"
-              bgColor="bg-yellow-50"
-              textColor="text-yellow-700"
+              bgColor="bg-[var(--color-warning-light)]"
+              textColor="text-[var(--color-warning)]"
             />
           </div>
 
@@ -101,7 +101,7 @@ const ClientDashboard = () => {
               <LucideIcon
                 name="Activity"
                 size={20}
-                className="mr-2 text-indigo-500"
+                className="mr-2 text-[var(--color-accent)]"
               />{" "}
               Recent Orders
             </h3>
