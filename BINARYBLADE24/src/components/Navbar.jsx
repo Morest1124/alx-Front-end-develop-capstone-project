@@ -14,6 +14,7 @@ import {
   Inbox,
   Star,
 } from "lucide-react";
+import logo from '../assets/BinaryBlade-official.png';
 import { AuthContext } from "../contexts/AuthContext";
 import { useRouter, Link } from "../contexts/Routers";
 
@@ -199,10 +200,10 @@ const Navbar = () => {
             >
               <img
                 className="w-30 h-auto"
-                src="BinaryBlade-official.png"
+                src={logo}
                 alt="Logo "
               />
-            </Link>
+            </Link> 
           </div>
 
           {/* Desktop Navigation Links */}
