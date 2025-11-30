@@ -4,7 +4,7 @@ import { formatToZAR } from '../utils/currency';
 import { AuthContext } from '../contexts/AuthContext';
 import { ShoppingCart, MessageCircle, Check, Star } from 'lucide-react';
 
-import { getProjectDetails, approveProject, createOrder, markOrderPaid } from '../api';
+import { getProjectDetails, approveProject, createOrder, markOrderPaid, startConversation } from '../api';
 
 const fetchProjectById = async (id) => {
   try {
@@ -34,6 +34,25 @@ const ProjectDetailsPage = ({ projectId }) => {
       });
     }
   }, [projectId]);
+
+  const handleContact = async () => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      // Create or get existing conversation
+      const conversation = await startConversation(project.id, project.owner_details.id);
+
+      // Navigate to messages with conversation selected
+      const messagePath = user.role?.toUpperCase() === 'CLIENT' ? '/client/messages' : '/freelancer/messages';
+      navigate(messagePath, { state: { selectedConversationId: conversation.id } });
+    } catch (error) {
+      console.error("Failed to start conversation:", error);
+      alert("Failed to start conversation. Please try again.");
+    }
+  };
 
   if (isLoading) {
     return <div className="text-center py-10">Loading project details...</div>;
@@ -177,11 +196,21 @@ const ProjectDetailsPage = ({ projectId }) => {
               </button>
             )}
 
-            {/* Freelancer: Submit Proposal button (Only for Jobs) */}
+            {/* Freelancer: Submit Proposal & Contact Client (Only for Jobs) */}
             {user && user.role?.toUpperCase() === 'FREELANCER' && project.project_type === 'JOB' && project.status === 'OPEN' && (
-              <button className="mt-6 w-full bg-blue-500 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-transform transform hover:scale-105">
-                Submit a Proposal
-              </button>
+              <div className="mt-6 space-y-3">
+                <button className="w-full bg-blue-500 text-white py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 transition-transform transform hover:scale-105">
+                  Submit a Proposal
+                </button>
+
+                <button
+                  onClick={handleContact}
+                  className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2 border border-gray-300"
+                >
+                  <MessageCircle size={20} />
+                  <span>Contact Client</span>
+                </button>
+              </div>
             )}
 
             {/* Client: Buy Gig & Contact Freelancer (Only for Gigs) */}
@@ -198,7 +227,7 @@ const ProjectDetailsPage = ({ projectId }) => {
 
                 {/* Contact Freelancer Button - Secondary */}
                 <button
-                  onClick={() => navigate('/messages')} // Or open messaging interface
+                  onClick={handleContact}
                   className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2 border border-gray-300"
                 >
                   <MessageCircle size={20} />

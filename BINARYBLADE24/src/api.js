@@ -212,6 +212,14 @@ export const markConversationRead = (conversationId) => {
   return apiClient.post(`/messages/conversations/${conversationId}/mark_read/`);
 };
 
+// Start a new conversation or get existing one
+export const startConversation = (projectId, participantId) => {
+  return apiClient.post("/messages/conversations/", {
+    project: projectId,
+    participant_2: participantId
+  });
+};
+
 // Approve completed work and release payment
 export const approveProject = (projectId) => {
   return apiClient.post(`/projects/${projectId}/approve_work/`);

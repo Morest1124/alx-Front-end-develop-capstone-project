@@ -63,21 +63,34 @@ const ProposalsPage = () => {
     const fetchReceivedProposals = async () => {
         try {
             setReceivedLoading(true);
+            console.log('Fetching client projects...');
             const projects = await getClientProjects();
+            console.log('Client projects:', projects);
             const allProposals = [];
 
             for (const project of projects) {
                 try {
+                    console.log(`Fetching proposals for project ${project.id}...`);
                     const proposals = await getProposalsForProject(project.id);
-                    allProposals.push(...proposals.map(p => ({ ...p, project })));
+                    console.log(`Proposals for project ${project.id}:`, proposals);
+
+                    // The API response is already unwrapped by the axios interceptor
+                    // So 'proposals' is directly the array, not { data: [...] }
+                    if (Array.isArray(proposals)) {
+                        allProposals.push(...proposals.map(p => ({ ...p, project })));
+                    } else {
+                        console.error(`Unexpected response format for project ${project.id}:`, proposals);
+                    }
                 } catch (err) {
                     console.error(`Failed to fetch proposals for project ${project.id}:`, err);
                 }
             }
 
+            console.log('All received proposals:', allProposals);
             setReceivedProposals(allProposals);
             setReceivedError(null);
         } catch (err) {
+            console.error('Error fetching received proposals:', err);
             setReceivedError(err.message || 'Failed to fetch received proposals.');
             setReceivedProposals([]);
         } finally {

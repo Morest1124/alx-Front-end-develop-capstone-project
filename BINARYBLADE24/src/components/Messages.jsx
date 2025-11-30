@@ -16,13 +16,36 @@ const Messages = () => {
     const fetchConversations = async () => {
       try {
         setLoading(true);
-        const response = await getConversations();
-        setConversations(response.data);
-        if (response.data.length > 0) {
-          setSelectedConversation(response.data[0]);
+        console.log('Fetching conversations...');
+        const conversations = await getConversations();
+        console.log('Conversations loaded:', conversations);
+
+        // The API response is already unwrapped by the axios interceptor
+        if (Array.isArray(conversations)) {
+          setConversations(conversations);
+
+          // Check if there's a conversation ID from navigation state
+          const navState = window.history.state;
+          const targetConversationId = navState?.state?.selectedConversationId;
+
+          if (targetConversationId && conversations.length > 0) {
+            // Find and select the target conversation
+            const targetConv = conversations.find(c => c.id === targetConversationId);
+            if (targetConv) {
+              setSelectedConversation(targetConv);
+            } else if (conversations.length > 0) {
+              setSelectedConversation(conversations[0]);
+            }
+          } else if (conversations.length > 0) {
+            setSelectedConversation(conversations[0]);
+          }
+        } else {
+          console.error('Unexpected response format for conversations:', conversations);
+          setConversations([]);
         }
       } catch (error) {
         console.error("Failed to fetch conversations:", error);
+        setConversations([]);
       } finally {
         setLoading(false);
       }
@@ -39,12 +62,23 @@ const Messages = () => {
       if (!selectedConversation) return;
 
       try {
-        const response = await getMessages(selectedConversation.id);
-        setMessages(response.data);
+        console.log(`Fetching messages for conversation: ${selectedConversation.id}`);
+        const messages = await getMessages(selectedConversation.id);
+        console.log('Messages loaded:', messages);
+
+        // The API response is already unwrapped by the axios interceptor
+        if (Array.isArray(messages)) {
+          setMessages(messages);
+        } else {
+          console.error('Unexpected response format for messages:', messages);
+          setMessages([]);
+        }
+
         // Mark as read
         await markConversationRead(selectedConversation.id);
       } catch (error) {
         console.error("Failed to fetch messages:", error);
+        setMessages([]);
       }
     };
 
@@ -57,8 +91,12 @@ const Messages = () => {
 
     try {
       setSending(true);
-      const response = await sendMessage(selectedConversation.id, newMessage);
-      setMessages([...messages, response.data]);
+      console.log('Sending message...');
+      const sentMessage = await sendMessage(selectedConversation.id, newMessage);
+      console.log('Message sent successfully:', sentMessage);
+
+      // The API response is already unwrapped by the axios interceptor
+      setMessages([...messages, sentMessage]);
       setNewMessage("");
     } catch (error) {
       console.error("Failed to send message:", error);
@@ -155,7 +193,7 @@ const Messages = () => {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
+            <div className="flex-1 p-4 overflow-y-auto bg-gray-50" style={{ backgroundImage: 'linear-gradient(to bottom, #f0f2f5, #e4e6eb)' }}>
               {messages.length === 0 ? (
                 <div className="text-center text-gray-500 mt-8">
                   No messages yet. Start the conversation!
@@ -164,18 +202,19 @@ const Messages = () => {
                 messages.map((message) => (
                   <div
                     key={message.id}
-                    className={`mb-4 flex ${message.sender === user.id ? "justify-end" : "justify-start"
+                    className={`mb-3 flex ${message.sender === user.id ? "justify-end" : "justify-start"
                       }`}
                   >
                     <div
-                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${message.sender === user.id
-                          ? "bg-indigo-600 text-white"
-                          : "bg-white text-gray-900 border border-gray-200"
+                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${message.sender === user.id
+                        ? "bg-green-100 text-gray-900"
+                        : "bg-white text-gray-900"
                         }`}
+                      style={message.sender === user.id ? { backgroundColor: '#DCF8C6' } : {}}
                     >
-                      <p className="break-words">{message.body}</p>
+                      <p className="break-words text-sm">{message.body}</p>
                       <p
-                        className={`text-xs mt-1 ${message.sender === user.id ? "text-indigo-200" : "text-gray-500"
+                        className={`text-xs mt-1 text-right ${message.sender === user.id ? "text-gray-600" : "text-gray-500"
                           }`}
                       >
                         {new Date(message.timestamp).toLocaleTimeString([], {
@@ -191,11 +230,11 @@ const Messages = () => {
 
             {/* Input */}
             <div className="p-4 border-t border-gray-200 bg-white">
-              <form onSubmit={handleSendMessage} className="flex">
+              <form onSubmit={handleSendMessage} className="flex gap-2">
                 <input
                   type="text"
-                  placeholder="Type your message..."
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-l-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Type a message..."
+                  className="flex-1 px-4 py-3 border border-gray-300 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
                   disabled={sending}
@@ -203,7 +242,10 @@ const Messages = () => {
                 <button
                   type="submit"
                   disabled={sending || !newMessage.trim()}
-                  className="px-6 py-2 font-medium text-white bg-indigo-600 rounded-r-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-6 py-3 font-medium text-white rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  style={{ backgroundColor: '#25D366' }}
+                  onMouseEnter={(e) => !sending && newMessage.trim() && (e.target.style.backgroundColor = '#20BA5A')}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#25D366'}
                 >
                   {sending ? "Sending..." : "Send"}
                 </button>

@@ -15,8 +15,8 @@ export const RouterProvider = ({ children }) => {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  const navigate = (path) => {
-    window.history.pushState({}, "", path);
+  const navigate = (path, state = {}) => {
+    window.history.pushState(state, "", path);
     setCurrentPath(path);
     window.scrollTo(0, 0);
   };
