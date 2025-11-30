@@ -2,7 +2,7 @@ import axios from "axios";
 
 // Create a pre-configured axios instance
 const apiClient = axios.create({
-  baseURL:    import.meta.env.VITE_API_BASE_URL ||    "https://binaryblade2411.pythonanywhere.com/api/",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api/",
   // baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api",
   headers: {
     "Content-Type": "application/json",
@@ -267,4 +267,28 @@ export const releasePayment = (orderId) => {
 // Cancel order and refund if applicable
 export const cancelOrder = (orderId) => {
   return apiClient.post(`/orders/orders/${orderId}/cancel_order/`);
+};
+
+// ===== COMMENTS API =====
+
+// Get all comments for a project
+export const getProjectComments = (projectId) => {
+  return apiClient.get(`/comments/projects/${projectId}/comments/`);
+};
+
+// Create a new comment on a project
+export const createComment = (projectId, text) => {
+  return apiClient.post(`/comments/projects/${projectId}/comments/`, { text });
+};
+
+// ===== REVIEWS API =====
+
+// Get all reviews for a user
+export const getUserReviews = (userId) => {
+  return apiClient.get(`/reviews/users/${userId}/`);
+};
+
+// Create a review for a project
+export const createReview = (projectId, reviewData) => {
+  return apiClient.post(`/reviews/projects/${projectId}/create/`, reviewData);
 };
