@@ -4,6 +4,8 @@ import { getOrders } from '../api';
 import PageWrapper from './PageWrapper';
 import { formatToZAR } from '../utils/currency';
 import { Link, useRouter } from '../contexts/Routers';
+import Loader from '../components/Loader';
+import { Briefcase, Clock, CheckCircle, User, Calendar, DollarSign } from 'lucide-react';
 
 const MyProjects = () => {
     const { user } = useContext(AuthContext);
@@ -29,11 +31,7 @@ const MyProjects = () => {
                 const data = await getOrders();
 
                 // Filter orders where the current user is the freelancer
-                // The API returns orders where user is client OR freelancer
-                // We want orders where user is NOT the client (so they must be the freelancer)
-                // OR check items if available
-
-                const currentUserId = user.userId || user.id; // Handle both cases just to be safe
+                const currentUserId = user.userId || user.id;
 
                 const freelancerOrders = data.filter(order => {
                     // If user is client, skip
@@ -54,12 +52,12 @@ const MyProjects = () => {
                     const project = item.project_details || {};
 
                     return {
-                        id: order.id, // Use Order ID for linking
+                        id: order.id,
                         projectId: project.id,
                         title: project.title || `Order #${order.order_number}`,
                         description: project.description || `Order for ${item.tier} tier`,
                         budget: order.total_amount,
-                        status: order.status, // PENDING, PAID, COMPLETED
+                        status: order.status,
                         client_details: order.client_details,
                         created_at: order.created_at,
                         updated_at: order.updated_at
@@ -85,8 +83,6 @@ const MyProjects = () => {
     }, [user?.isLoggedIn, user?.userId, user?.id]);
 
     // Filter projects based on active tab
-    // Active = PENDING or PAID or IN_PROGRESS
-    // Past = COMPLETED
     const activeProjects = projects.filter(p =>
         p.status === 'PENDING' ||
         p.status === 'PAID' ||
@@ -94,10 +90,39 @@ const MyProjects = () => {
     );
     const pastProjects = projects.filter(p => p.status === 'COMPLETED');
 
+    const getStatusConfig = (status) => {
+        const configs = {
+            COMPLETED: {
+                color: 'bg-green-100 text-green-800',
+                icon: CheckCircle,
+                text: 'Completed'
+            },
+            PAID: {
+                color: 'bg-blue-100 text-blue-800',
+                icon: DollarSign,
+                text: 'In Progress'
+            },
+            PENDING: {
+                color: 'bg-yellow-100 text-yellow-800',
+                icon: Clock,
+                text: 'Pending Payment'
+            },
+            IN_PROGRESS: {
+                color: 'bg-[var(--color-accent-light)] text-[var(--color-accent)]',
+                icon: Briefcase,
+                text: 'Active'
+            }
+        };
+        return configs[status] || configs.PENDING;
+    };
+
     if (loading) {
         return (
             <PageWrapper title="My Projects">
-                <div className="text-center p-8">Loading your projects...</div>
+                <div className="flex flex-col items-center justify-center p-12">
+                    <Loader size="large" />
+                    <p className="mt-4 text-gray-600">Loading your projects...</p>
+                </div>
             </PageWrapper>
         );
     }
@@ -105,7 +130,9 @@ const MyProjects = () => {
     if (error) {
         return (
             <PageWrapper title="My Projects">
-                <div className="text-center p-8 text-red-500">Error: {error}</div>
+                <div className="text-center p-8 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-red-700 font-semibold">Error: {error}</p>
+                </div>
             </PageWrapper>
         );
     }
@@ -114,100 +141,158 @@ const MyProjects = () => {
 
     return (
         <PageWrapper title="My Projects">
+            {/* Header Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-secondary)] rounded-xl shadow-lg p-6 text-white">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-white/80">Active Projects</span>
+                        <Briefcase className="w-6 h-6 text-white/60" />
+                    </div>
+                    <div className="text-4xl font-bold">{activeProjects.length}</div>
+                    <div className="text-sm text-white/70 mt-1">Currently working on</div>
+                </div>
+
+                <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="text-gray-600">Completed</span>
+                        <CheckCircle className="w-6 h-6 text-green-500" />
+                    </div>
+                    <div className="text-4xl font-bold text-green-600">{pastProjects.length}</div>
+                    <div className="text-sm text-gray-500 mt-1">Successfully finished</div>
+                </div>
+            </div>
+
             {/* Tab Navigation */}
-            <div className="flex border-b mb-6">
+            <div className="flex border-b border-gray-200 mb-6">
                 <button
                     onClick={() => setActiveTab('active')}
-                    className={`py-3 px-6 text-lg font-semibold ${activeTab === 'active'
+                    className={`py-3 px-6 text-lg font-semibold transition-colors ${activeTab === 'active'
                         ? 'border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]'
                         : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
+                    <Briefcase className="w-5 h-5 inline mr-2" />
                     Active Projects ({activeProjects.length})
                 </button>
                 <button
                     onClick={() => setActiveTab('past')}
-                    className={`py-3 px-6 text-lg font-semibold ${activeTab === 'past'
+                    className={`py-3 px-6 text-lg font-semibold transition-colors ${activeTab === 'past'
                         ? 'border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]'
                         : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
-                    Past Projects ({pastProjects.length})
+                    <CheckCircle className="w-5 h-5 inline mr-2" />
+                    Completed ({pastProjects.length})
                 </button>
             </div>
 
             {/* Projects List */}
             <div className="space-y-6">
                 {displayProjects.length === 0 ? (
-                    <div className="text-center py-12 bg-gray-50 rounded-lg">
-                        <p className="text-gray-500 text-lg">
-                            {activeTab === 'active'
-                                ? "You don't have any active projects at the moment."
-                                : "You haven't completed any projects yet."}
-                        </p>
+                    <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
+                        {activeTab === 'active' ? (
+                            <>
+                                <Briefcase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                                <p className="text-gray-500 text-lg font-medium">No active projects</p>
+                                <p className="text-gray-400 text-sm mt-2">You don't have any active projects at the moment.</p>
+                            </>
+                        ) : (
+                            <>
+                                <CheckCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                                <p className="text-gray-500 text-lg font-medium">No completed projects</p>
+                                <p className="text-gray-400 text-sm mt-2">You haven't completed any projects yet.</p>
+                            </>
+                        )}
                     </div>
                 ) : (
-                    displayProjects.map((project) => (
-                        <div
-                            key={project.id}
-                            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 border border-gray-200"
-                        >
-                            <div className="flex justify-between items-start">
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                                        {project.title}
-                                    </h3>
-                                    <p className="text-gray-600 mb-4 line-clamp-2">
-                                        {project.description}
-                                    </p>
+                    displayProjects.map((project) => {
+                        const statusConfig = getStatusConfig(project.status);
+                        const StatusIcon = statusConfig.icon;
 
-                                    <div className="flex flex-wrap gap-4 text-sm text-gray-700">
-                                        <div className="flex items-center">
-                                            <span className="font-semibold mr-2">Earnings:</span>
-                                            <span className="text-[var(--color-success)] font-bold">
+                        return (
+                            <div
+                                key={project.id}
+                                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200"
+                            >
+                                {/* Project Header with Gradient */}
+                                <div className="bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-secondary)] p-6 text-white">
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex-1">
+                                            <h3 className="text-2xl font-bold mb-2">
+                                                {project.title}
+                                            </h3>
+                                            <p className="text-white/90 line-clamp-2">
+                                                {project.description}
+                                            </p>
+                                        </div>
+                                        <div className="ml-6 text-right">
+                                            <div className="text-3xl font-bold">
                                                 {formatToZAR(project.budget)}
+                                            </div>
+                                            <div className="text-sm text-white/70 mt-1">Earnings</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Project Details */}
+                                <div className="p-6">
+                                    <div className="flex flex-wrap gap-4 mb-4">
+                                        {/* Status Badge */}
+                                        <div className="flex items-center">
+                                            <span className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 ${statusConfig.color}`}>
+                                                <StatusIcon className="w-4 h-4" />
+                                                {statusConfig.text}
                                             </span>
                                         </div>
+
+                                        {/* Client Info */}
+                                        {project.client_details && (
+                                            <div className="flex items-center text-gray-700">
+                                                <User className="w-4 h-4 mr-2 text-gray-500" />
+                                                <span className="font-medium">Client:</span>
+                                                <span className="ml-2">
+                                                    {project.client_details.first_name} {project.client_details.last_name}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Timestamps */}
+                                    <div className="flex flex-wrap gap-6 text-sm text-gray-600 mb-4">
                                         <div className="flex items-center">
-                                            <span className="font-semibold mr-2">Status:</span>
-                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${project.status === 'COMPLETED' ? 'badge-success' :
-                                                project.status === 'PAID' ? 'badge-info' :
-                                                    'badge-warning'
-                                                }`}>
-                                                {project.status}
-                                            </span>
+                                            <Calendar className="w-4 h-4 mr-2 text-gray-400" />
+                                            <span className="font-medium mr-1">Started:</span>
+                                            {new Date(project.created_at).toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'short',
+                                                day: 'numeric'
+                                            })}
+                                        </div>
+                                        <div className="flex items-center">
+                                            <Clock className="w-4 h-4 mr-2 text-gray-400" />
+                                            <span className="font-medium mr-1">Updated:</span>
+                                            {new Date(project.updated_at).toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'short',
+                                                day: 'numeric'
+                                            })}
                                         </div>
                                     </div>
 
-                                    {/* Client Info */}
-                                    {project.client_details && (
-                                        <div className="mt-4 pt-4 border-t border-gray-200">
-                                            <p className="text-sm text-gray-600">
-                                                <span className="font-semibold">Client:</span>{' '}
-                                                {project.client_details.first_name} {project.client_details.last_name}
-                                            </p>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Action Button */}
-                                <div className="ml-6">
-                                    <Link
-                                        to={`/freelancer/billing`}
-                                        className="inline-block btn-primary px-6 py-2 font-semibold"
-                                    >
-                                        View Order
-                                    </Link>
+                                    {/* Action Button */}
+                                    <div className="pt-4 border-t border-gray-200">
+                                        <Link
+                                            to={`/freelancer/billing`}
+                                            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-secondary)] text-white font-semibold rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
+                                        >
+                                            <Briefcase className="w-5 h-5 mr-2" />
+                                            View Order Details
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
-
-                            {/* Timestamps */}
-                            <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between text-xs text-gray-500">
-                                <span>Started: {new Date(project.created_at).toLocaleDateString()}</span>
-                                <span>Last Update: {new Date(project.updated_at).toLocaleDateString()}</span>
-                            </div>
-                        </div>
-                    ))
+                        );
+                    })
                 )}
             </div>
         </PageWrapper>
