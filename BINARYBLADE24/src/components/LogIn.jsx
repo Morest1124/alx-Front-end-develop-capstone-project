@@ -3,11 +3,12 @@ import { Link } from '../contexts/Routers';
 import { AuthContext } from '../contexts/AuthContext';
 import AuthLayout from './AuthLayout';
 import Loader from './Loader';
-import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
+import { Mail, Lock, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 const LogIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
   const { login, loading, error } = useContext(AuthContext);
 
@@ -65,16 +66,23 @@ const LogIn = () => {
             <div className="relative flex items-center">
               <Lock className={`absolute left-4 w-5 h-5 transition-colors duration-300 ${focusedField === 'password' ? 'text-[var(--color-accent)]' : 'text-gray-400'}`} />
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onFocus={() => setFocusedField('password')}
                 onBlur={() => setFocusedField(null)}
                 placeholder="••••••••"
-                className="w-full pl-12 pr-4 py-3 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:border-[var(--color-accent)] focus:bg-white transition-all duration-300 placeholder:text-gray-400"
+                className="w-full pl-12 pr-12 py-3 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:border-[var(--color-accent)] focus:bg-white transition-all duration-300 placeholder:text-gray-400"
                 required
                 disabled={loading}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 text-gray-400 hover:text-[var(--color-accent)] transition-colors focus:outline-none"
+              >
+                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+              </button>
             </div>
           </div>
         </div>
