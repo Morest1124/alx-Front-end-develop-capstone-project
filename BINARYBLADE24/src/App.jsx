@@ -17,6 +17,7 @@ import FindWork from "./components/FindWork";
 import Proposals from "./components/Proposals";
 import ProposalsPage from "./pages/ProposalsPage";
 import Messages from "./components/Messages";
+import HowItWorks from "./components/HowItWorks";
 import { GigsProvider } from "./contexts/GigsContext";
 import { EarningsProvider } from "./contexts/EarningsContext";
 import { ClientDashboardProvider } from "./contexts/ClientDashboardContext";
@@ -83,7 +84,10 @@ const AppContent = () => {
     // PUBLIC PAGES
     if (currentPath === "/") return <FindWork />;
     if (currentPath === "/jobs") return <FindWork />;
+    if (currentPath === "/find-work") return <FindWork />;
     if (currentPath === "/talent") return <Talent />;
+    if (currentPath === "/find-talent") return <Talent />;
+    if (currentPath === "/how-it-works") return <HowItWorks />;
     if (currentPath === "/about") return <PublicHome />;
     if (currentPath === "/login") return <LogIn />;
     if (currentPath === "/signup") return <SignUp />;

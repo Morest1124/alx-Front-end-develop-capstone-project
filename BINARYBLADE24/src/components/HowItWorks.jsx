@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import { 
-  User, Briefcase, Shield, DollarSign, Search, MessageSquare, 
-  CheckCircle, Star, Globe, Clock, Lock, ArrowRight, ChevronRight 
+import React from 'react';
+import {
+  User, Briefcase, Shield, DollarSign, Search, MessageSquare,
+  CheckCircle, Star, Clock, Lock, ChevronRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const HowItWorks = () => {
-  const [activeTab, setActiveTab] = useState('client');
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   const clientSteps = [
     {
@@ -95,8 +100,8 @@ const HowItWorks = () => {
   ];
 
   const categories = [
-    "Web Development", "Mobile Apps", "WordPress", "Graphic Design", 
-    "Logo Design", "Video Editing", "SEO", "Content Writing", 
+    "Web Development", "Mobile Apps", "WordPress", "Graphic Design",
+    "Logo Design", "Video Editing", "SEO", "Content Writing",
     "Social Media Marketing", "Virtual Assistants", "Data Entry", "Translation"
   ];
 
@@ -106,64 +111,45 @@ const HowItWorks = () => {
       <div className="bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-accent)] text-white py-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Connect with Global Talent. <br/> Get Work Done.
+            Connect with Global Talent. <br /> Get Work Done.
           </h1>
           <p className="text-xl md:text-2xl mb-8 opacity-90">
             The Marketplace for Professional Freelance Services.
           </p>
+          <p className="text-lg mb-8 opacity-80">
+            From quick tasks to major projects, find the right professional in minutes. <br />
+            Secure payments. Verified talent. 24/7 Support.
+          </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link to="/find-talent" className="px-8 py-3 bg-white text-[var(--color-secondary)] rounded-full font-bold hover:bg-gray-100 transition shadow-lg">
-              Find Talent
-            </Link>
-            <Link to="/find-work" className="px-8 py-3 bg-transparent border-2 border-white text-white rounded-full font-bold hover:bg-white/10 transition">
-              Find Work
-            </Link>
+            <button
+              onClick={() => scrollToSection('for-clients')}
+              className="px-8 py-3 bg-white text-[var(--color-secondary)] rounded-full font-bold hover:bg-gray-100 transition shadow-lg"
+            >
+              I'm a Client - Find Talent
+            </button>
+            <button
+              onClick={() => scrollToSection('for-freelancers')}
+              className="px-8 py-3 bg-transparent border-2 border-white text-white rounded-full font-bold hover:bg-white/10 transition"
+            >
+              I'm a Freelancer - Find Work
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Workflow Section */}
-      <div className="py-16 px-4 max-w-7xl mx-auto">
+      {/* For Clients Section */}
+      <section id="for-clients" className="py-16 px-4 max-w-7xl mx-auto scroll-mt-20">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works - For Clients</h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            From quick tasks to major projects, find the right professional in minutes. 
-            Secure payments. Verified talent. 24/7 Support.
+            Ease of use, security, and quality assurance. Hire the best freelancers in minutes.
           </p>
-          
-          {/* Role Toggle */}
-          <div className="flex justify-center mt-8">
-            <div className="bg-white p-1 rounded-full border border-gray-200 shadow-sm inline-flex">
-              <button
-                onClick={() => setActiveTab('client')}
-                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
-                  activeTab === 'client' 
-                    ? 'bg-[var(--color-accent)] text-white shadow-md' 
-                    : 'text-gray-500 hover:text-gray-900'
-                }`}
-              >
-                For Clients
-              </button>
-              <button
-                onClick={() => setActiveTab('freelancer')}
-                className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${
-                  activeTab === 'freelancer' 
-                    ? 'bg-[var(--color-secondary)] text-white shadow-md' 
-                    : 'text-gray-500 hover:text-gray-900'
-                }`}
-              >
-                For Freelancers
-              </button>
-            </div>
-          </div>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8">
-          {(activeTab === 'client' ? clientSteps : freelancerSteps).map((step, index) => (
+          {clientSteps.map((step, index) => (
             <div key={index} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-6 ${
-                activeTab === 'client' ? 'bg-cyan-50 text-[var(--color-accent)]' : 'bg-indigo-50 text-[var(--color-secondary)]'
-              }`}>
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-cyan-50 text-[var(--color-accent)]">
                 <step.icon size={28} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
@@ -179,10 +165,52 @@ const HowItWorks = () => {
             </div>
           ))}
         </div>
-      </div>
+
+        <div className="text-center mt-12">
+          <Link to="/signup?role=client" className="inline-block px-8 py-3 bg-[var(--color-accent)] text-white rounded-lg font-bold hover:bg-[var(--color-accent-hover)] transition shadow-md">
+            Get Started as a Client
+          </Link>
+        </div>
+      </section>
+
+      {/* For Freelancers Section */}
+      <section id="for-freelancers" className="py-16 px-4 max-w-7xl mx-auto bg-gray-100 rounded-3xl scroll-mt-20">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">How It Works - For Freelancers</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Flexibility, payment reliability, and exposure. Start earning with your skills today.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {freelancerSteps.map((step, index) => (
+            <div key={index} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-indigo-50 text-[var(--color-secondary)]">
+                <step.icon size={28} />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>
+              <p className="font-medium text-gray-700 mb-4">{step.description}</p>
+              <ul className="space-y-2">
+                {step.details.map((detail, i) => (
+                  <li key={i} className="text-gray-600 text-sm flex items-start">
+                    <span className="mr-2 mt-1.5 w-1.5 h-1.5 bg-gray-300 rounded-full flex-shrink-0"></span>
+                    {detail}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center mt-12">
+          <Link to="/signup?role=freelancer" className="inline-block px-8 py-3 bg-[var(--color-secondary)] text-white rounded-lg font-bold hover:bg-[var(--color-secondary-hover)] transition shadow-md">
+            Get Started as a Freelancer
+          </Link>
+        </div>
+      </section>
 
       {/* Trust & Safety Section */}
-      <div className="bg-gray-900 text-white py-20 px-4">
+      <div className="bg-gray-900 text-white py-20 px-4 mt-16">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold mb-4">Trust, Safety & Quality</h2>
@@ -207,8 +235,8 @@ const HowItWorks = () => {
         <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Popular Professional Services</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {categories.map((cat, index) => (
-            <Link 
-              key={index} 
+            <Link
+              key={index}
               to={`/gigs?category=${cat.toLowerCase().replace(' ', '-')}`}
               className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg hover:border-[var(--color-accent)] hover:shadow-sm transition group"
             >

@@ -45,9 +45,9 @@ const PublicNavLinks = () => {
         <Search size={16} className="inline mr-1" /> Find Talent
       </Link>
       <Link
-        key="/about"
-        to="/about"
-        className={`${isActive("/about")} text-sm md:text-base`}
+        key="/how-it-works"
+        to="/how-it-works"
+        className={`${isActive("/how-it-works")} text-sm md:text-base`}
       >
         How It Works
       </Link>
@@ -238,7 +238,7 @@ const Navbar = () => {
                   <span className="text-xs font-semibold text-gray-900 hidden lg:inline">
                     {user.username}
                   </span>
-                    {getRoleBadge()}
+                  {getRoleBadge()}
                   <span>
                     <img
                       className=" h-auto rounded-4xl w-5"
