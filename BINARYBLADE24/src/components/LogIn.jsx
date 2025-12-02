@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link } from '../contexts/Routers';
 import { AuthContext } from '../contexts/AuthContext';
 import AuthLayout from './AuthLayout';
+import Loader from './Loader';
 import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 
 const LogIn = () => {
@@ -98,7 +99,7 @@ const LogIn = () => {
           >
             {loading ? (
               <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                <Loader size="small" color="white" />
                 <span>Logging in...</span>
               </>
             ) : (
