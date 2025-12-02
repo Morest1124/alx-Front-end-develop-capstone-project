@@ -77,7 +77,7 @@ const ClientNavLinks = () => {
   const { currentPath } = useRouter();
   const isActive = (path) =>
     currentPath.startsWith(path)
-      ? "text-[var(--color-accent)] font-bold"
+      ? "text-[var(--color-accent)] font-bold border-b-2 border-[var(--color-accent)]"
       : "text-gray-700 hover:text-[var(--color-accent)]";
 
   return (
@@ -120,8 +120,8 @@ const FreelancerNavLinks = () => {
   const { currentPath } = useRouter();
   const isActive = (path) =>
     currentPath.startsWith(path)
-      ? "text-indigo-600 font-bold"
-      : "text-gray-700 hover:text-indigo-600";
+      ? "text-[var(--color-secondary)] font-bold border-b-2 border-[var(--color-secondary)]"
+      : "text-gray-700 hover:text-[var(--color-secondary)]";
 
   return (
     <>
@@ -188,12 +188,27 @@ const Navbar = () => {
     setIsProfileOpen(false);
   };
 
+  const getRoleBadge = () => {
+    if (!user.isLoggedIn) return null;
+
+    const isClient = user.role?.toUpperCase() === "CLIENT";
+    const bgColor = isClient ? "bg-[var(--color-accent-light)]" : "bg-[var(--color-secondary-light)]";
+    const textColor = isClient ? "text-[var(--color-accent)]" : "text-[var(--color-secondary)]";
+    const label = isClient ? "" : "";
+
+    return (
+      <span className={`ml-3 px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${bgColor} ${textColor} border border-current hidden sm:inline-block`}>
+        {label}
+      </span>
+    );
+  };
+
   return (
     <header className="sticky top-0 z-50 bg-white shadow-md">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-16 px-4">
           {/* Logo/Home Link */}
-          <div className="flex-shrink-0">
+          <div className="flex-shrink-0 flex items-center">
             <Link
               to={user.isLoggedIn ? `/${user.role}/dashboard` : "/"}
               className="text-2xl font-extrabold text-[var(--color-accent)] tracking-tight flex items-center"
@@ -203,7 +218,9 @@ const Navbar = () => {
                 src={logo}
                 alt="Logo "
               />
-            </Link> 
+            </Link>
+            {/* disable for future use */}
+            {/* {getRoleBadge()} */}
           </div>
 
           {/* Desktop Navigation Links */}
@@ -215,15 +232,11 @@ const Navbar = () => {
               <div className="relative ml-4">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center space-x-2 p-2 ml-10 mr-0 rounded-full bg-gray-100 hover:bg-gray-200 transition"
+                  className="flex items-center space-x-2 p-2 ml-4 rounded-full bg-gray-100 hover:bg-gray-200 transition"
                 >
                   <User size={20} className="text-gray-700" />
                   <span className="text-xs font-semibold text-gray-900 hidden lg:inline">
                     {user.username}
-                    {user.role &&
-                      ` (${user.role.charAt(0).toUpperCase()}${user.role
-                        .slice(1)
-                        .toLowerCase()})`}
                   </span>
                   <span>
                     <img
@@ -236,6 +249,10 @@ const Navbar = () => {
                 {/* Profile Dropdown Menu */}
                 {isProfileOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black ring-opacity-5 transition-0.9">
+                    <div className="px-4 py-2 border-b border-gray-100">
+                      <p className="text-sm font-medium text-gray-900">{user.username}</p>
+                      <p className="text-xs text-gray-500 capitalize">{user.role?.toLowerCase()}</p>
+                    </div>
                     <Link
                       to="/settings"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[var(--color-accent-light)] w-full"
@@ -285,6 +302,11 @@ const Navbar = () => {
             <NavLinksComponent />
             {user.isLoggedIn && (
               <div className="pt-4 border-t border-gray-100">
+                <div className="px-4 py-2">
+                  <span className={`inline-block px-2 py-1 rounded text-xs font-bold uppercase ${user.role?.toUpperCase() === 'CLIENT' ? 'bg-[var(--color-accent-light)] text-[var(--color-accent)]' : 'bg-[var(--color-secondary-light)] text-[var(--color-secondary)]'}`}>
+                    {user.role} Mode
+                  </span>
+                </div>
                 {user.availableRoles?.length > 1 && (
                   <button
                     onClick={handleSwitchRole}
