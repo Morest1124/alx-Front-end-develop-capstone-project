@@ -44,11 +44,11 @@ const SignUp = () => {
 
     const userData = {
       username,
-      firstName,
-      lastName,
-      country,
-      identityNumber,
-      phoneNumber,
+      first_name: firstName,
+      last_name: lastName,
+      country_origin: country,
+      identity_number: identityNumber,
+      phone_number: phoneNumber,
       email,
       password,
       roles: [role.toUpperCase()], // User Role if IsClient or IsFreelancer
