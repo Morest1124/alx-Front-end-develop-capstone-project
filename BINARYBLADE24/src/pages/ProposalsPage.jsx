@@ -10,6 +10,7 @@ import {
 } from '../api';
 import { useRouter } from '../contexts/Routers';
 import { formatToZAR } from '../utils/currency';
+import Loader from '../components/Loader';
 import { Briefcase, Send, CheckCircle, XCircle, Clock, FileText, Inbox } from 'lucide-react';
 
 const ProposalsPage = () => {
@@ -220,7 +221,7 @@ const ProposalsPage = () => {
                 <div>
                     {receivedLoading ? (
                         <div className="text-center p-8">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)] mx-auto"></div>
+                            <Loader size="large" />
                             <p className="mt-4 text-gray-600">Loading received proposals...</p>
                         </div>
                     ) : receivedError ? (
@@ -297,7 +298,7 @@ const ProposalsPage = () => {
                 <div>
                     {submittedLoading ? (
                         <div className="text-center p-8">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)] mx-auto"></div>
+                            <Loader size="large" />
                             <p className="mt-4 text-gray-600">Loading your proposals...</p>
                         </div>
                     ) : submittedError ? (
@@ -361,7 +362,7 @@ const ProposalsPage = () => {
                 <div>
                     {availableLoading ? (
                         <div className="text-center p-8">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)] mx-auto"></div>
+                            <Loader size="large" />
                             <p className="mt-4 text-gray-600">Loading available jobs...</p>
                         </div>
                     ) : availableError ? (

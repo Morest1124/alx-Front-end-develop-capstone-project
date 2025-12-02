@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { GigsContext } from "../contexts/GigsContext";
+import Loader from "./Loader";
 import { useRouter } from "../contexts/Routers";
 import { formatToZAR } from "../utils/currency";
 import { Star } from "lucide-react";
@@ -22,7 +23,7 @@ const Gigs = () => {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)] mx-auto"></div>
+        <Loader size="large" />
         <p className="mt-4 text-gray-600">Loading gigs...</p>
       </div>
     );

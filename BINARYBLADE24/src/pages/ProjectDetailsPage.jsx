@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from '../contexts/Routers';
+import Loader from '../components/Loader';
 import { formatToZAR } from '../utils/currency';
 import { AuthContext } from '../contexts/AuthContext';
 import { ShoppingCart, MessageCircle, Check, Star } from 'lucide-react';
@@ -438,7 +439,7 @@ const ProjectDetailsPage = ({ projectId }) => {
               >
                 {isLoading ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
+                    <Loader size="small" color="white" />
                     Processing...
                   </>
                 ) : (

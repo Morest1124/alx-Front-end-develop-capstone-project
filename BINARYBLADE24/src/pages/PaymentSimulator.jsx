@@ -201,7 +201,7 @@ const PaymentSimulator = () => {
                                 >
                                     {processing ? (
                                         <>
-                                            <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white mr-2"></div>
+                                            <Loader size="small" color="white" />
                                             Processing...
                                         </>
                                     ) : (
@@ -260,7 +260,7 @@ const PaymentSimulator = () => {
 
                     {loading ? (
                         <div className="p-8 text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)] mx-auto"></div>
+                            <Loader size="large" />
                             <p className="mt-4 text-gray-600">Loading transactions...</p>
                         </div>
                     ) : transactions.length === 0 ? (

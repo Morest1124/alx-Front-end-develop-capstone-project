@@ -3,6 +3,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import { getFreelancerProposals, getOpenJobs, submitProposal } from '../api';
 import { useRouter } from '../contexts/Routers';
 import { formatToZAR } from '../utils/currency';
+import Loader from '../components/Loader';
 import { Briefcase, Send, CheckCircle, XCircle, Clock, FileText } from 'lucide-react';
 
 const FreelancerProposals = () => {
@@ -126,7 +127,7 @@ const FreelancerProposals = () => {
                 <div>
                     {submittedLoading ? (
                         <div className="text-center p-8">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
+                            <Loader size="large" />
                             <p className="mt-4 text-gray-600">Loading your proposals...</p>
                         </div>
                     ) : submittedError ? (
@@ -188,7 +189,7 @@ const FreelancerProposals = () => {
                 <div>
                     {availableLoading ? (
                         <div className="text-center p-8">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
+                            <Loader size="large" />
                             <p className="mt-4 text-gray-600">Loading available jobs...</p>
                         </div>
                     ) : availableError ? (

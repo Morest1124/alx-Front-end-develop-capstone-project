@@ -3,6 +3,7 @@ import { EarningsContext } from '../contexts/EarningsContext';
 import { getOrders } from '../api';
 import { formatToZAR } from '../utils/currency';
 import { DollarSign, TrendingUp, Clock, CheckCircle, Package, Calendar, User } from 'lucide-react';
+import Loader from '../components/Loader';
 
 const Earnings = () => {
   const { transactions, totalEarnings } = useContext(EarningsContext);
@@ -106,7 +107,7 @@ const Earnings = () => {
         </h3>
         {loading ? (
           <div className="text-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-b-4 border-indigo-600 mx-auto"></div>
+            <Loader size="large" />
           </div>
         ) : orders.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
@@ -134,8 +135,8 @@ const Earnings = () => {
                       </span>
                       {order.escrow && (
                         <span className={`text-xs px-2 py-1 rounded ${order.escrow.status === 'HELD' ? 'bg-yellow-100 text-yellow-800' :
-                            order.escrow.status === 'RELEASED' ? 'bg-green-100 text-green-800' :
-                              'bg-gray-100 text-gray-800'
+                          order.escrow.status === 'RELEASED' ? 'bg-green-100 text-green-800' :
+                            'bg-gray-100 text-gray-800'
                           }`}>
                           Escrow: {order.escrow.status}
                         </span>

@@ -3,6 +3,7 @@ import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 import { useRouter } from "../contexts/Routers";
 import { getPublicProposals } from "../api";
 import { formatToZAR } from "../utils/currency";
+import Loader from "./Loader";
 
 // Card component for displaying a single proposal
 const ProposalCard = ({ proposal, handleViewProposal }) => {
@@ -111,7 +112,7 @@ const FindWork = () => {
     return (
       <div className="p-8">
         <div className="flex justify-center items-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)]"></div>
+          <Loader size="large" />
         </div>
       </div>
     );

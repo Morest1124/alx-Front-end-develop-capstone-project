@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import { getConversations, getMessages, sendMessage, markConversationRead } from "../api";
+import Loader from "./Loader";
 
 const Messages = () => {
   const { user } = useContext(AuthContext);
@@ -116,7 +117,7 @@ const Messages = () => {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)]"></div>
+        <Loader size="large" />
       </div>
     );
   }
