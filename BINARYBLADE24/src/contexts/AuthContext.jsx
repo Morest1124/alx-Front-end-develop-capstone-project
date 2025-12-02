@@ -83,20 +83,23 @@ const AuthProvider = ({ children }) => {
           : "User");
 
       // Set user state with verified data
-      setUser({
+      const newUserState = {
         isLoggedIn: true,
         role: userRole,
         availableRoles: response.roles || [userRole],
         name: userName,
         userId: userData.id,
-      });
+      };
+
+      setUser(newUserState);
+      // Explicitly save to localStorage before reload to avoid race condition
+      localStorage.setItem("user", JSON.stringify(newUserState));
 
       // Navigate to the appropriate dashboard after login
-      navigate(
-        userRole.toLowerCase() === "client"
-          ? "/client/dashboard"
-          : "/freelancer/dashboard"
-      );
+      const dashboardPath = userRole.toLowerCase() === "client"
+        ? "/client/dashboard"
+        : "/freelancer/dashboard";
+      window.location.href = dashboardPath;
     } catch (error) {
       console.error("Login failed:", error);
       setError(error.message);
@@ -114,21 +117,24 @@ const AuthProvider = ({ children }) => {
       const response = await apiRegister(userData);
 
       // If registration is successful, set up the user session
-      setUser({
+      const newUserState = {
         isLoggedIn: true,
         role: role.toUpperCase(),
         availableRoles: response.roles || [role.toUpperCase()],
         name:
           userData.username || userData.first_name + " " + userData.last_name,
         userId: response.id || response.user?.id,
-      });
+      };
+
+      setUser(newUserState);
+      // Explicitly save to localStorage before reload to avoid race condition
+      localStorage.setItem("user", JSON.stringify(newUserState));
 
       // Navigate to the appropriate dashboard after registration
-      navigate(
-        role.toLowerCase() === "client"
-          ? "/client/dashboard"
-          : "/freelancer/dashboard"
-      );
+      const dashboardPath = role.toLowerCase() === "client"
+        ? "/client/dashboard"
+        : "/freelancer/dashboard";
+      window.location.href = dashboardPath;
     } catch (error) {
       console.error("Registration failed:", error);
       setError(error.message);
@@ -157,10 +163,15 @@ const AuthProvider = ({ children }) => {
 
     const newRole =
       user.role.toUpperCase() === "CLIENT" ? "FREELANCER" : "CLIENT";
-    setUser({
+
+    const newUserState = {
       ...user,
       role: newRole,
-    });
+    };
+
+    setUser(newUserState);
+    localStorage.setItem("user", JSON.stringify(newUserState));
+
     // Navigate to the appropriate dashboard
     const newPath = newRole.toLowerCase() === "client"
       ? "/client/dashboard"
