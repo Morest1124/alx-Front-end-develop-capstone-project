@@ -109,12 +109,12 @@ const PaymentSimulator = () => {
     const getStatusColor = (status) => {
         switch (status) {
             case 'PAID':
-                return 'bg-green-100 text-green-800';
+                return 'badge-success';
             case 'PENDING':
-                return 'bg-yellow-100 text-yellow-800';
+                return 'badge-warning';
             case 'CANCELLED':
             case 'REFUNDED':
-                return 'bg-red-100 text-red-800';
+                return 'badge-error';
             default:
                 return 'bg-gray-100 text-gray-800';
         }
@@ -129,12 +129,12 @@ const PaymentSimulator = () => {
         .reduce((sum, t) => sum + parseFloat(t.amount), 0);
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+        <div className="min-h-screen bg-gradient-to-br from-[var(--color-accent-light)] to-[var(--color-secondary-light)] p-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center">
-                        <Wallet className="w-10 h-10 mr-3 text-indigo-600" />
+                        <Wallet className="w-10 h-10 mr-3 text-[var(--color-accent)]" />
                         Payment Simulator Bank
                     </h1>
                     <p className="text-gray-600">Monitor all payment transactions in real-time</p>
@@ -172,7 +172,7 @@ const PaymentSimulator = () => {
                                 <div className="border-t border-gray-300 pt-3 mt-3">
                                     <div className="flex justify-between items-center">
                                         <span className="text-lg font-semibold text-gray-900">Total Amount:</span>
-                                        <span className="text-2xl font-bold text-green-600">{formatToZAR(pendingOrder.amount)}</span>
+                                        <span className="text-2xl font-bold text-[var(--color-success)]">{formatToZAR(pendingOrder.amount)}</span>
                                     </div>
                                 </div>
                             </div>
@@ -197,7 +197,7 @@ const PaymentSimulator = () => {
                                 <button
                                     onClick={handleApprovePayment}
                                     disabled={processing}
-                                    className="flex-1 px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-semibold disabled:opacity-50 flex items-center justify-center"
+                                    className="flex-1 px-4 py-3 btn-success transition font-semibold disabled:opacity-50 flex items-center justify-center"
                                 >
                                     {processing ? (
                                         <>
@@ -219,13 +219,13 @@ const PaymentSimulator = () => {
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     {/* Bank Balance */}
-                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+                    <div className="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-secondary)] rounded-xl shadow-lg p-6 text-white">
                         <div className="flex items-center justify-between mb-2">
-                            <span className="text-indigo-100">Bank Balance</span>
-                            <Wallet className="w-6 h-6 text-indigo-200" />
+                            <span className="text-white opacity-80">Bank Balance</span>
+                            <Wallet className="w-6 h-6 text-white opacity-80" />
                         </div>
                         <div className="text-3xl font-bold">{formatToZAR(bankBalance)}</div>
-                        <div className="text-sm text-indigo-200 mt-1">Available Funds</div>
+                        <div className="text-sm text-white opacity-80 mt-1">Available Funds</div>
                     </div>
 
                     {/* Total Paid */}
@@ -234,7 +234,7 @@ const PaymentSimulator = () => {
                             <span className="text-gray-600">Total Paid</span>
                             <CheckCircle className="w-6 h-6 text-green-500" />
                         </div>
-                        <div className="text-3xl font-bold text-green-600">{formatToZAR(totalPaid)}</div>
+                        <div className="text-3xl font-bold text-[var(--color-success)]">{formatToZAR(totalPaid)}</div>
                         <div className="text-sm text-gray-500 mt-1">{transactions.filter(t => t.status === 'PAID').length} transactions</div>
                     </div>
 
@@ -244,7 +244,7 @@ const PaymentSimulator = () => {
                             <span className="text-gray-600">Pending</span>
                             <Clock className="w-6 h-6 text-yellow-500" />
                         </div>
-                        <div className="text-3xl font-bold text-yellow-600">{formatToZAR(totalPending)}</div>
+                        <div className="text-3xl font-bold text-[var(--color-warning)]">{formatToZAR(totalPending)}</div>
                         <div className="text-sm text-gray-500 mt-1">{transactions.filter(t => t.status === 'PENDING').length} awaiting</div>
                     </div>
                 </div>
@@ -253,14 +253,14 @@ const PaymentSimulator = () => {
                 <div className="bg-white rounded-xl shadow-lg overflow-hidden">
                     <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
                         <h2 className="text-xl font-bold text-gray-900 flex items-center">
-                            <TrendingUp className="w-5 h-5 mr-2 text-indigo-600" />
+                            <TrendingUp className="w-5 h-5 mr-2 text-[var(--color-accent)]" />
                             Recent Transactions
                         </h2>
                     </div>
 
                     {loading ? (
                         <div className="p-8 text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
+                            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)] mx-auto"></div>
                             <p className="mt-4 text-gray-600">Loading transactions...</p>
                         </div>
                     ) : transactions.length === 0 ? (
@@ -330,7 +330,7 @@ const PaymentSimulator = () => {
                 <div className="mt-6 text-center">
                     <button
                         onClick={fetchOrders}
-                        className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-semibold shadow-lg"
+                        className="px-6 py-3 btn-primary font-semibold shadow-lg"
                     >
                         🔄 Refresh Transactions
                     </button>

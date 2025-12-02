@@ -6,39 +6,40 @@
 		--color-primary-bg: #F8FAFC;
 		--color-primary-surface: #FFFFFF;
 		--color-primary-dark: #0F172A;
-		
+
 		/* Secondary Colors - Links, secondary actions */
 		--color-secondary: #3B82F6;
 		--color-secondary-light: #E0F2FE;
 		--color-secondary-dark: #1E40AF;
 		--color-secondary-hover: #2563EB;
-		
+
 		/* Accent Colors - CTAs and important actions */
 		--color-accent: #25B9D3;
 		--color-accent-hover: #20A8BA;
 		--color-accent-light: #CFFAFE;
-		
+
 		/* Status Colors */
 		--color-success: #10B981;
 		--color-success-light: #D1FAE5;
+		--color-success-hover: #059669;
 		--color-warning: #F59E0B;
 		--color-warning-light: #FEF3C7;
 		--color-error: #EF4444;
 		--color-error-light: #FEE2E2;
 		--color-info: #3B82F6;
 		--color-info-light: #DBEAFE;
-		
+
 		/* Text Colors */
 		--color-text-primary: #0F172A;
 		--color-text-secondary: #64748B;
 		--color-text-muted: #94A3B8;
 		--color-text-inverse: #FFFFFF;
-		
+
 		/* Border Colors */
 		--color-border: #E2E8F0;
 		--color-border-focus: #25B9D3;
 		--color-border-error: #EF4444;
-		
+
 		/* Message Colors (for chat) */
 		--color-message-sent: #DCF8C6;
 		--color-message-received: #FFFFFF;
@@ -49,58 +50,118 @@
 	.nav-link {
 		@apply text-xs text-gray-700 hover:text-[var(--color-accent)] px-5 py-3 font-medium transition-colors duration-250 rounded-lg;
 	}
-	
+
 	/* Button Styles */
 	.btn-primary {
-		@apply px-6 py-3 font-medium text-white rounded-lg transition-colors shadow-sm;
+		@apply px-6 py-3 font-medium text-white rounded-lg shadow-sm;
 		background-color: var(--color-accent);
+		transition: all 0.2s ease-in-out;
 	}
-	
+
 	.btn-primary:hover:not(:disabled) {
 		background-color: var(--color-accent-hover);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	}
-	
+
+	.btn-primary:active:not(:disabled) {
+		background-color: var(--color-accent-hover);
+		transform: translateY(0);
+	}
+
 	.btn-secondary {
-		@apply px-6 py-3 font-medium text-white rounded-lg transition-colors shadow-sm;
+		@apply px-6 py-3 font-medium text-white rounded-lg shadow-sm;
 		background-color: var(--color-secondary);
+		transition: all 0.2s ease-in-out;
 	}
-	
+
 	.btn-secondary:hover:not(:disabled) {
 		background-color: var(--color-secondary-hover);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	}
-	
+
+	.btn-secondary:active:not(:disabled) {
+		background-color: var(--color-secondary-dark);
+		transform: translateY(0);
+	}
+
+	.btn-success {
+		@apply px-6 py-3 font-medium text-white rounded-lg shadow-sm;
+		background-color: var(--color-success);
+		transition: all 0.2s ease-in-out;
+	}
+
+	.btn-success:hover:not(:disabled) {
+		background-color: var(--color-success-hover);
+		transform: translateY(-1px);
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+	}
+
+	.btn-success:active:not(:disabled) {
+		background-color: var(--color-success-hover);
+		transform: translateY(0);
+	}
+
 	.btn-danger {
-		@apply px-6 py-3 font-medium text-white rounded-lg transition-colors shadow-sm;
+		@apply px-6 py-3 font-medium text-white rounded-lg shadow-sm;
 		background-color: var(--color-error);
+		transition: all 0.2s ease-in-out;
 	}
-	
+
 	.btn-danger:hover:not(:disabled) {
-		@apply bg-red-600;
+		background-color: #DC2626;
+		transform: translateY(-1px);
+		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	}
-	
+
+	.btn-danger:active:not(:disabled) {
+		background-color: #B91C1C;
+		transform: translateY(0);
+	}
+
 	/* Status Badges */
 	.badge-success {
-		@apply px-3 py-1 rounded-full text-sm font-semibold;
+		@apply px-3 py-1 rounded-full text-sm font-semibold transition-colors;
 		background-color: var(--color-success-light);
 		color: var(--color-success);
 	}
-	
+
+	.badge-success:hover {
+		background-color: var(--color-success);
+		color: white;
+	}
+
 	.badge-warning {
-		@apply px-3 py-1 rounded-full text-sm font-semibold;
+		@apply px-3 py-1 rounded-full text-sm font-semibold transition-colors;
 		background-color: var(--color-warning-light);
 		color: var(--color-warning);
 	}
-	
+
+	.badge-warning:hover {
+		background-color: var(--color-warning);
+		color: white;
+	}
+
 	.badge-error {
-		@apply px-3 py-1 rounded-full text-sm font-semibold;
+		@apply px-3 py-1 rounded-full text-sm font-semibold transition-colors;
 		background-color: var(--color-error-light);
 		color: var(--color-error);
 	}
-	
+
+	.badge-error:hover {
+		background-color: var(--color-error);
+		color: white;
+	}
+
 	.badge-info {
-		@apply px-3 py-1 rounded-full text-sm font-semibold;
+		@apply px-3 py-1 rounded-full text-sm font-semibold transition-colors;
 		background-color: var(--color-info-light);
 		color: var(--color-info);
 	}
-}
 
+	.badge-info:hover {
+		background-color: var(--color-info);
+		color: white;
+	}
+}

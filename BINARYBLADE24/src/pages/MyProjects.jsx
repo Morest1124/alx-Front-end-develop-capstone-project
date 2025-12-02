@@ -119,7 +119,7 @@ const MyProjects = () => {
                 <button
                     onClick={() => setActiveTab('active')}
                     className={`py-3 px-6 text-lg font-semibold ${activeTab === 'active'
-                        ? 'border-b-2 border-indigo-500 text-indigo-600'
+                        ? 'border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]'
                         : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
@@ -128,7 +128,7 @@ const MyProjects = () => {
                 <button
                     onClick={() => setActiveTab('past')}
                     className={`py-3 px-6 text-lg font-semibold ${activeTab === 'past'
-                        ? 'border-b-2 border-indigo-500 text-indigo-600'
+                        ? 'border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]'
                         : 'text-gray-500 hover:text-gray-700'
                         }`}
                 >
@@ -164,15 +164,15 @@ const MyProjects = () => {
                                     <div className="flex flex-wrap gap-4 text-sm text-gray-700">
                                         <div className="flex items-center">
                                             <span className="font-semibold mr-2">Earnings:</span>
-                                            <span className="text-green-600 font-bold">
+                                            <span className="text-[var(--color-success)] font-bold">
                                                 {formatToZAR(project.budget)}
                                             </span>
                                         </div>
                                         <div className="flex items-center">
                                             <span className="font-semibold mr-2">Status:</span>
-                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${project.status === 'COMPLETED' ? 'bg-green-100 text-green-800' :
-                                                    project.status === 'PAID' ? 'bg-blue-100 text-blue-800' :
-                                                        'bg-yellow-100 text-yellow-800'
+                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold ${project.status === 'COMPLETED' ? 'badge-success' :
+                                                project.status === 'PAID' ? 'badge-info' :
+                                                    'badge-warning'
                                                 }`}>
                                                 {project.status}
                                             </span>
@@ -194,7 +194,7 @@ const MyProjects = () => {
                                 <div className="ml-6">
                                     <Link
                                         to={`/freelancer/billing`}
-                                        className="inline-block bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition-colors font-semibold"
+                                        className="inline-block btn-primary px-6 py-2 font-semibold"
                                     >
                                         View Order
                                     </Link>

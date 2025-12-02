@@ -23,7 +23,7 @@ const ProposalCard = ({ proposal, handleViewProposal }) => {
         />
       )}
       {!proposal.project?.thumbnail && (
-        <div className="w-full h-48 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+        <div className="w-full h-48 bg-gradient-to-br from-[var(--color-secondary)] to-[var(--color-accent)] flex items-center justify-center">
           <span className="text-white text-4xl font-bold">
             {proposal.project?.title?.charAt(0) || "P"}
           </span>
@@ -40,7 +40,7 @@ const ProposalCard = ({ proposal, handleViewProposal }) => {
         {/* Freelancer Info */}
         {proposal.freelancer && (
           <div className="flex items-center mt-2 mb-3">
-            <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold">
+            <div className="w-8 h-8 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-white font-semibold">
               {proposal.freelancer.first_name?.charAt(0) || 'F'}
             </div>
             <p className="ml-2 text-sm text-gray-700">
@@ -52,12 +52,12 @@ const ProposalCard = ({ proposal, handleViewProposal }) => {
         <div className="flex justify-between items-center mt-4 pt-3 border-t border-gray-200">
           <div>
             <p className="text-xs text-gray-500">Budget</p>
-            <p className="text-lg font-bold text-green-600">
+            <p className="text-lg font-bold text-[var(--color-success)]">
               {formatToZAR(proposal.bid_amount || proposal.project?.budget)}
             </p>
           </div>
           <div className="text-right">
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+            <span className="badge-info">
               {proposal.status || "PENDING"}
             </span>
           </div>
@@ -111,7 +111,7 @@ const FindWork = () => {
     return (
       <div className="p-8">
         <div className="flex justify-center items-center min-h-[400px]">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[var(--color-accent)]"></div>
         </div>
       </div>
     );
@@ -137,7 +137,7 @@ const FindWork = () => {
         <input
           type="text"
           placeholder="Search for proposals..."
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)]"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

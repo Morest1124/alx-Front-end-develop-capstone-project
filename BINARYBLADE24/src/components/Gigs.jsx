@@ -62,7 +62,7 @@ const Gigs = () => {
                   className="w-full h-48 object-cover"
                 />
               ) : (
-                <div className="w-full h-48 bg-gradient-to-br from-[var(--color-secondary)] to-[var(--color-secondary-dark)] flex items-center justify-center">
+                <div className="w-full h-48 bg-gradient-to-br from-[var(--color-secondary)] to-[var(--color-accent)] flex items-center justify-center">
                   <span className="text-white text-4xl font-bold">
                     {gig.title.charAt(0)}
                   </span>
@@ -72,7 +72,7 @@ const Gigs = () => {
               <div className="p-6">
                 {/* Freelancer Info */}
                 <div className="flex items-center mb-4">
-                  <div className="w-10 h-10 rounded-full bg-[var(--color-secondary)] flex items-center justify-center text-white font-semibold mr-3">
+                  <div className="w-10 h-10 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-white font-semibold mr-3">
                     {gig.owner_details?.first_name?.charAt(0) || 'F'}
                   </div>
                   <div>

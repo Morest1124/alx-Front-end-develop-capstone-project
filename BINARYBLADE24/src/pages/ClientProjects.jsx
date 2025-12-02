@@ -72,7 +72,7 @@ const ClientProjects = () => {
           <input
             type="text"
             placeholder="Search..."
-            className="px-4 py-2 border rounded-lg w-full"
+            className="px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)]"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -94,8 +94,8 @@ const ClientProjects = () => {
                 />
                 <span
                   className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${project.status === "IN_PROGRESS"
-                      ? "bg-yellow-500"
-                      : "bg-green-500"
+                    ? "bg-yellow-500"
+                    : "bg-green-500"
                     }`}
                 >
                   {project.status}
@@ -123,13 +123,13 @@ const ClientProjects = () => {
                       e.stopPropagation();
                       openModal(project);
                     }}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                    className="btn-secondary px-4 py-2"
                   >
                     Send
                   </button>
                   <button
                     onClick={(e) => handleContact(e, project)}
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                    className="btn-primary px-4 py-2"
                   >
                     Contact Freelancer
                   </button>
@@ -157,8 +157,8 @@ const ClientProjects = () => {
                 />
                 <span
                   className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${project.status === "IN_PROGRESS"
-                      ? "bg-yellow-500"
-                      : "bg-green-500"
+                    ? "bg-yellow-500"
+                    : "bg-green-500"
                     }`}
                 >
                   {project.status}
@@ -186,13 +186,13 @@ const ClientProjects = () => {
                       e.stopPropagation();
                       openModal(project);
                     }}
-                    className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                    className="btn-secondary px-4 py-2"
                   >
                     Send
                   </button>
                   <button
                     onClick={(e) => handleContact(e, project)}
-                    className="bg-green-500 text-white px-4 py-2 rounded-lg"
+                    className="btn-primary px-4 py-2"
                   >
                     Contact Freelancer
                   </button>
@@ -213,7 +213,7 @@ const ClientProjects = () => {
             <p><strong>Country of Origin:</strong> {selectedProject.countryOfOrigin}</p>
             <button
               onClick={closeModal}
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg"
+              className="mt-4 btn-danger px-4 py-2"
             >
               Close
             </button>

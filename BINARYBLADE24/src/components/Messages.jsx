@@ -207,14 +207,14 @@ const Messages = () => {
                   >
                     <div
                       className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${message.sender === user.id
-                        ? "text-gray-100"
+                        ? "text-white"
                         : "bg-white text-black-900"
                         }`}
-                      style={message.sender === user.id ? { backgroundColor: 'var(--color-message-sent)' } : {}}
+                      style={message.sender === user.id ? { backgroundColor: 'var(--color-accent)' } : {}}
                     >
                       <p className="break-words text-sm">{message.body}</p>
                       <p
-                        className={`text-xs mt-1 text-right ${message.sender === user.id ? "text-gray-600" : "text-gray-500"
+                        className={`text-xs mt-1 text-right ${message.sender === user.id ? "text-gray-100" : "text-gray-500"
                           }`}
                       >
                         {new Date(message.timestamp).toLocaleTimeString([], {
