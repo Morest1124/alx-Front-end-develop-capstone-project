@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import { useRouter } from './Routers';
 import { login as apiLogin, register as apiRegister } from "../api";
+import LoadingOverlay from '../components/LoadingOverlay';
 
 // Create the context
 export const AuthContext = createContext();
@@ -22,6 +23,7 @@ const AuthProvider = ({ children }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isSwitchingRole, setIsSwitchingRole] = useState(false);
   const { navigate } = useRouter();
 
   useEffect(() => {
@@ -161,6 +163,8 @@ const AuthProvider = ({ children }) => {
       return;
     }
 
+    setIsSwitchingRole(true);
+
     const newRole =
       user.role.toUpperCase() === "CLIENT" ? "FREELANCER" : "CLIENT";
 
@@ -177,14 +181,18 @@ const AuthProvider = ({ children }) => {
       ? "/client/dashboard"
       : "/freelancer/dashboard";
 
-    // Force page reload to refresh entire UI for the new role
-    window.location.href = newPath;
+    // Small delay to show loading animation before reload
+    setTimeout(() => {
+      // Force page reload to refresh entire UI for the new role
+      window.location.href = newPath;
+    }, 300);
   };
 
   return (
     <AuthContext.Provider
       value={{ user, login, register, logout, loading, error, switchRole, setError }}
     >
+      {isSwitchingRole && <LoadingOverlay message="Switching role..." />}
       {children}
     </AuthContext.Provider>
   );
