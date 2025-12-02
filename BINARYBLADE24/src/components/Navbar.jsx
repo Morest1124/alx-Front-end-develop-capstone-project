@@ -194,7 +194,7 @@ const Navbar = () => {
     const isClient = user.role?.toUpperCase() === "CLIENT";
     const bgColor = isClient ? "bg-[var(--color-accent-light)]" : "bg-[var(--color-secondary-light)]";
     const textColor = isClient ? "text-[var(--color-accent)]" : "text-[var(--color-secondary)]";
-    const label = isClient ? "" : "";
+    const label = isClient ? "Client" : "Freelancer";
 
     return (
       <span className={`ml-3 px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${bgColor} ${textColor} border border-current hidden sm:inline-block`}>
@@ -238,6 +238,7 @@ const Navbar = () => {
                   <span className="text-xs font-semibold text-gray-900 hidden lg:inline">
                     {user.username}
                   </span>
+                    {getRoleBadge()}
                   <span>
                     <img
                       className=" h-auto rounded-4xl w-5"
