@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { getClientProjects } from "../api";
 import { useRouter } from "../contexts/Routers";
 import { AuthContext } from '../contexts/AuthContext';
+import Loader from '../components/Loader';
 
 const ClientProjects = () => {
   const { navigate } = useRouter();
@@ -62,7 +63,12 @@ const ClientProjects = () => {
   };
 
   if (loading) {
-    return <div className="p-8 text-center">Loading...</div>;
+    return (
+      <div className="p-8 flex flex-col items-center justify-center">
+        <Loader size="large" />
+        <p className="mt-4 text-gray-600">Loading projects...</p>
+      </div>
+    );
   }
 
   return (

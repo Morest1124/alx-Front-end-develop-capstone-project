@@ -5,6 +5,7 @@ import { getOrders } from '../api';
 import PageWrapper from './PageWrapper';
 import { DashboardCard, LucideIcon } from './DashboardUtils';
 import { formatToZAR } from '../utils/currency';
+import Loader from '../components/Loader';
 
 const ClientDashboard = () => {
   const { user } = useContext(AuthContext);
@@ -44,7 +45,10 @@ const ClientDashboard = () => {
   if (loading) {
     return (
       <PageWrapper title="Loading Dashboard...">
-        <div className="text-center p-8">Loading...</div>
+        <div className="flex flex-col items-center justify-center p-12">
+          <Loader size="large" />
+          <p className="mt-4 text-gray-600">Loading dashboard...</p>
+        </div>
       </PageWrapper>
     );
   }

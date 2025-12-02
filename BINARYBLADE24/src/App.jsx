@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useCallback } from "react";
 import AuthProvider, { AuthContext } from "./contexts/AuthContext";
 import { RouterProvider, useRouter, Link } from "./contexts/Routers";
 import Navbar from "./components/Navbar";
+import Loader from "./components/Loader";
 import PublicHome from "./pages/PublicHome";
 import ClientDashboard from "./pages/ClientDashboard";
 import FreelancerDashboard from "./pages/FreelancerDashboard";
@@ -157,7 +158,7 @@ const AppContent = () => {
       <main>
         {authLoading ? (
           <div className="flex justify-center items-center min-h-screen">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+            <Loader size="large" />
           </div>
         ) : (
           renderPage()

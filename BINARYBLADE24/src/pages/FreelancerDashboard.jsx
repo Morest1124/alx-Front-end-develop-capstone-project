@@ -5,6 +5,7 @@ import PageWrapper from "./PageWrapper";
 import { LucideIcon, DashboardCard } from "./DashboardUtils";
 import CreateGigForm from "../components/CreateGigForm";
 import { formatToZAR } from "../utils/currency";
+import Loader from '../components/Loader';
 
 import { Link } from "../contexts/Routers";
 
@@ -36,7 +37,10 @@ const FreelancerDashboard = () => {
   if (loading) {
     return (
       <PageWrapper title="Loading Dashboard...">
-        <div className="text-center p-8">Loading...</div>
+        <div className="flex flex-col items-center justify-center p-12">
+          <Loader size="large" />
+          <p className="mt-4 text-gray-600">Loading dashboard...</p>
+        </div>
       </PageWrapper>
     );
   }
