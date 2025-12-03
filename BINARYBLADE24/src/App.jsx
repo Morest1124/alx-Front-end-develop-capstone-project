@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useCallback } from "react";
 import AuthProvider, { AuthContext } from "./contexts/AuthContext";
-import { RouterProvider, useRouter, Link } from "./contexts/Routers";
+import { RouterProvider, useRouter } from "./contexts/Routers";
+import { Routes, Route, Navigate, Outlet, useParams } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Loader from "./components/Loader";
 import PublicHome from "./pages/PublicHome";
@@ -34,20 +35,48 @@ import MyOrders from "./pages/MyOrders";
 import FreelancerOrders from "./pages/FreelancerOrders";
 import { fetchRates } from "./utils/currency";
 
+// Protected Route Component
+const ProtectedRoute = ({ allowedRoles }) => {
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader size="large" />
+      </div>
+    );
+  }
+
+  if (!user.isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (allowedRoles && !allowedRoles.includes(user.role?.toUpperCase())) {
+    // Redirect to appropriate dashboard if role doesn't match
+    const dashboard =
+      user.role?.toLowerCase() === "client"
+        ? "/client/dashboard"
+        : "/freelancer/dashboard";
+    return <Navigate to={dashboard} replace />;
+  }
+
+  return <Outlet />;
+};
+
+// Wrapper components to extract params
+const GigDetailsPageWrapper = () => {
+  const { gigId } = useParams();
+  return <GigDetailsPage gigId={gigId} />;
+};
+
+const ProjectDetailsPageWrapper = () => {
+  const { projectId } = useParams();
+  return <ProjectDetailsPage projectId={projectId} />;
+};
+
 // The main App component which combines all parts
 const AppContent = () => {
-  const { currentPath } = useRouter();
   const { user, loading: authLoading } = useContext(AuthContext);
-  const { navigate } = useRouter();
-
-  // Check if user is authenticated
-  const requireAuth = () => {
-    if (!user.isLoggedIn) {
-      navigate("/login");
-      return false;
-    }
-    return true;
-  };
 
   // Get appropriate dashboard path based on user role
   const getDashboardPath = useCallback(() => {
@@ -55,118 +84,94 @@ const AppContent = () => {
     return role === "client" ? "/client/dashboard" : "/freelancer/dashboard";
   }, [user.role]);
 
-  useEffect(() => {
-    // Redirect to appropriate dashboard if user is logged in and tries to access auth pages
-    if (
-      user.isLoggedIn &&
-      (currentPath === "/login" || currentPath === "/signup")
-    ) {
-      navigate(getDashboardPath());
-    }
-  }, [currentPath, user.isLoggedIn, navigate, getDashboardPath]);
-
-  // routing logic
-  const renderPage = () => {
-    // Handle Gig Details Page
-    if (currentPath.startsWith("/gigs/")) {
-      const gigId = currentPath.split("/")[2];
-      return requireAuth() ? <GigDetailsPage gigId={gigId} /> : null;
-    }
-
-    // Handle Project Details Page
-    if (currentPath.startsWith("/projects/")) {
-      const projectId = currentPath.split("/")[2];
-      return requireAuth() ? (
-        <ProjectDetailsPage projectId={projectId} />
-      ) : null;
-    }
-
-    // PUBLIC PAGES
-    if (currentPath === "/") return <FindWork />;
-    if (currentPath === "/jobs") return <FindWork />;
-    if (currentPath === "/find-work") return <FindWork />;
-    if (currentPath === "/talent") return <Talent />;
-    if (currentPath === "/find-talent") return <Talent />;
-    if (currentPath === "/how-it-works") return <HowItWorks />;
-    if (currentPath === "/about") return <PublicHome />;
-    if (currentPath === "/login") return <LogIn />;
-    if (currentPath === "/signup") return <SignUp />;
-
-    // AUTHENTICATED PAGES
-    if (user.isLoggedIn) {
-      const userRole = user.role?.toLowerCase();
-
-      if (userRole === "client") {
-        if (currentPath.startsWith("/client/dashboard"))
-          return <ClientDashboard />;
-        if (currentPath.startsWith("/client/projects"))
-          return <ClientProjects />;
-        if (currentPath.startsWith("/client/talent")) return <Talent />;
-        if (currentPath.startsWith("/client/proposals"))
-          return <ProposalsPage />;
-        if (currentPath.startsWith("/client/earnings"))
-          return (
-            <PageWrapper title="Earnings">
-              <Earnings />
-            </PageWrapper>
-          );
-        // Note: Clients CANNOT post jobs in Pure Fiverr Model
-        // They browse and purchase gigs created by freelancers
-      }
-
-      if (userRole === "freelancer") {
-        if (
-          currentPath.startsWith("/freelancer/dashboard") ||
-          currentPath.startsWith("/freelancer/jobs")
-        )
-          return <FreelancerDashboard />;
-        if (currentPath.startsWith("/freelancer/projects")) return <MyProjects />;
-        if (currentPath.startsWith("/freelancer/gigs")) return <GigsPage />;
-        if (currentPath.startsWith("/freelancer/proposals"))
-          return <ProposalsPage />;
-        if (currentPath.startsWith("/freelancer/create-gig"))
-          return <CreateProject />;
-        if (currentPath.startsWith("/freelancer/earnings"))
-          return (
-            <PageWrapper title="Earnings">
-              <Earnings />
-            </PageWrapper>
-          );
-        if (currentPath.startsWith("/freelancer/billing"))
-          return <FreelancerOrders />;
-      }
-
-      // Client-specific pages
-      if (currentPath === "/client/dashboard") return <ClientDashboard />;
-      if (currentPath === "/client/projects") return <ClientProjects />;
-      if (currentPath === "/client/billing") return <MyOrders />;
-      if (currentPath === "/payment-simulator") return <PaymentSimulator />;
-      if (
-        currentPath.startsWith("/client/messages") ||
-        currentPath.startsWith("/freelancer/messages")
-      )
-        return <Messages />;
-
-      // Shared authenticated pages
-      if (currentPath === "/settings") return <Settings />;
-      if (currentPath === "/settings/tax") return <Tax />;
-    }
-
-    // Default 404
-    return <UnknownPage />;
-  };
+  if (authLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader size="large" />
+      </div>
+    );
+  }
 
   return (
     <>
       <Navbar />
       <main>
-        {authLoading ? (
-          <div className="flex justify-center items-center min-h-screen">
-            <Loader size="large" />
-          </div>
-        ) : (
-          renderPage()
-        )}
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<FindWork />} />
+          <Route path="/jobs" element={<FindWork />} />
+          <Route path="/find-work" element={<FindWork />} />
+          <Route path="/talent" element={<Talent />} />
+          <Route path="/find-talent" element={<Talent />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
+          <Route path="/about" element={<PublicHome />} />
+
+          {/* Auth Routes - Redirect to dashboard if already logged in */}
+          <Route
+            path="/login"
+            element={
+              user.isLoggedIn ? <Navigate to={getDashboardPath()} replace /> : <LogIn />
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              user.isLoggedIn ? <Navigate to={getDashboardPath()} replace /> : <SignUp />
+            }
+          />
+
+          {/* Shared Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/gigs/:gigId" element={<GigDetailsPageWrapper />} />
+            <Route path="/projects/:projectId" element={<ProjectDetailsPageWrapper />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/settings/tax" element={<Tax />} />
+            <Route path="/payment-simulator" element={<PaymentSimulator />} />
+
+            {/* Messages can be accessed by both, path differs but component is same */}
+            <Route path="/client/messages" element={<Messages />} />
+            <Route path="/freelancer/messages" element={<Messages />} />
+          </Route>
+
+          {/* Client Protected Routes */}
+          <Route element={<ProtectedRoute allowedRoles={["CLIENT"]} />}>
+            <Route path="/client/dashboard" element={<ClientDashboard />} />
+            <Route path="/client/projects" element={<ClientProjects />} />
+            <Route path="/client/talent" element={<Talent />} />
+            <Route path="/client/proposals" element={<ProposalsPage />} />
+            <Route
+              path="/client/earnings"
+              element={
+                <PageWrapper title="Earnings">
+                  <Earnings />
+                </PageWrapper>
+              }
+            />
+            <Route path="/client/billing" element={<MyOrders />} />
+          </Route>
+
+          {/* Freelancer Protected Routes */}
+          <Route element={<ProtectedRoute allowedRoles={["FREELANCER"]} />}>
+            <Route path="/freelancer/dashboard" element={<FreelancerDashboard />} />
+            <Route path="/freelancer/jobs" element={<FreelancerDashboard />} />
+            <Route path="/freelancer/projects" element={<MyProjects />} />
+            <Route path="/freelancer/gigs" element={<GigsPage />} />
+            <Route path="/freelancer/proposals" element={<ProposalsPage />} />
+            <Route path="/freelancer/create-gig" element={<CreateProject />} />
+            <Route
+              path="/freelancer/earnings"
+              element={
+                <PageWrapper title="Earnings">
+                  <Earnings />
+                </PageWrapper>
+              }
+            />
+            <Route path="/freelancer/billing" element={<FreelancerOrders />} />
+          </Route>
+
+          {/* 404 */}
+          <Route path="*" element={<UnknownPage />} />
+        </Routes>
       </main>
       <footer className="p-4 text-center text-sm text-gray-500 bg-white border-t">
         <p>&copy; 2025 BINARYBLADE24. All rights reserved.</p>

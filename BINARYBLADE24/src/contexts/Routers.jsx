@@ -1,63 +1,39 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import LoadingOverlay from "../components/LoadingOverlay";
+import React from "react";
+import {
+  BrowserRouter,
+  useLocation,
+  useNavigate,
+  Link as RouterLink,
+} from "react-router-dom";
 
-// router logic using state for the current view
-export const RouterContext = createContext();
-
+// RouterProvider now wraps the application in BrowserRouter
 export const RouterProvider = ({ children }) => {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname);
-  const [isNavigating, setIsNavigating] = useState(false);
-
-  useEffect(() => {
-    // Handle browser back/forward buttons
-    const handlePopState = () => {
-      setIsNavigating(true);
-      setCurrentPath(window.location.pathname);
-      // Short delay to show loading animation
-      setTimeout(() => setIsNavigating(false), 300);
-    };
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
-
-  const navigate = (path, state = {}) => {
-    setIsNavigating(true);
-    window.history.pushState(state, "", path);
-    setCurrentPath(path);
-    window.scrollTo(0, 0);
-    // Short delay to show loading animation
-    setTimeout(() => setIsNavigating(false), 300);
-  };
-
-  return (
-    <RouterContext.Provider value={{ currentPath, navigate, isNavigating }}>
-      {isNavigating && <LoadingOverlay message="Loading..." />}
-      {children}
-    </RouterContext.Provider>
-  );
+  return <BrowserRouter>{children}</BrowserRouter>;
 };
 
-// Custom hook to use navigation
-export const useRouter = () => useContext(RouterContext);
+// Custom hook to adapt react-router-dom hooks to the existing API
+export const useRouter = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  return {
+    currentPath: location.pathname,
+    navigate,
+    // Add other properties if needed, e.g., location state
+    state: location.state,
+  };
+};
 
 // Custom Link component for internal navigation
 export const Link = ({ to, children, className = "" }) => {
-  const { navigate } = useRouter();
+  
   const baseClasses =
     "px-4 py-2 font-medium transition-colors duration-200 rounded-lg";
 
-  const handleClick = (e) => {
-    e.preventDefault();
-    navigate(to);
-  };
-
   return (
-    <a
-      href={to}
-      onClick={handleClick}
-      className={`${baseClasses} ${className}`}
-    >
+    <RouterLink to={to} className={`${baseClasses} ${className}`}>
       {children}
-    </a>
+    </RouterLink>
   );
 };
+

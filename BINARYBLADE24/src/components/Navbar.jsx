@@ -209,8 +209,9 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16 px-4">
           {/* Logo/Home Link */}
           <div className="flex-shrink-0 flex items-center">
+            
             <Link
-              to={user.isLoggedIn ? `/${user.role}/dashboard` : "/"}
+              to={user.isLoggedIn ? `/${user.role?.toLowerCase()}/dashboard` : "/"}
               className="text-2xl font-extrabold text-[var(--color-accent)] tracking-tight flex items-center"
             >
               <img
@@ -252,6 +253,7 @@ const Navbar = () => {
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black ring-opacity-5 transition-0.9">
                     <div className="px-4 py-2 border-b border-gray-100">
                       <p className="text-sm font-medium text-gray-900">{user.username}</p>
+                      {/* <p className="text-sm font-medium text-gray-900">{user.username}</p> */}
                       <p className="text-xs text-gray-500 capitalize">{user.role?.toLowerCase()}</p>
                     </div>
                     <Link
