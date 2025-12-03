@@ -100,6 +100,17 @@ const ClientDashboard = () => {
             />
           </div>
 
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <DashboardCard
+              title="Account Settings"
+              value="Manage"
+              icon="Settings"
+              to="/settings"
+              bgColor="bg-purple-50"
+              textColor="text-purple-600"
+            />
+          </div>
+
           <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
             <h3 className="text-xl font-semibold mb-4 text-gray-700 flex items-center">
               <LucideIcon

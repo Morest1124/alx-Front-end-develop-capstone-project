@@ -301,3 +301,40 @@ export const getUserReviews = (userId) => {
 export const createReview = (projectId, reviewData) => {
   return apiClient.post(`/reviews/projects/${projectId}/create/`, reviewData);
 };
+
+// ===== SETTINGS API =====
+
+// Get user account information
+export const getUserAccount = () => {
+  return apiClient.get('/auth/settings/account/');
+};
+
+// Update user account information
+export const updateUserAccount = (accountData) => {
+  return apiClient.put('/auth/settings/account/', accountData);
+};
+
+// Change password
+export const changePassword = (passwordData) => {
+  return apiClient.put('/auth/settings/password/', passwordData);
+};
+
+// Get notification preferences
+export const getNotificationPreferences = () => {
+  return apiClient.get('/auth/settings/notifications/');
+};
+
+// Update notification preferences
+export const updateNotificationPreferences = (preferences) => {
+  return apiClient.put('/auth/settings/notifications/', preferences);
+};
+
+// Get user preferences
+export const getUserPreferences = () => {
+  return apiClient.get('/auth/settings/preferences/');
+};
+
+// Update user preferences
+export const updateUserPreferences = (preferences) => {
+  return apiClient.put('/auth/settings/preferences/', preferences);
+};
