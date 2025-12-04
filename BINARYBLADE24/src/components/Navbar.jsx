@@ -269,7 +269,7 @@ const Navbar = () => {
                         className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[var(--color-accent-light)] w-full text-left"
                       >
                         <User size={16} className="mr-2" /> Switch to{" "}
-                        {user.role.toUpperCase() === "CLIENT"
+                        {user.role?.toUpperCase() === "CLIENT"
                           ? "Freelancer"
                           : "Client"}
                       </button>

@@ -68,6 +68,17 @@ const AuthProvider = ({ children }) => {
     };
   }, [user.isLoggedIn]);
 
+  // Listen for global logout events (e.g. from api 401 errors)
+  useEffect(() => {
+    const handleLogoutEvent = () => {
+      logout();
+    };
+    window.addEventListener('auth:logout', handleLogoutEvent);
+    return () => {
+      window.removeEventListener('auth:logout', handleLogoutEvent);
+    };
+  }, []);
+
   const login = async (credentials) => {
     try {
       setLoading(true);
@@ -174,7 +185,7 @@ const AuthProvider = ({ children }) => {
     setIsSwitchingRole(true);
 
     const newRole =
-      user.role.toUpperCase() === "CLIENT" ? "FREELANCER" : "CLIENT";
+      user.role?.toUpperCase() === "CLIENT" ? "FREELANCER" : "CLIENT";
 
     const newUserState = {
       ...user,

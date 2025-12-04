@@ -40,6 +40,8 @@ apiClient.interceptors.response.use(
         message = "Invalid email or password. Please try again.";
       } else {
         message = "You are not authorized. Please log in.";
+        // Trigger global logout for 401 errors on protected routes
+        window.dispatchEvent(new Event("auth:logout"));
       }
     } else if (error.response?.status === 400) {
       const errorData = error.response.data;
