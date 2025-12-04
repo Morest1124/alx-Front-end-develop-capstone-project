@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { getOrders, cancelOrder } from '../api';
-import { formatToZAR } from '../utils/currency';
+import { useCurrency } from '../contexts/CurrencyContext';
 import Loader from '../components/Loader';
 import { Package, Clock, CheckCircle, DollarSign, User, Calendar, TrendingUp, XCircle } from 'lucide-react';
 
 const FreelancerOrders = () => {
+    const { formatPrice } = useCurrency();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [processingOrderId, setProcessingOrderId] = useState(null);
@@ -98,7 +99,7 @@ const FreelancerOrders = () => {
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-4xl font-bold text-gray-900 mb-2 flex items-center">
-                        <Package className="w-10 h-10 mr-3 text-indigo-600" />
+                        <Package className="w-10 h-10 mr-3 text-[var(--color-accent)]" />
                         My Orders
                     </h1>
                     <p className="text-gray-600">Track your gig orders and earnings</p>
@@ -111,7 +112,7 @@ const FreelancerOrders = () => {
                             <span className="text-green-100">Total Earnings</span>
                             <TrendingUp className="w-6 h-6 text-green-200" />
                         </div>
-                        <div className="text-3xl font-bold">{formatToZAR(stats.totalEarnings)}</div>
+                        <div className="text-3xl font-bold">{formatPrice(stats.totalEarnings, 'USD')}</div>
                         <div className="text-sm text-green-200 mt-1">From completed orders</div>
                     </div>
 
@@ -120,7 +121,7 @@ const FreelancerOrders = () => {
                             <span className="text-gray-600">Pending</span>
                             <DollarSign className="w-6 h-6 text-yellow-500" />
                         </div>
-                        <div className="text-3xl font-bold text-yellow-600">{formatToZAR(stats.pendingEarnings)}</div>
+                        <div className="text-3xl font-bold text-yellow-600">{formatPrice(stats.pendingEarnings, 'USD')}</div>
                         <div className="text-sm text-gray-500 mt-1">In escrow</div>
                     </div>
 
@@ -151,7 +152,7 @@ const FreelancerOrders = () => {
                         <p className="text-gray-600 mb-6">You haven't received any orders yet.</p>
                         <a
                             href="/freelancer/gigs"
-                            className="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold"
+                            className="inline-block px-6 py-3 bg-[var(--color-accent)] text-white rounded-lg hover:bg-[var(--color-accent)]/90 transition font-semibold"
                         >
                             View My Gigs
                         </a>
@@ -161,11 +162,11 @@ const FreelancerOrders = () => {
                         {orders.map((order) => (
                             <div key={order.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition">
                                 {/* Order Header */}
-                                <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white">
+                                <div className="bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-secondary)] p-6 text-white">
                                     <div className="flex justify-between items-start">
                                         <div>
                                             <h3 className="text-2xl font-bold mb-1">Order #{order.order_number}</h3>
-                                            <p className="text-indigo-100 flex items-center">
+                                            <p className="text-white/80 flex items-center">
                                                 <Calendar size={16} className="mr-2" />
                                                 {new Date(order.created_at).toLocaleDateString('en-US', {
                                                     year: 'numeric',
@@ -179,7 +180,7 @@ const FreelancerOrders = () => {
                                             </p>
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-3xl font-bold">{formatToZAR(order.total_amount)}</div>
+                                            <div className="text-3xl font-bold">{formatPrice(order.total_amount, 'USD')}</div>
                                             <div className="mt-2">{getStatusBadge(order.status)}</div>
                                         </div>
                                     </div>
@@ -197,14 +198,14 @@ const FreelancerOrders = () => {
                                                             {item.project_details?.title || 'Gig'}
                                                         </h5>
                                                         <div className="flex items-center space-x-4 text-sm text-gray-600">
-                                                            <span className="px-2 py-1 bg-indigo-100 text-indigo-800 rounded font-semibold">
+                                                            <span className="px-2 py-1 bg-[var(--color-accent-light)] text-[var(--color-accent)] rounded font-semibold">
                                                                 {item.tier} Package
                                                             </span>
                                                         </div>
                                                     </div>
                                                     <div className="text-right ml-4">
-                                                        <div className="text-xl font-bold text-gray-900">{formatToZAR(item.final_price)}</div>
-                                                        <div className="text-sm text-gray-500">Base: {formatToZAR(item.base_price)}</div>
+                                                        <div className="text-xl font-bold text-gray-900">{formatPrice(item.final_price, 'USD')}</div>
+                                                        <div className="text-sm text-gray-500">Base: {formatPrice(item.base_price, 'USD')}</div>
                                                     </div>
                                                 </div>
                                             </div>
