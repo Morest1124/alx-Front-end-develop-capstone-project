@@ -118,7 +118,7 @@ export const getClientDashboard = () => {
 };
 
 export const getFreelancerProposals = (userId) => {
-  return apiClient.get(`/users/${userId}/proposals/`);
+  return apiClient.get(`/auth/users/${userId}/proposals/`);
 };
 
 export const getProposalsForProject = (projectId) => {
