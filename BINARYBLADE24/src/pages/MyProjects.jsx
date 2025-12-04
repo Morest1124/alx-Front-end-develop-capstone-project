@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import { getOrders } from '../api';
 import PageWrapper from './PageWrapper';
-import { formatToZAR } from '../utils/currency';
+import { useCurrency } from '../contexts/CurrencyContext';
 import { Link, useRouter } from '../contexts/Routers';
 import Loader from '../components/Loader';
 import { Briefcase, Clock, CheckCircle, User, Calendar, DollarSign } from 'lucide-react';
@@ -10,6 +10,7 @@ import { Briefcase, Clock, CheckCircle, User, Calendar, DollarSign } from 'lucid
 const MyProjects = () => {
     const { user } = useContext(AuthContext);
     const { currentPath } = useRouter();
+    const { formatPrice } = useCurrency();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -227,7 +228,7 @@ const MyProjects = () => {
                                         </div>
                                         <div className="ml-6 text-right">
                                             <div className="text-3xl font-bold">
-                                                {formatToZAR(project.budget)}
+                                                {formatPrice(project.budget, 'USD')}
                                             </div>
                                             <div className="text-sm text-white/70 mt-1">Earnings</div>
                                         </div>

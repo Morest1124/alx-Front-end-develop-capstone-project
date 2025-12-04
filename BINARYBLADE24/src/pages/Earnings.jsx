@@ -7,6 +7,7 @@ import Loader from '../components/Loader';
 
 const Earnings = () => {
   const { transactions, totalEarnings } = useContext(EarningsContext);
+  const { formatPrice } = useCurrency();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [orderStats, setOrderStats] = useState({

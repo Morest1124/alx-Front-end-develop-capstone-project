@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from '../contexts/Routers';
 import { getGig } from '../api';
-import { formatToZAR } from '../utils/currency';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 const GigDetailsPage = ({ gigId }) => {
   const { navigate } = useRouter();
@@ -84,7 +84,7 @@ const GigDetailsPage = ({ gigId }) => {
               This is a placeholder description. A detailed overview of the project requirements, deliverables, and scope would be displayed here.
             </p>
             <div className="price text-3xl font-bold text-[var(--color-success)]">
-              {formatToZAR(gig.price)}
+              {formatPrice(gig.price, 'USD')}
             </div>
             <button className="mt-6 w-full btn-success py-3 px-6 text-lg font-semibold transition-transform transform hover:scale-105">
               Accept Offer
