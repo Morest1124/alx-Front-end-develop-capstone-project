@@ -98,7 +98,7 @@ const AppContent = () => {
       <main>
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<FindWork />} />
+          <Route path="/" element={<HowItWorks />} />
           <Route path="/jobs" element={<FindWork />} />
           <Route path="/find-work" element={<FindWork />} />
           <Route path="/talent" element={<Talent />} />

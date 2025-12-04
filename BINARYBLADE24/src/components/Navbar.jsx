@@ -31,6 +31,13 @@ const PublicNavLinks = () => {
   return (
     <>
       <Link
+        key="/how-it-works"
+        to="/how-it-works"
+        className={`${isActive("/how-it-works")} text-sm md:text-base`}
+      >
+        How It Works
+      </Link>
+      <Link
         key="/jobs"
         to="/jobs"
         className={`${isActive("/jobs")} text-sm md:text-base`}
@@ -43,13 +50,6 @@ const PublicNavLinks = () => {
         className={`${isActive("/talent")} text-sm md:text-base`}
       >
         <Search size={16} className="inline mr-1" /> Find Talent
-      </Link>
-      <Link
-        key="/how-it-works"
-        to="/how-it-works"
-        className={`${isActive("/how-it-works")} text-sm md:text-base`}
-      >
-        How It Works
       </Link>
 
       {/* Auth Links */}
@@ -209,7 +209,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16 px-4">
           {/* Logo/Home Link */}
           <div className="flex-shrink-0 flex items-center">
-            
+
             <Link
               to={user.isLoggedIn ? `/${user.role?.toLowerCase()}/dashboard` : "/"}
               className="text-2xl font-extrabold text-[var(--color-accent)] tracking-tight flex items-center"
