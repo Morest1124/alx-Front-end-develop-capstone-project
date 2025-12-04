@@ -8,8 +8,9 @@ import {
   updateNotificationPreferences,
   getUserPreferences,
   updateUserPreferences,
+  getCountries,
+  getTimezones,
 } from '../api';
-import { COUNTRIES } from '../utils/countries';
 import {
   User,
   Lock,
@@ -70,9 +71,14 @@ const Settings = () => {
     defaultView: user.role?.toLowerCase() === 'client' ? '/client/dashboard' : '/freelancer/dashboard',
   });
 
+  const [countries, setCountries] = useState([]);
+  const [timezones, setTimezones] = useState([]);
+  const [loadingData, setLoadingData] = useState(true);
+
   // Load settings on component mount
   useEffect(() => {
     loadSettings();
+    loadCountriesAndTimezones();
   }, []);
 
   const loadSettings = async () => {
@@ -93,10 +99,26 @@ const Settings = () => {
       setPreferences({
         language: userPrefs.language,
         darkMode: userPrefs.dark_mode,
+        timezone: userPrefs.timezone || 'UTC',
         defaultView: userPrefs.default_view || (user.role?.toLowerCase() === 'client' ? '/client/dashboard' : '/freelancer/dashboard'),
       });
     } catch (error) {
       console.error('Error loading settings:', error);
+    }
+  };
+
+  const loadCountriesAndTimezones = async () => {
+    try {
+      const [countriesData, timezonesData] = await Promise.all([
+        getCountries(),
+        getTimezones()
+      ]);
+      setCountries(countriesData);
+      setTimezones(timezonesData);
+    } catch (error) {
+      console.error('Error loading countries and timezones:', error);
+    } finally {
+      setLoadingData(false);
     }
   };
 
@@ -146,6 +168,7 @@ const Settings = () => {
           language: preferences.language,
           dark_mode: preferences.darkMode,
           default_view: preferences.defaultView,
+          timezone: preferences.timezone || 'UTC',
         });
       }
 
@@ -217,10 +240,11 @@ const Settings = () => {
             <select
               value={accountData.country}
               onChange={(e) => setAccountData({ ...accountData, country: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              disabled={loadingData}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
             >
-              <option value="">Select Country</option>
-              {COUNTRIES.map((country) => (
+              <option value="">{loadingData ? 'Loading...' : 'Select Country'}</option>
+              {countries.map((country) => (
                 <option key={country.code} value={country.code}>
                   {country.name}
                 </option>
@@ -249,13 +273,15 @@ const Settings = () => {
             <select
               value={accountData.timezone}
               onChange={(e) => setAccountData({ ...accountData, timezone: e.target.value })}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              disabled={loadingData}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
             >
-              <option value="UTC">UTC</option>
-              <option value="America/New_York">Eastern Time</option>
-              <option value="America/Chicago">Central Time</option>
-              <option value="America/Los_Angeles">Pacific Time</option>
-              <option value="Europe/London">London</option>
+              <option value="">{loadingData ? 'Loading...' : 'Select Timezone'}</option>
+              {timezones.map((tz) => (
+                <option key={tz} value={tz}>
+                  {tz}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -721,11 +747,18 @@ const Settings = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Timezone
               </label>
-              <select className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option>UTC</option>
-                <option>Eastern Time (ET)</option>
-                <option>Pacific Time (PT)</option>
-                <option>Central European Time (CET)</option>
+              <select
+                value={preferences.timezone || 'UTC'}
+                onChange={(e) => setPreferences({ ...preferences, timezone: e.target.value })}
+                disabled={loadingData}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+              >
+                <option value="">{loadingData ? 'Loading...' : 'Select Timezone'}</option>
+                {timezones.map((tz) => (
+                  <option key={tz} value={tz}>
+                    {tz}
+                  </option>
+                ))}
               </select>
             </div>
           </div>

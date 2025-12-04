@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { User, Mail, Lock, MapPin, CreditCard, Phone } from "lucide-react";
 import Loader from "./Loader";
 import InputField from "./InputField";
 import RoleSelector from "./RoleSelector";
+import { getCountries } from "../api";
 
 const SignUpForm = ({
   username,
@@ -29,6 +30,22 @@ const SignUpForm = ({
   apiError,
   setApiError,
 }) => {
+  const [countries, setCountries] = useState([]);
+  const [loadingCountries, setLoadingCountries] = useState(true);
+
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const data = await getCountries();
+        setCountries(data);
+      } catch (error) {
+        console.error("Failed to fetch countries:", error);
+      } finally {
+        setLoadingCountries(false);
+      }
+    };
+    fetchCountries();
+  }, []);
 
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
@@ -83,15 +100,34 @@ const SignUpForm = ({
         disabled={loading}
         error={errors.lastName}
       />
-      <InputField
-        label="Country"
-        type="text"
-        value={country}
-        onChange={(e) => setCountry(e.target.value)}
-        required
-        disabled={loading}
-        error={errors.country}
-      />
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          <MapPin className="inline w-4 h-4 mr-2" />
+          Country
+        </label>
+        <select
+          value={country}
+          onChange={(e) => setCountry(e.target.value)}
+          required
+          disabled={loading || loadingCountries}
+          className={`w-full px-4 py-2 border ${errors.country ? "border-red-500" : "border-gray-300"
+            } rounded-md focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed`}
+        >
+          <option value="">
+            {loadingCountries ? "Loading countries..." : "Select your country"}
+          </option>
+          {countries.map((c) => (
+            <option key={c.code} value={c.code}>
+              {c.name}
+            </option>
+          ))}
+        </select>
+        {errors.country && (
+          <p className="text-red-500 text-sm mt-1">{errors.country}</p>
+        )}
+      </div>
+
       <InputField
         label="ID Number"
         type="text"

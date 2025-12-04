@@ -338,3 +338,13 @@ export const getUserPreferences = () => {
 export const updateUserPreferences = (preferences) => {
   return apiClient.put('/auth/settings/preferences/', preferences);
 };
+
+// Get list of countries
+export const getCountries = () => {
+  return apiClient.get('/auth/countries/');
+};
+
+// Get list of timezones
+export const getTimezones = () => {
+  return apiClient.get('/auth/timezones/');
+};
