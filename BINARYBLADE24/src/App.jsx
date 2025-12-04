@@ -35,6 +35,7 @@ import MyOrders from "./pages/MyOrders";
 import FreelancerOrders from "./pages/FreelancerOrders";
 import { fetchRates } from "./utils/currency";
 
+
 // Protected Route Component
 const ProtectedRoute = ({ allowedRoles }) => {
   const { user, loading } = useContext(AuthContext);
