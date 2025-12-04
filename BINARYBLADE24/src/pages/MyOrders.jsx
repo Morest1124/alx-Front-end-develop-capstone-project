@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { getOrders, releasePayment, cancelOrder } from '../api';
-import { formatToZAR } from '../utils/currency';
+import { useCurrency } from '../contexts/CurrencyContext';
 import Loader from '../components/Loader';
 import { Package, Clock, CheckCircle, XCircle, DollarSign, User, Calendar, FileText, CreditCard, Shield } from 'lucide-react';
 
 const MyOrders = () => {
+    const { formatPrice } = useCurrency();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [processingOrderId, setProcessingOrderId] = useState(null);
@@ -33,11 +34,11 @@ const MyOrders = () => {
         try {
             setProcessingOrderId(orderId);
             await releasePayment(orderId);
-            alert('✅ Payment released to freelancer! Order marked as completed.');
+            alert('Payment released to freelancer! Order marked as completed.');
             await fetchOrders(); // Refresh orders
         } catch (error) {
             console.error('Failed to release payment:', error);
-            alert('❌ Failed to release payment. ' + (error.message || 'Please try again.'));
+            alert('Failed to release payment. ' + (error.message || 'Please try again.'));
         } finally {
             setProcessingOrderId(null);
         }
@@ -51,11 +52,11 @@ const MyOrders = () => {
         try {
             setProcessingOrderId(orderId);
             await cancelOrder(orderId);
-            alert('✅ Order cancelled successfully!');
+            alert('Order cancelled successfully!');
             await fetchOrders(); // Refresh orders
         } catch (error) {
             console.error('Failed to cancel order:', error);
-            alert('❌ Failed to cancel order. ' + (error.message || 'Please try again.'));
+            alert('Failed to cancel order. ' + (error.message || 'Please try again.'));
         } finally {
             setProcessingOrderId(null);
         }
@@ -152,7 +153,7 @@ const MyOrders = () => {
                                             </p>
                                         </div>
                                         <div className="text-right">
-                                            <div className="text-2xl font-bold text-[var(--color-accent)]">{formatToZAR(order.total_amount)}</div>
+                                            <div className="text-2xl font-bold text-[var(--color-accent)]">{formatPrice(order.total_amount, 'USD')}</div>
                                             <div className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Total Amount</div>
                                         </div>
                                     </div>
@@ -178,9 +179,9 @@ const MyOrders = () => {
                                                     </div>
                                                 </div>
                                                 <div className="text-right mt-4 sm:mt-0 sm:ml-6">
-                                                    <div className="font-bold text-gray-900">{formatToZAR(item.final_price)}</div>
+                                                    <div className="font-bold text-gray-900">{formatPrice(item.final_price, 'USD')}</div>
                                                     {item.base_price !== item.final_price && (
-                                                        <div className="text-xs text-gray-500 line-through">{formatToZAR(item.base_price)}</div>
+                                                        <div className="text-xs text-gray-500 line-through">{formatPrice(item.base_price, 'USD')}</div>
                                                     )}
                                                 </div>
                                             </div>

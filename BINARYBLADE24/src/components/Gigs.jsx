@@ -3,11 +3,12 @@ import { AuthContext } from "../contexts/AuthContext";
 import { GigsContext } from "../contexts/GigsContext";
 import Loader from "./Loader";
 import { useRouter } from "../contexts/Routers";
-import { formatToZAR } from "../utils/currency";
+import { useCurrency } from "../contexts/CurrencyContext";
 import { Star } from "lucide-react";
 
 const Gigs = () => {
   const { user } = useContext(AuthContext);
+  const { formatPrice } = useCurrency();
   const { gigs, loading } = useContext(GigsContext);
   const { navigate } = useRouter();
 
@@ -115,7 +116,7 @@ const Gigs = () => {
                   <div>
                     <p className="text-xs text-gray-500">Starting at</p>
                     <p className="text-lg font-bold text-[var(--color-success)]">
-                      {formatToZAR(gig.budget || gig.price)}
+                      {formatPrice(gig.budget || gig.price, 'USD')}
                     </p>
                   </div>
                   <span className="badge-info">

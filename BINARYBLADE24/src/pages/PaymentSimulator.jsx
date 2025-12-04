@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { getOrders, markOrderPaid } from '../api';
-import { formatToZAR } from '../utils/currency';
-import { CreditCard, CheckCircle, Clock, XCircle, TrendingUp, Wallet, AlertCircle } from 'lucide-react';
+import { useCurrency } from '../contexts/CurrencyContext';
+import { CreditCard, CheckCircle, Clock, XCircle, TrendingUp, Wallet, AlertCircle, RefreshCw } from 'lucide-react';
 
 const PaymentSimulator = () => {
+    const { formatPrice } = useCurrency();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [bankBalance, setBankBalance] = useState(50000); // Starting balance
@@ -65,9 +66,9 @@ const PaymentSimulator = () => {
 
             // Show success
             alert(
-                `✅ Payment Successful!\n\n` +
+                `Payment Successful!\n\n` +
                 `Order #: ${pendingOrder.orderNumber}\n` +
-                `Amount: ${formatToZAR(pendingOrder.amount)}\n` +
+                `Amount: ${formatPrice(pendingOrder.amount, 'USD')}\n` +
                 `Gig: ${pendingOrder.gigTitle}\n` +
                 `Freelancer: ${pendingOrder.freelancer}\n\n` +
                 `The freelancer has been notified and will start working on your project!`
@@ -80,7 +81,7 @@ const PaymentSimulator = () => {
 
         } catch (error) {
             console.error('Payment failed:', error);
-            alert(`❌ Payment Failed\n\n${error.message || 'Please try again.'}`);
+            alert(`Payment Failed\n\n${error.message || 'Please try again.'}`);
         } finally {
             setProcessing(false);
         }
@@ -172,17 +173,17 @@ const PaymentSimulator = () => {
                                 <div className="border-t border-gray-300 pt-3 mt-3">
                                     <div className="flex justify-between items-center">
                                         <span className="text-lg font-semibold text-gray-900">Total Amount:</span>
-                                        <span className="text-2xl font-bold text-[var(--color-success)]">{formatToZAR(pendingOrder.amount)}</span>
+                                        <span className="text-2xl font-bold text-[var(--color-success)]">{formatPrice(pendingOrder.amount, 'USD')}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6">
                                 <p className="text-sm text-blue-800">
-                                    <strong>Bank Balance:</strong> {formatToZAR(bankBalance)}
+                                    <strong>Bank Balance:</strong> {formatPrice(bankBalance, 'USD')}
                                 </p>
                                 <p className="text-sm text-blue-800 mt-1">
-                                    <strong>After Payment:</strong> {formatToZAR(bankBalance - parseFloat(pendingOrder.amount))}
+                                    <strong>After Payment:</strong> {formatPrice(bankBalance - parseFloat(pendingOrder.amount), 'USD')}
                                 </p>
                             </div>
 
@@ -224,7 +225,7 @@ const PaymentSimulator = () => {
                             <span className="text-white opacity-80">Bank Balance</span>
                             <Wallet className="w-6 h-6 text-white opacity-80" />
                         </div>
-                        <div className="text-3xl font-bold">{formatToZAR(bankBalance)}</div>
+                        <div className="text-3xl font-bold">{formatPrice(bankBalance, 'USD')}</div>
                         <div className="text-sm text-white opacity-80 mt-1">Available Funds</div>
                     </div>
 
@@ -234,7 +235,7 @@ const PaymentSimulator = () => {
                             <span className="text-gray-600">Total Paid</span>
                             <CheckCircle className="w-6 h-6 text-green-500" />
                         </div>
-                        <div className="text-3xl font-bold text-[var(--color-success)]">{formatToZAR(totalPaid)}</div>
+                        <div className="text-3xl font-bold text-[var(--color-success)]">{formatPrice(totalPaid, 'USD')}</div>
                         <div className="text-sm text-gray-500 mt-1">{transactions.filter(t => t.status === 'PAID').length} transactions</div>
                     </div>
 
@@ -244,7 +245,7 @@ const PaymentSimulator = () => {
                             <span className="text-gray-600">Pending</span>
                             <Clock className="w-6 h-6 text-yellow-500" />
                         </div>
-                        <div className="text-3xl font-bold text-[var(--color-warning)]">{formatToZAR(totalPending)}</div>
+                        <div className="text-3xl font-bold text-[var(--color-warning)]">{formatPrice(totalPending, 'USD')}</div>
                         <div className="text-sm text-gray-500 mt-1">{transactions.filter(t => t.status === 'PENDING').length} awaiting</div>
                     </div>
                 </div>
@@ -304,7 +305,7 @@ const PaymentSimulator = () => {
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
                                                 <span className="text-lg font-bold text-gray-900">
-                                                    {formatToZAR(transaction.amount)}
+                                                    {formatPrice(transaction.amount, 'USD')}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4 whitespace-nowrap">
@@ -332,7 +333,7 @@ const PaymentSimulator = () => {
                         onClick={fetchOrders}
                         className="px-6 py-3 btn-primary font-semibold shadow-lg"
                     >
-                        🔄 Refresh Transactions
+                        <RefreshCw className="w-5 h-5 mr-2 inline-block" /> Refresh Transactions
                     </button>
                 </div>
             </div>

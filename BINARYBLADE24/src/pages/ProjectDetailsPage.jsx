@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from '../contexts/Routers';
 import Loader from '../components/Loader';
-import { formatToZAR } from '../utils/currency';
+import { useCurrency } from '../contexts/CurrencyContext';
 import { AuthContext } from '../contexts/AuthContext';
 import { ShoppingCart, MessageCircle, Check, Star } from 'lucide-react';
 
@@ -19,6 +19,7 @@ const fetchProjectById = async (id) => {
 
 const ProjectDetailsPage = ({ projectId }) => {
   const { navigate } = useRouter();
+  const { formatPrice } = useCurrency();
   const { user } = useContext(AuthContext);
   const [project, setProject] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -120,7 +121,7 @@ const ProjectDetailsPage = ({ projectId }) => {
             <div className="space-y-3 text-gray-700">
               <div className="flex justify-between">
                 <span className="font-medium">Budget:</span>
-                <span className="font-bold text-[var(--color-success)]">{formatToZAR(project.budget)}</span>
+                <span className="font-bold text-[var(--color-success)]">{formatPrice(project.budget, 'USD')}</span>
               </div>
               <div className="flex justify-between">
                 <span className="font-medium">Deadline:</span>
@@ -270,7 +271,7 @@ const ProjectDetailsPage = ({ projectId }) => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Simple</h3>
                   <p className="text-gray-600 text-sm mb-4">Basic package for simple needs</p>
                   <div className="text-4xl font-bold text-[var(--color-success)] mb-2">
-                    {formatToZAR(project.budget)}
+                    {formatPrice(project.budget, 'USD')}
                   </div>
                   <p className="text-gray-500 text-sm">Base price</p>
                 </div>
@@ -305,7 +306,7 @@ const ProjectDetailsPage = ({ projectId }) => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Medium</h3>
                   <p className="text-gray-600 text-sm mb-4">Enhanced package with more features</p>
                   <div className="text-4xl font-bold text-[var(--color-success)] mb-2">
-                    {formatToZAR(project.budget * 1.5)}
+                    {formatPrice(project.budget * 1.5, 'USD')}
                   </div>
                   <p className="text-gray-500 text-sm">+50% from base</p>
                 </div>
@@ -341,7 +342,7 @@ const ProjectDetailsPage = ({ projectId }) => {
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Expert</h3>
                   <p className="text-gray-600 text-sm mb-4">Premium package with all features</p>
                   <div className="text-4xl font-bold text-[var(--color-success)] mb-2">
-                    {formatToZAR(project.budget * 2)}
+                    {formatPrice(project.budget * 2, 'USD')}
                   </div>
                   <p className="text-gray-500 text-sm">+100% from base</p>
                 </div>
@@ -429,7 +430,7 @@ const ProjectDetailsPage = ({ projectId }) => {
 
                   } catch (error) {
                     console.error('Checkout failed:', error);
-                    alert(`❌ Order Creation Failed\n\n${error.message || 'Please try again later.'}`);
+                    alert(`Order Creation Failed\n\n${error.message || 'Please try again later.'}`);
                   } finally {
                     setIsLoading(false);
                   }

@@ -9,12 +9,13 @@ import {
     updateProposalStatus
 } from '../api';
 import { useRouter } from '../contexts/Routers';
-import { formatToZAR } from '../utils/currency';
+import { useCurrency } from '../contexts/CurrencyContext';
 import Loader from '../components/Loader';
 import { Briefcase, Send, CheckCircle, XCircle, Clock, FileText, Inbox } from 'lucide-react';
 
 const ProposalsPage = () => {
     const { user } = useContext(AuthContext);
+    const { formatPrice } = useCurrency();
     const { navigate } = useRouter();
     const isClient = user?.role?.toUpperCase() === 'CLIENT';
     const [activeTab, setActiveTab] = useState(isClient ? 'received' : 'submitted');
@@ -259,7 +260,7 @@ const ProposalsPage = () => {
                                     <div className="border-t pt-4 mt-4 flex justify-between items-center">
                                         <div>
                                             <p className="text-sm text-gray-500">Bid Amount</p>
-                                            <p className="text-2xl font-bold text-[var(--color-accent)]">{formatToZAR(proposal.bid_amount)}</p>
+                                            <p className="text-2xl font-bold text-[var(--color-accent)]">{formatPrice(proposal.bid_amount, 'USD')}</p>
                                         </div>
                                         <div className="text-right">
                                             <p className="text-sm text-gray-500">Submitted</p>
@@ -338,7 +339,7 @@ const ProposalsPage = () => {
                                         <div className="flex justify-between items-center">
                                             <div>
                                                 <p className="text-sm text-gray-500">Your Bid</p>
-                                                <p className="text-2xl font-bold text-[var(--color-accent)]">{formatToZAR(proposal.bid_amount)}</p>
+                                                <p className="text-2xl font-bold text-[var(--color-accent)]">{formatPrice(proposal.bid_amount, 'USD')}</p>
                                             </div>
                                             <div className="text-right">
                                                 <p className="text-sm text-gray-500">Submitted</p>
@@ -387,7 +388,7 @@ const ProposalsPage = () => {
                                     <div className="flex justify-between items-center border-t pt-4 mt-4">
                                         <div>
                                             <p className="text-sm text-gray-500">Budget</p>
-                                            <p className="text-2xl font-bold text-[var(--color-success)]">{formatToZAR(job.budget)}</p>
+                                            <p className="text-2xl font-bold text-[var(--color-success)]">{formatPrice(job.budget, 'USD')}</p>
                                         </div>
                                         <div className="text-right">
                                             <p className="text-sm text-gray-500">Deadline</p>
@@ -415,7 +416,7 @@ const ProposalsPage = () => {
                         <div className="mb-4 p-4 bg-gray-50 rounded-lg">
                             <h3 className="font-semibold text-lg">{selectedJob.title}</h3>
                             <p className="text-gray-600 text-sm mt-1">{selectedJob.description}</p>
-                            <p className="text-xl font-bold text-[var(--color-success)] mt-2">{formatToZAR(selectedJob.budget)}</p>
+                            <p className="text-xl font-bold text-[var(--color-success)] mt-2">{formatPrice(selectedJob.budget, 'USD')}</p>
                         </div>
                         <form onSubmit={handleSubmitProposal}>
                             <div className="mb-4">
