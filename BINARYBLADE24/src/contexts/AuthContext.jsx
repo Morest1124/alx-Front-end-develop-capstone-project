@@ -34,20 +34,41 @@ const AuthProvider = ({ children }) => {
   // Auto-logout logic
   useEffect(() => {
     let inactivityTimer;
+    let warningTimer;
     const INACTIVITY_LIMIT = 60 * 60 * 1000; // 1 hour in milliseconds
+    const WARNING_TIME = 5 * 60 * 1000; // Show warning 5 minutes before logout
+
+    const showWarning = () => {
+      // You could replace this with a modal/toast component
+      const shouldStay = window.confirm(
+        "Your session will expire in 5 minutes due to inactivity. Click OK to stay logged in."
+      );
+      if (shouldStay) {
+        resetTimer(); // User chose to stay, reset the timer
+      }
+    };
 
     const resetTimer = () => {
       if (user.isLoggedIn) {
         clearTimeout(inactivityTimer);
+        clearTimeout(warningTimer);
+
+        // Set warning timer (5 minutes before logout)
+        warningTimer = setTimeout(() => {
+          console.log("Session expiring soon. Showing warning...");
+          showWarning();
+        }, INACTIVITY_LIMIT - WARNING_TIME);
+
+        // Set logout timer (1 hour)
         inactivityTimer = setTimeout(() => {
-          console.log("User inactive for 1 hour. Logging out...");
+          console.log("Session expired due to inactivity. Logging out...");
           logout();
         }, INACTIVITY_LIMIT);
       }
     };
 
     // Events to track activity
-    const events = ["mousemove", "keydown", "click", "scroll"];
+    const events = ["mousemove", "keydown", "click", "scroll", "touchstart"];
 
     if (user.isLoggedIn) {
       // Set initial timer
@@ -62,10 +83,49 @@ const AuthProvider = ({ children }) => {
     return () => {
       // Cleanup
       clearTimeout(inactivityTimer);
+      clearTimeout(warningTimer);
       events.forEach((event) => {
         window.removeEventListener(event, resetTimer);
       });
     };
+  }, [user.isLoggedIn]);
+
+  // Check JWT token expiration
+  useEffect(() => {
+    const checkTokenExpiration = () => {
+      const token = localStorage.getItem('access_token');
+      if (!token || !user.isLoggedIn) return;
+
+      try {
+        // Decode JWT token (format: header.payload.signature)
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const expirationTime = payload.exp * 1000; // Convert to milliseconds
+        const currentTime = Date.now();
+        const timeUntilExpiry = expirationTime - currentTime;
+
+        if (timeUntilExpiry <= 0) {
+          // Token already expired
+          console.log("JWT token expired. Logging out...");
+          logout();
+        } else if (timeUntilExpiry < 5 * 60 * 1000) {
+          // Less than 5 minutes until expiry, show warning
+          console.log(`JWT token expiring in ${Math.floor(timeUntilExpiry / 60000)} minutes`);
+        } else {
+          // Set a timer to check again when token is about to expire
+          const checkTimer = setTimeout(() => {
+            checkTokenExpiration();
+          }, timeUntilExpiry - 5 * 60 * 1000); // Check 5 minutes before expiry
+
+          return () => clearTimeout(checkTimer);
+        }
+      } catch (error) {
+        console.error("Error checking token expiration:", error);
+      }
+    };
+
+    if (user.isLoggedIn) {
+      checkTokenExpiration();
+    }
   }, [user.isLoggedIn]);
 
   // Listen for global logout events (e.g. from api 401 errors)
