@@ -136,17 +136,17 @@ export const updateProposalStatus = (projectId, proposalId, status) => {
 };
 
 export const getUserProfile = (userId) => {
-  return apiClient.get(`/users/${userId}/`);
+  return apiClient.get(`/auth/users/${userId}/`);
 };
 
 // Get all freelancers
 export const getFreelancers = () => {
-  return apiClient.get("/users/freelancers/");
+  return apiClient.get("/auth/users/freelancers/");
 };
 
 // Get all clients
 export const getClients = () => {
-  return apiClient.get("/users/clients/");
+  return apiClient.get("/auth/users/clients/");
 };
 
 // Get all projects (OPEN only - for Find Work)
@@ -171,14 +171,14 @@ export const getProjectDetails = (projectId) => {
 
 // Update user profile
 export const updateUserProfile = (userId, profileData) => {
-  return apiClient.put(`/users/${userId}/`, profileData);
+  return apiClient.put(`/auth/users/${userId}/`, profileData);
 };
 
 export const updateUserProfilePicture = (userId, file) => {
   const formData = new FormData();
   formData.append("profile_picture", file);
 
-  return apiClient.patch(`/users/${userId}/`, formData, {
+  return apiClient.patch(`/auth/users/${userId}/`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
