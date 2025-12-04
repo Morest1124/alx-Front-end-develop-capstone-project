@@ -78,6 +78,11 @@ const AuthProvider = ({ children }) => {
 
       // Handle different response formats
       const userRole = (userData.role || (userData.roles && userData.roles[0]))?.toUpperCase();
+
+      if (!userRole) {
+        console.error("Login failed: User role not found in response", userData);
+        throw new Error("Unable to determine user role. Please contact support.");
+      }
       const userName =
         userData.username ||
         (userData.first_name && userData.last_name
