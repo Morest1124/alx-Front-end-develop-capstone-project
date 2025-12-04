@@ -4,11 +4,12 @@ import { ClientDashboardContext } from '../contexts/ClientDashboardContext';
 import { getOrders } from '../api';
 import PageWrapper from './PageWrapper';
 import { DashboardCard, LucideIcon } from './DashboardUtils';
-import { formatToZAR } from '../utils/currency';
+import { useCurrency } from '../contexts/CurrencyContext';
 import Loader from '../components/Loader';
 
 const ClientDashboard = () => {
   const { user } = useContext(AuthContext);
+  const { formatPrice } = useCurrency();
   const { dashboardData, loading, error } = useContext(ClientDashboardContext);
   const [orders, setOrders] = useState([]);
   const [orderStats, setOrderStats] = useState({
@@ -84,7 +85,7 @@ const ClientDashboard = () => {
             />
             <DashboardCard
               title="Total Spent"
-              value={formatToZAR(orderStats.totalSpent)}
+              value={formatPrice(orderStats.totalSpent, 'USD')}
               icon="DollarSign"
               to="/client/billing"
               bgColor="bg-[var(--color-success-light)]"
@@ -130,7 +131,7 @@ const ClientDashboard = () => {
                     className="flex justify-between items-center py-2 border-b last:border-b-0 text-gray-600"
                   >
                     <span>Order #{order.order_number} - {order.status}</span>
-                    <span className="text-sm text-gray-400">{formatToZAR(order.total_amount)}</span>
+                    <span className="text-sm text-gray-400">{formatPrice(order.total_amount, 'USD')}</span>
                   </li>
                 ))}
               </ul>

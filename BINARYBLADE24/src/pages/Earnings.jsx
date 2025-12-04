@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { EarningsContext } from '../contexts/EarningsContext';
 import { getOrders } from '../api';
-import { formatToZAR } from '../utils/currency';
+import { useCurrency } from '../contexts/CurrencyContext';
 import { DollarSign, TrendingUp, Clock, CheckCircle, Package, Calendar, User } from 'lucide-react';
 import Loader from '../components/Loader';
 
@@ -67,7 +67,7 @@ const Earnings = () => {
             <span className="text-green-100 text-sm">Total Earnings</span>
             <TrendingUp className="w-5 h-5 text-green-200" />
           </div>
-          <div className="text-3xl font-bold">{formatToZAR(orderStats.totalFromOrders)}</div>
+          <div className="text-3xl font-bold">{formatPrice(orderStats.totalFromOrders, 'USD')}</div>
           <div className="text-xs text-green-200 mt-1">From completed orders</div>
         </div>
 
@@ -76,7 +76,7 @@ const Earnings = () => {
             <span className="text-gray-600 text-sm">In Escrow</span>
             <DollarSign className="w-5 h-5 text-yellow-500" />
           </div>
-          <div className="text-3xl font-bold text-yellow-600">{formatToZAR(orderStats.pendingInEscrow)}</div>
+          <div className="text-3xl font-bold text-yellow-600">{formatPrice(orderStats.pendingInEscrow, 'USD')}</div>
           <div className="text-xs text-gray-500 mt-1">Pending release</div>
         </div>
 
@@ -144,7 +144,7 @@ const Earnings = () => {
                     </div>
                   </div>
                   <div className="text-right ml-4">
-                    <div className="text-xl font-bold text-gray-900">{formatToZAR(order.total_amount)}</div>
+                    <div className="text-xl font-bold text-gray-900">{formatPrice(order.total_amount, 'USD')}</div>
                   </div>
                 </div>
               </div>
@@ -165,7 +165,7 @@ const Earnings = () => {
                   <p className="text-sm text-gray-500">{transaction.date}</p>
                 </div>
                 <p className="font-bold text-green-600">
-                  +{formatToZAR(transaction.amount)}
+                  +{formatPrice(transaction.amount, 'USD')}
                 </p>
               </li>
             ))}

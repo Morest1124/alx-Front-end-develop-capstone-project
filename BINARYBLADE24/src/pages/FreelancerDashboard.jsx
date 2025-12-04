@@ -4,13 +4,14 @@ import { getFreelancerDashboard } from "../api"; // Import the API function
 import PageWrapper from "./PageWrapper";
 import { LucideIcon, DashboardCard } from "./DashboardUtils";
 import CreateGigForm from "../components/CreateGigForm";
-import { formatToZAR } from "../utils/currency";
+import { useCurrency } from "../contexts/CurrencyContext";
 import Loader from '../components/Loader';
 
 import { Link } from "../contexts/Routers";
 
 const FreelancerDashboard = () => {
   const { user } = useContext(AuthContext);
+  const { formatPrice } = useCurrency();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -82,7 +83,7 @@ const FreelancerDashboard = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             <DashboardCard
               title="Total Monthly Earnings (ZAR)"
-              value={formatToZAR(dashboardData.total_earnings, "ZAR")}
+              value={formatPrice(dashboardData.total_earnings, "USD")}
               icon="TrendingUp"
               to="/freelancer/earnings"
               bgColor="bg-[var(--color-success-light)]"
@@ -90,7 +91,7 @@ const FreelancerDashboard = () => {
             />
             <DashboardCard
               title="Estimated Monthly Tax"
-              value={formatToZAR(dashboardData.estimated_monthly_tax, "ZAR")}
+              value={formatPrice(dashboardData.estimated_monthly_tax, "USD")}
               icon="CreditCard"
               to="/freelancer/tax"
               bgColor="bg-[var(--color-error-light)]"

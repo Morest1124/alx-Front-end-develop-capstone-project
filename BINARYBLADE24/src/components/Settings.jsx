@@ -31,6 +31,7 @@ import {
   Moon,
   Sun,
 } from 'lucide-react';
+import CurrencySelector from './CurrencySelector';
 
 const Settings = () => {
   const { user } = useContext(AuthContext);
@@ -743,6 +744,7 @@ const Settings = () => {
               </select>
             </div>
 
+            {/* Timezone is already in Account Management section, commenting out duplicate
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Timezone
@@ -761,6 +763,7 @@ const Settings = () => {
                 ))}
               </select>
             </div>
+            */}
           </div>
         </div>
 
@@ -816,6 +819,11 @@ const Settings = () => {
               )}
             </select>
           </div>
+        </div>
+
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Currency Preferences</h3>
+          <CurrencySelector className="max-w-md" />
         </div>
 
         <button

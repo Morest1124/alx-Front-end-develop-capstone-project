@@ -22,6 +22,7 @@ import HowItWorks from "./components/HowItWorks";
 import { GigsProvider } from "./contexts/GigsContext";
 import { EarningsProvider } from "./contexts/EarningsContext";
 import { ClientDashboardProvider } from "./contexts/ClientDashboardContext";
+import { CurrencyProvider } from "./contexts/CurrencyContext";
 import GigDetailsPage from "./pages/GigDetailsPage";
 import ClientProjects from "./pages/ClientProjects";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
@@ -206,15 +207,17 @@ const App = () => {
                 transition-duration: 200ms;
             }
         `}</style>
-        <RouterProvider>
+               <RouterProvider>
           <AuthProvider>
-            <GigsProvider>
-              <ClientDashboardProvider>
-                <EarningsProvider>
-                  <AppContent />
-                </EarningsProvider>
-              </ClientDashboardProvider>
-            </GigsProvider>
+            <CurrencyProvider>  
+              <GigsProvider>
+                <ClientDashboardProvider>
+                  <EarningsProvider>
+                    <AppContent />
+                  </EarningsProvider>
+                </ClientDashboardProvider>
+              </GigsProvider>
+            </CurrencyProvider> 
           </AuthProvider>
         </RouterProvider>
       </div>
