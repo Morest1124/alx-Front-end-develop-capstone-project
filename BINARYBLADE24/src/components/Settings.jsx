@@ -94,7 +94,7 @@ const Settings = () => {
         email: userData.email || '',
         phone: userData.phone_number || '',
         phoneCountryCode: userData.phone_country_code || '',
-        address: '',
+        address: userData.address || '',
         country: userData.country_origin || '',
         timezone: 'UTC',
       });
@@ -163,6 +163,7 @@ const Settings = () => {
           last_name: names.slice(1).join(' ') || '',
           phone_number: accountData.phone,
           phone_country_code: accountData.phoneCountryCode,
+          address: accountData.address,
           country_origin: accountData.country,
         };
         await updateUserAccount(updateData);
@@ -327,6 +328,7 @@ const Settings = () => {
               value={accountData.address}
               onChange={(e) => setAccountData({ ...accountData, address: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Street address, apartment, suite, etc."
             />
           </div>
 
