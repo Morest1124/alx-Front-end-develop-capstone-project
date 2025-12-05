@@ -32,16 +32,20 @@ apiClient.interceptors.response.use(
     let message;
     if (error.response?.status === 401) {
       console.error("Authentication Error from backend:", error.response.data);
-      // Only show specific login message if we are actually logging in, 
-      // otherwise it might be an expired token or unauthorized access to a resource.
-      // For now, we'll keep it generic or check the URL if possible, 
-      // but to be safe and avoid confusing "Invalid email" on logout/home page:
-      if (error.config && error.config.url.includes("/auth/login/")) {
+      // Check if this is a login or register request
+      const isAuthRequest = error.config?.url?.includes('/auth/login/') ||
+        error.config?.url?.includes('/auth/register/');
+
+      if (isAuthRequest) {
+        // For login/register, show specific error without triggering logout
         message = "Invalid email or password. Please try again.";
       } else {
-        message = "You are not authorized. Please log in.";
-        // Trigger global logout for 401 errors on protected routes
-        window.dispatchEvent(new Event("auth:logout"));
+        // For other protected routes, trigger logout
+        message = "Your session has expired. Please log in again.";
+        // Only trigger global logout for 401 errors on protected routes
+        setTimeout(() => {
+          window.dispatchEvent(new Event("auth:logout"));
+        }, 100);
       }
     } else if (error.response?.status === 400) {
       const errorData = error.response.data;
