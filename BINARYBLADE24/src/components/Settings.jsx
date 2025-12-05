@@ -42,9 +42,11 @@ const Settings = () => {
 
   // Form states for different sections
   const [accountData, setAccountData] = useState({
+    username: user.username || '',
     fullName: user.name || '',
     email: user.email || '',
     phone: '',
+    phoneCountryCode: '',
     address: '',
     country: '',
     timezone: 'UTC',
@@ -84,6 +86,19 @@ const Settings = () => {
 
   const loadSettings = async () => {
     try {
+      // Load user account data
+      const userData = await getUserAccount();
+      setAccountData({
+        username: userData.username || '',
+        fullName: `${userData.first_name || ''} ${userData.last_name || ''}`.trim(),
+        email: userData.email || '',
+        phone: userData.phone_number || '',
+        phoneCountryCode: userData.phone_country_code || '',
+        address: '',
+        country: userData.country_origin || '',
+        timezone: 'UTC',
+      });
+
       // Load notification preferences
       const notifPrefs = await getNotificationPreferences();
       setNotificationPrefs({
@@ -139,7 +154,18 @@ const Settings = () => {
 
     try {
       if (section === 'Account') {
-        await updateUserAccount(accountData);
+        // Prepare data for backend
+        const names = accountData.fullName.split(' ');
+        const updateData = {
+          username: accountData.username,
+          email: accountData.email,
+          first_name: names[0] || '',
+          last_name: names.slice(1).join(' ') || '',
+          phone_number: accountData.phone,
+          phone_country_code: accountData.phoneCountryCode,
+          country_origin: accountData.country,
+        };
+        await updateUserAccount(updateData);
       } else if (section === 'Password') {
         if (securityData.newPassword !== securityData.confirmPassword) {
           throw new Error('Passwords do not match');
@@ -197,6 +223,20 @@ const Settings = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <User size={16} className="inline mr-2" />
+              Username
+            </label>
+            <input
+              type="text"
+              value={accountData.username}
+              onChange={(e) => setAccountData({ ...accountData, username: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter username"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <User size={16} className="inline mr-2" />
               Full Name
             </label>
             <input
@@ -204,10 +244,11 @@ const Settings = () => {
               value={accountData.fullName}
               onChange={(e) => setAccountData({ ...accountData, fullName: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter full name"
             />
           </div>
 
-          <div>
+          <div className="md:col-span-2">
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <Mail size={16} className="inline mr-2" />
               Email Address
@@ -217,7 +258,29 @@ const Settings = () => {
               value={accountData.email}
               onChange={(e) => setAccountData({ ...accountData, email: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter email address"
             />
+            <p className="text-xs text-gray-500 mt-1">Used for login authentication</p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <Phone size={16} className="inline mr-2" />
+              Country Code
+            </label>
+            <select
+              value={accountData.phoneCountryCode}
+              onChange={(e) => setAccountData({ ...accountData, phoneCountryCode: e.target.value })}
+              disabled={loadingData}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
+            >
+              <option value="">{loadingData ? 'Loading...' : 'Select Code'}</option>
+              {countries.map((country) => (
+                <option key={country.code} value={country.dial_code}>
+                  {country.dial_code} ({country.name})
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -230,6 +293,7 @@ const Settings = () => {
               value={accountData.phone}
               onChange={(e) => setAccountData({ ...accountData, phone: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter phone number (without country code)"
             />
           </div>
 
