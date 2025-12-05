@@ -354,3 +354,31 @@ export const getCountries = () => {
 export const getTimezones = () => {
   return apiClient.get('/auth/timezones/');
 };
+
+// ===== ACCOUNT MANAGEMENT API =====
+
+// Get account status (deactivation, deletion schedule)
+export const getAccountStatus = () => {
+  return apiClient.get('/auth/account/status/');
+};
+
+// Deactivate account (temporary)
+export const deactivateAccount = () => {
+  return apiClient.post('/auth/account/deactivate/');
+};
+
+// Reactivate a deactivated account
+export const reactivateAccount = () => {
+  return apiClient.post('/auth/account/reactivate/');
+};
+
+// Request permanent account deletion (30-day grace period)
+export const requestAccountDeletion = () => {
+  return apiClient.post('/auth/account/delete/');
+};
+
+// Cancel pending account deletion
+export const cancelAccountDeletion = () => {
+  return apiClient.post('/auth/account/cancel-deletion/');
+};
+

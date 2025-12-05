@@ -10,6 +10,11 @@ import {
   updateUserPreferences,
   getCountries,
   getTimezones,
+  getAccountStatus,
+  deactivateAccount,
+  reactivateAccount,
+  requestAccountDeletion,
+  cancelAccountDeletion,
 } from '../api';
 import {
   User,
@@ -77,11 +82,20 @@ const Settings = () => {
   const [countries, setCountries] = useState([]);
   const [timezones, setTimezones] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [accountStatus, setAccountStatus] = useState({
+    is_active: true,
+    deactivated_at: null,
+    scheduled_deletion_at: null,
+    days_until_deletion: null,
+  });
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   // Load settings on component mount
   useEffect(() => {
     loadSettings();
     loadCountriesAndTimezones();
+    loadAccountStatus();
   }, []);
 
   const loadSettings = async () => {
@@ -120,6 +134,15 @@ const Settings = () => {
       });
     } catch (error) {
       console.error('Error loading settings:', error);
+    }
+  };
+
+  const loadAccountStatus = async () => {
+    try {
+      const status = await getAccountStatus();
+      setAccountStatus(status);
+    } catch (error) {
+      console.error('Error loading account status:', error);
     }
   };
 
@@ -204,6 +227,68 @@ const Settings = () => {
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
       setErrorMessage('Failed to save settings. Please try again.');
+      setTimeout(() => setErrorMessage(''), 3000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeactivate = async () => {
+    setLoading(true);
+    setShowDeactivateModal(false);
+    try {
+      await deactivateAccount();
+      setSuccessMessage('Account deactivated successfully. You can reactivate it anytime.');
+      setTimeout(() => setSuccessMessage(''), 3000);
+      await loadAccountStatus();
+    } catch (error) {
+      setErrorMessage('Failed to deactivate account. Please try again.');
+      setTimeout(() => setErrorMessage(''), 3000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleReactivate = async () => {
+    setLoading(true);
+    try {
+      await reactivateAccount();
+      setSuccessMessage('Account reactivated successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+      await loadAccountStatus();
+    } catch (error) {
+      setErrorMessage('Failed to reactivate account. Please try again.');
+      setTimeout(() => setErrorMessage(''), 3000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setLoading(true);
+    setShowDeleteModal(false);
+    try {
+      await requestAccountDeletion();
+      setSuccessMessage('Account deletion scheduled. Your account will be permanently deleted in 30 days.');
+      setTimeout(() => setSuccessMessage(''), 5000);
+      await loadAccountStatus();
+    } catch (error) {
+      setErrorMessage('Failed to schedule account deletion. Please try again.');
+      setTimeout(() => setErrorMessage(''), 3000);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCancelDeletion = async () => {
+    setLoading(true);
+    try {
+      await cancelAccountDeletion();
+      setSuccessMessage('Account deletion cancelled successfully!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+      await loadAccountStatus();
+    } catch (error) {
+      setErrorMessage('Failed to cancel account deletion. Please try again.');
       setTimeout(() => setErrorMessage(''), 3000);
     } finally {
       setLoading(false);
@@ -374,14 +459,88 @@ const Settings = () => {
         </button>
       </div>
 
-      <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+      <div className="bg-red-50 border border-red-200 rounded-lg p-6 space-y-4">
         <h3 className="text-lg font-semibold text-red-900 mb-2">Danger Zone</h3>
-        <p className="text-sm text-red-700 mb-4">
-          Once you delete your account, there is no going back. Please be certain.
-        </p>
-        <button className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700">
-          Deactivate Account
-        </button>
+
+        {/* Account Status Display */}
+        {(accountStatus.deactivated_at || accountStatus.scheduled_deletion_at) && (
+          <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mb-4">
+            {accountStatus.deactivated_at && (
+              <p className="text-sm text-yellow-800 mb-2">
+                <strong>Account Deactivated:</strong> Your account was deactivated on {new Date(accountStatus.deactivated_at).toLocaleDateString()}.
+                You can reactivate it anytime.
+              </p>
+            )}
+            {accountStatus.scheduled_deletion_at && (
+              <p className="text-sm text-red-800">
+                <strong>Deletion Scheduled:</strong> Your account will be permanently deleted in {accountStatus.days_until_deletion} days
+                (on {new Date(accountStatus.scheduled_deletion_at).toLocaleDateString()}).
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Deactivation Section */}
+        {!accountStatus.deactivated_at && (
+          <div className="border-b border-red-300 pb-4">
+            <h4 className="font-semibold text-red-900 mb-2">Deactivate Account</h4>
+            <p className="text-sm text-red-700 mb-3">
+              Temporarily suspend your account. You can reactivate it anytime by logging back in.
+            </p>
+            <button
+              onClick={() => setShowDeactivateModal(true)}
+              className="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700"
+            >
+              Deactivate Account
+            </button>
+          </div>
+        )}
+
+        {/* Reactivation Button */}
+        {accountStatus.deactivated_at && (
+          <div className="border-b border-red-300 pb-4">
+            <button
+              onClick={handleReactivate}
+              disabled={loading}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:bg-green-300"
+            >
+              {loading ? 'Reactivating...' : 'Reactivate Account'}
+            </button>
+          </div>
+        )}
+
+        {/* Deletion Section */}
+        {!accountStatus.scheduled_deletion_at && (
+          <div>
+            <h4 className="font-semibold text-red-900 mb-2">Delete Account Permanently</h4>
+            <p className="text-sm text-red-700 mb-2">
+              Permanently delete your account and all associated data. This action enters a 30-day grace period,
+              after which your account will be permanently deleted.
+            </p>
+            <p className="text-xs text-red-600 mb-3">
+              ⚠️ Warning: After 30 days, this action cannot be undone.
+            </p>
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+            >
+              Delete Account Permanently
+            </button>
+          </div>
+        )}
+
+        {/* Cancel Deletion Button */}
+        {accountStatus.scheduled_deletion_at && (
+          <div>
+            <button
+              onClick={handleCancelDeletion}
+              disabled={loading}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
+            >
+              {loading ? 'Processing...' : 'Cancel Account Deletion'}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -971,6 +1130,64 @@ const Settings = () => {
             {renderContent()}
           </div>
         </div>
+
+        {/* Deactivation Confirmation Modal */}
+        {showDeactivateModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-bold text-gray-900 mb-4">Deactivate Account?</h3>
+              <p className="text-gray-700 mb-4">
+                Are you sure you want to deactivate your account? Your account will be temporarily suspended,
+                but you can reactivate it anytime by logging back in.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setShowDeactivateModal(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeactivate}
+                  className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
+                >
+                  Deactivate
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Deletion Confirmation Modal */}
+        {showDeleteModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+              <h3 className="text-lg font-bold text-red-900 mb-4">⚠️ Delete Account Permanently?</h3>
+              <p className="text-gray-700 mb-2">
+                This will schedule your account for permanent deletion. Your account and all associated data
+                will be deleted after <strong>30 days</strong>.
+              </p>
+              <p className="text-red-600 text-sm mb-4">
+                You can cancel this within 30 days by logging in and canceling the deletion from settings.
+                After 30 days, this action cannot be undone.
+              </p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setShowDeleteModal(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeleteAccount}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+                >
+                  Schedule Deletion
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
