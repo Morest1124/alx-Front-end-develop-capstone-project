@@ -55,7 +55,7 @@ const FreelancerDashboard = () => {
   }
 
   return (
-    <PageWrapper title={` ${user.name}`}>
+    <PageWrapper title={`Dashboard ${user.name}`}>
       <div className="flex border-b mb-6">
         <button
           onClick={() => setActiveTab("dashboard")}

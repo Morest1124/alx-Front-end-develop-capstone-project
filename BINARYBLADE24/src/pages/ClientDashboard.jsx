@@ -63,7 +63,7 @@ const ClientDashboard = () => {
   }
 
   return (
-    <PageWrapper title={`Client Dashboard | ${user.name}`}>
+    <PageWrapper title={`Dashboard | ${user.name}`}>
       {dashboardData && (
         <div className="space-y-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
