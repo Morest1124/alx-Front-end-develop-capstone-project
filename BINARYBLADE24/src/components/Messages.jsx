@@ -335,6 +335,7 @@ const Messages = () => {
             <FileUpload
               onUploadComplete={handleFileUpload}
               category="other"
+              autoUpload={false}
             />
             <p className="text-xs text-gray-500 mt-4 text-center">
               Files are securely stored and visible to chat participants.

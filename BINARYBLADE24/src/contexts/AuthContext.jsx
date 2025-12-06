@@ -35,7 +35,7 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     let inactivityTimer;
     let warningTimer;
-    const INACTIVITY_LIMIT = 60 * 60 * 1000; // 1 hour in milliseconds
+    const INACTIVITY_LIMIT = 10 * 60 * 60 * 1000; // 10 hours in milliseconds
     const WARNING_TIME = 5 * 60 * 1000; // Show warning 5 minutes before logout
 
     const showWarning = () => {
