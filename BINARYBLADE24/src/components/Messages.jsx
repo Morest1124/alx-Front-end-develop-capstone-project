@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { AuthContext } from "../contexts/AuthContext";
-import { getConversations, getMessages, sendMessage, markConversationRead } from "../api";
+import { getConversations, getMessages, sendMessage, markConversationRead, uploadFile } from "../api";
 import Loader from "./Loader";
+import { Paperclip, X, FileIcon, Download, Folder } from "lucide-react";
+import FileUpload from "./FileUpload";
 
 const Messages = () => {
   const { user } = useContext(AuthContext);
@@ -11,6 +13,39 @@ const Messages = () => {
   const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const messagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleFileUpload = async (uploadedFiles) => {
+    try {
+      setShowUploadModal(false);
+      setSending(true);
+
+      if (uploadedFiles && uploadedFiles.length > 0) {
+        // We only support single file attachment in chat for now
+        const uploadResponse = uploadedFiles[0];
+        const attachmentId = uploadResponse.id;
+
+        // Send message with attachment
+        const sentMessage = await sendMessage(selectedConversation.id, "Sent an attachment", attachmentId);
+
+        setMessages([...messages, sentMessage]);
+      }
+    } catch (error) {
+      console.error("Failed to send attachment:", error);
+      alert("Failed to send file.");
+    } finally {
+      setSending(false);
+    }
+  };
 
   // Fetch conversations on mount
   useEffect(() => {
@@ -200,38 +235,69 @@ const Messages = () => {
                   No messages yet. Start the conversation!
                 </div>
               ) : (
-                messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`mb-3 flex ${message.sender === user.id ? "justify-end" : "justify-start"
-                      }`}
-                  >
+                <>
+                  {messages.map((message) => (
                     <div
-                      className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${message.sender === user.id
-                        ? "text-white"
-                        : "bg-white text-black-900"
+                      key={message.id}
+                      className={`mb-3 flex ${message.sender === user.id ? "justify-end" : "justify-start"
                         }`}
-                      style={message.sender === user.id ? { backgroundColor: 'var(--color-accent)' } : {}}
                     >
-                      <p className="break-words text-sm">{message.body}</p>
-                      <p
-                        className={`text-xs mt-1 text-right ${message.sender === user.id ? "text-gray-100" : "text-gray-500"
+                      <div
+                        className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg shadow-sm ${message.sender === user.id
+                          ? "text-white"
+                          : "bg-white text-black-900"
                           }`}
+                        style={message.sender === user.id ? { backgroundColor: 'var(--color-accent)' } : {}}
                       >
-                        {new Date(message.timestamp).toLocaleTimeString([], {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        })}
-                      </p>
+                        {message.attachment_details && (
+                          <div className="mb-2 rounded bg-opacity-20 bg-black p-2">
+                            {message.attachment_details.file_type === 'image' || ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(message.attachment_details.file?.split('.').pop().toLowerCase()) ? (
+                              <img src={message.attachment_details.file} alt="attachment" className="max-w-full h-auto rounded max-h-48" />
+                            ) : (
+                              <div className="flex items-center text-white-500">
+                                <FileIcon size={20} className="mr-2" />
+                                <span className="text-sm truncate max-w-[150px]">{message.attachment_details.original_filename}</span>
+                              </div>
+                            )}
+                            <a
+                              href={message.attachment_details.file}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center mt-1 text-xs underline opacity-80 hover:opacity-100"
+                            >
+                              <Download size={12} className="mr-1" /> Download
+                            </a>
+                          </div>
+                        )}
+                        <p className="break-words text-sm">{message.body}</p>
+                        <p
+                          className={`text-xs mt-1 text-right ${message.sender === user.id ? "text-gray-100" : "text-gray-500"
+                            }`}
+                        >
+                          {new Date(message.timestamp).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  ))}
+                  <div ref={messagesEndRef} />
+                </>
               )}
             </div>
 
             {/* Input */}
             <div className="p-4 border-t border-gray-200 bg-white">
               <form onSubmit={handleSendMessage} className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowUploadModal(true)}
+                  className="p-3 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+                  title="Attach file"
+                >
+                  <Paperclip size={20} />
+                </button>
                 <input
                   type="text"
                   placeholder="Type a message..."
@@ -255,6 +321,27 @@ const Messages = () => {
           </>
         )}
       </div>
+      {/* File Upload Modal */}
+      {showUploadModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full relative">
+            <button
+              onClick={() => setShowUploadModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X size={24} />
+            </button>
+            <h3 className="text-xl font-bold mb-4">Send a File</h3>
+            <FileUpload
+              onUploadComplete={handleFileUpload}
+              category="other"
+            />
+            <p className="text-xs text-gray-500 mt-4 text-center">
+              Files are securely stored and visible to chat participants.
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -15,6 +15,8 @@ import {
   reactivateAccount,
   requestAccountDeletion,
   cancelAccountDeletion,
+  getUserFiles,
+  deleteFile,
 } from '../api';
 import {
   User,
@@ -35,8 +37,10 @@ import {
   Star,
   Moon,
   Sun,
+  Folder,
 } from 'lucide-react';
 import CurrencySelector from './CurrencySelector';
+import FileUpload from './FileUpload';
 
 const Settings = () => {
   const { user } = useContext(AuthContext);
@@ -90,6 +94,7 @@ const Settings = () => {
   });
   const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [userFiles, setUserFiles] = useState([]);
 
   // Load settings on component mount
   useEffect(() => {
@@ -97,6 +102,22 @@ const Settings = () => {
     loadCountriesAndTimezones();
     loadAccountStatus();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === 'files') {
+      loadUserFiles();
+    }
+  }, [activeTab]);
+
+  const loadUserFiles = async () => {
+    try {
+      const response = await getUserFiles();
+      setUserFiles(Array.isArray(response.data) ? response.data : []);
+    } catch (error) {
+      console.error("Failed to load files", error);
+      setUserFiles([]);
+    }
+  };
 
   const loadSettings = async () => {
     try {
@@ -168,6 +189,7 @@ const Settings = () => {
     { id: 'billing', label: 'Billing & Payments', icon: CreditCard },
     { id: 'profile', label: 'Profile & Visibility', icon: Eye },
     { id: 'preferences', label: 'Preferences', icon: SettingsIcon },
+    { id: 'files', label: 'Files', icon: Folder },
   ];
 
   const handleSave = async (section) => {
@@ -1063,6 +1085,81 @@ const Settings = () => {
     </div>
   );
 
+  const handleDeleteFile = async (id) => {
+    if (!window.confirm("Delete this file?")) return;
+    try {
+      await deleteFile(id);
+      loadUserFiles();
+      setSuccessMessage("File deleted");
+    } catch (e) {
+      setErrorMessage("Failed to delete file");
+    }
+  };
+
+  const renderFiles = () => (
+    <div className="space-y-6">
+      <h3 className="text-lg font-medium text-gray-900">File Manager</h3>
+      <p className="text-gray-500">Upload and manage your profile documents, portfolio items, and other files.</p>
+
+      <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <h4 className="text-md font-medium mb-4">Upload New File</h4>
+        <FileUpload
+          onUploadComplete={() => {
+            loadUserFiles();
+            setSuccessMessage("File uploaded successfully");
+            setTimeout(() => setSuccessMessage(''), 3000);
+          }}
+          category="other"
+        />
+      </div>
+
+      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h4 className="text-md font-medium">Your Files</h4>
+        </div>
+        {userFiles?.length === 0 ? (
+          <div className="p-6 text-center text-gray-500">No files uploaded yet.</div>
+        ) : (
+          <ul className="divide-y divide-gray-200">
+            {userFiles.map(file => (
+              <li key={file.id} className="px-6 py-4 flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0 h-10 w-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500 overflow-hidden">
+                    {file.file_type === 'image' ? (
+                      <img src={file.url} alt={file.filename} className="h-full w-full object-cover" />
+                    ) : (
+                      <Folder size={20} />
+                    )}
+                  </div>
+                  <div className="ml-4">
+                    <p className="text-sm font-medium text-gray-900">{file.filename}</p>
+                    <p className="text-xs text-gray-500">{file.category} • {file.size} • {new Date(file.uploaded_at).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <div className="flex space-x-2">
+                  <a
+                    href={file.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+                  >
+                    Download
+                  </a>
+                  <button
+                    onClick={() => handleDeleteFile(file.id)}
+                    className="text-red-600 hover:text-red-800 text-sm font-medium"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
+  );
+
   const renderContent = () => {
     switch (activeTab) {
       case 'account':
@@ -1077,6 +1174,8 @@ const Settings = () => {
         return renderProfile();
       case 'preferences':
         return renderPreferences();
+      case 'files':
+        return renderFiles();
       default:
         return renderAccountManagement();
     }

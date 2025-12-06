@@ -2,8 +2,8 @@ import axios from "axios";
 
 // Create a pre-configured axios instance
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api/",
-  // baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api",
+  // baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api/",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -207,10 +207,12 @@ export const getMessages = (conversationId) => {
 };
 
 // Send a new message
-export const sendMessage = (conversationId, body) => {
+// Send a new message
+export const sendMessage = (conversationId, body, attachmentId = null) => {
   return apiClient.post("/messages/messages/", {
     conversation: conversationId,
-    body: body
+    body: body,
+    attachment_id: attachmentId
   });
 };
 
@@ -380,5 +382,29 @@ export const requestAccountDeletion = () => {
 // Cancel pending account deletion
 export const cancelAccountDeletion = () => {
   return apiClient.post('/auth/account/cancel-deletion/');
+};
+
+// File Uploads
+export const uploadFile = (file, category, description) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  if (category) formData.append('category', category);
+  if (description) formData.append('description', description);
+
+  return apiClient.post('/auth/files/upload/', formData, {
+    headers: { 'Content-Type': undefined }
+  });
+};
+
+export const getUserFiles = (category) => {
+  return apiClient.get('/auth/files/', { params: { category } });
+};
+
+export const deleteFile = (fileId) => {
+  return apiClient.delete(`/auth/files/${fileId}/delete/`);
+};
+
+export const downloadFile = (fileId) => {
+  return apiClient.get(`/auth/files/${fileId}/download/`, { responseType: 'blob' });
 };
 
