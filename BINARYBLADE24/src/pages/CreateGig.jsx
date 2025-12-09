@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { createGig } from "../api";
 import { useRouter } from "../contexts/Routers";
-
+import { useCurrency } from '../contexts/CurrencyContext';
+import { AuthContext } from '../contexts/AuthContext';
 const CreateGig = () => {
   const { navigate } = useRouter();
+  const { formatPrice, userCurrency, exchangeRates } = useCurrency(); // Import Currency Context context
   const [gigData, setGigData] = useState({
     title: "",
     description: "",
@@ -28,11 +30,21 @@ const CreateGig = () => {
     setLoading(true);
     setError(null);
 
+    // Convert Price from User Currency to USD (Base Currency)
+    // Backend expects USD
+    let priceInUSD = gigData.price;
+    if (userCurrency !== 'USD') {
+      // Inverse calculation: UserValue / Rate = BaseValue
+      if (exchangeRates[userCurrency]) {
+        priceInUSD = parseFloat(gigData.price) / exchangeRates[userCurrency];
+      }
+    }
+
     const formData = new FormData();
     formData.append("title", gigData.title);
     formData.append("description", gigData.description);
     formData.append("category", gigData.category);
-    formData.append("price", gigData.price);
+    formData.append("price", priceInUSD);
     if (gigData.image) {
       formData.append("image", gigData.image);
     }
@@ -106,17 +118,20 @@ const CreateGig = () => {
         </div>
         <div>
           <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-            Price ($)
+            Price ({userCurrency})
           </label>
-          <input
-            type="number"
-            name="price"
-            id="price"
-            value={gigData.price}
-            onChange={handleChange}
-            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] sm:text-sm"
-            required
-          />
+          <div className="relative">
+            <span className="absolute left-3 top-2 text-gray-500">{userCurrency}</span>
+            <input
+              type="number"
+              name="price"
+              id="price"
+              value={gigData.price}
+              onChange={handleChange}
+              className="mt-1 block w-full pl-12 pr-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] sm:text-sm"
+              required
+            />
+          </div>
         </div>
         <div>
           <label htmlFor="image" className="block text-sm font-medium text-gray-700">
@@ -139,8 +154,8 @@ const CreateGig = () => {
             {loading ? "Creating..." : "Create Gig"}
           </button>
         </div>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 };
 

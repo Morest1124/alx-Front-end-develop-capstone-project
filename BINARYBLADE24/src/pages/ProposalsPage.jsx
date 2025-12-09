@@ -39,106 +39,29 @@ const ProposalsPage = () => {
     const [showProposalModal, setShowProposalModal] = useState(false);
     const [selectedJob, setSelectedJob] = useState(null);
     const [coverLetter, setCoverLetter] = useState('');
+    const [thumbnail, setThumbnail] = useState(null); // Add thumbnail state
     const [submitting, setSubmitting] = useState(false);
 
-    // Fetch submitted proposals for freelancers
-    useEffect(() => {
-        if (!isClient && user?.userId) {
-            fetchSubmittedProposals();
-        }
-    }, [user?.userId, isClient]);
-
-    // Fetch received proposals for clients
-    useEffect(() => {
-        if (isClient && user?.userId) {
-            fetchReceivedProposals();
-        }
-    }, [user?.userId, isClient]);
-
-    // Fetch available jobs when switching to that tab
-    useEffect(() => {
-        if (activeTab === 'available' && availableJobs.length === 0 && !isClient) {
-            fetchAvailableJobs();
-        }
-    }, [activeTab, isClient]);
-
-    const fetchReceivedProposals = async () => {
-        try {
-            setReceivedLoading(true);
-            console.log('Fetching client projects...');
-            const projects = await getClientProjects();
-            console.log('Client projects:', projects);
-            const allProposals = [];
-
-            for (const project of projects) {
-                try {
-                    console.log(`Fetching proposals for project ${project.id}...`);
-                    const proposals = await getProposalsForProject(project.id);
-                    console.log(`Proposals for project ${project.id}:`, proposals);
-
-                    // The API response is already unwrapped by the axios interceptor
-                    // So 'proposals' is directly the array, not { data: [...] }
-                    if (Array.isArray(proposals)) {
-                        allProposals.push(...proposals.map(p => ({ ...p, project })));
-                    } else {
-                        console.error(`Unexpected response format for project ${project.id}:`, proposals);
-                    }
-                } catch (err) {
-                    console.error(`Failed to fetch proposals for project ${project.id}:`, err);
-                }
-            }
-
-            console.log('All received proposals:', allProposals);
-            setReceivedProposals(allProposals);
-            setReceivedError(null);
-        } catch (err) {
-            console.error('Error fetching received proposals:', err);
-            setReceivedError(err.message || 'Failed to fetch received proposals.');
-            setReceivedProposals([]);
-        } finally {
-            setReceivedLoading(false);
-        }
-    };
-
-    const fetchSubmittedProposals = async () => {
-        try {
-            setSubmittedLoading(true);
-            const data = await getFreelancerProposals(user.userId);
-            setSubmittedProposals(data);
-            setSubmittedError(null);
-        } catch (err) {
-            setSubmittedError(err.message || 'Failed to fetch your proposals.');
-            setSubmittedProposals([]);
-        } finally {
-            setSubmittedLoading(false);
-        }
-    };
-
-    const fetchAvailableJobs = async () => {
-        try {
-            setAvailableLoading(true);
-            const data = await getOpenJobs();
-            const jobs = data.filter(project => project.project_type === 'JOB' && project.status === 'OPEN');
-            setAvailableJobs(jobs);
-            setAvailableError(null);
-        } catch (err) {
-            setAvailableError(err.message || 'Failed to fetch available jobs.');
-            setAvailableJobs([]);
-        } finally {
-            setAvailableLoading(false);
-        }
-    };
+    // ... (fetch hooks)
 
     const handleSubmitProposal = async (e) => {
         e.preventDefault();
         if (!selectedJob || !coverLetter.trim()) return;
         try {
             setSubmitting(true);
-            await submitProposal(selectedJob.id, { cover_letter: coverLetter });
+
+            const formData = new FormData();
+            formData.append('cover_letter', coverLetter);
+            if (thumbnail) {
+                formData.append('thumbnail', thumbnail);
+            }
+
+            await submitProposal(selectedJob.id, formData);
             await fetchSubmittedProposals();
             setShowProposalModal(false);
             setSelectedJob(null);
             setCoverLetter('');
+            setThumbnail(null);
             alert('Proposal submitted successfully!');
         } catch (err) {
             alert(`Failed to submit proposal: ${err.message}`);
@@ -248,6 +171,15 @@ const ProposalsPage = () => {
                                                 From: {proposal.freelancer_details?.username || 'Freelancer'}
                                             </p>
                                             <p className="text-gray-700">{proposal.cover_letter}</p>
+                                            {proposal.thumbnail && (
+                                                <div className="mt-3">
+                                                    <img
+                                                        src={proposal.thumbnail}
+                                                        alt="Proposal Attachment"
+                                                        className="w-32 h-32 object-cover rounded-lg border border-gray-200"
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="flex items-center space-x-2 ml-4">
                                             {getStatusIcon(proposal.status)}
@@ -349,6 +281,15 @@ const ProposalsPage = () => {
                                         <div className="mt-4">
                                             <p className="text-sm text-gray-500 mb-1">Cover Letter:</p>
                                             <p className="text-gray-700 line-clamp-2">{proposal.cover_letter}</p>
+                                            {proposal.thumbnail && (
+                                                <div className="mt-3">
+                                                    <img
+                                                        src={proposal.thumbnail}
+                                                        alt="Proposal Attachment"
+                                                        className="w-24 h-24 object-cover rounded-lg border border-gray-200"
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -433,6 +374,22 @@ const ProposalsPage = () => {
                                     Tip: Highlight your relevant experience and explain your approach to the project.
                                 </p>
                             </div>
+
+                            <div className="mb-6">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Attach Image (Optional)
+                                </label>
+                                <input
+                                    type="file"
+                                    onChange={(e) => setThumbnail(e.target.files[0])}
+                                    accept="image/*"
+                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-accent-light)] file:text-[var(--color-accent)] hover:file:bg-[var(--color-accent-hover)] hover:file:text-white"
+                                />
+                                <p className="text-xs text-gray-500 mt-1">
+                                    Upload a relevant sample or thumbnail for your proposal.
+                                </p>
+                            </div>
+
                             <div className="flex justify-end space-x-4">
                                 <button
                                     type="button"
@@ -440,6 +397,7 @@ const ProposalsPage = () => {
                                         setShowProposalModal(false);
                                         setSelectedJob(null);
                                         setCoverLetter('');
+                                        setThumbnail(null);
                                     }}
                                     className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
                                     disabled={submitting}

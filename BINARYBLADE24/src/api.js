@@ -2,8 +2,8 @@ import axios from "axios";
 
 // Create a pre-configured axios instance
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api/",
-  // baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api",
+  // baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api/",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api",
   headers: {
     "Content-Type": "application/json",
   },
@@ -133,7 +133,9 @@ export const getProposalsForProject = (projectId) => {
 
 // Submit a new proposal to a project
 export const submitProposal = (projectId, proposalData) => {
-  return apiClient.post(`/projects/${projectId}/proposals/`, proposalData);
+  const isFormData = proposalData instanceof FormData;
+  const config = isFormData ? { headers: { "Content-Type": "multipart/form-data" } } : {};
+  return apiClient.post(`/projects/${projectId}/proposals/`, proposalData, config);
 };
 
 // Update proposal status (accept/reject)

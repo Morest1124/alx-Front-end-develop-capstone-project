@@ -4,6 +4,7 @@ import { AuthContext } from '../contexts/AuthContext';
 import CategorySelector from '../components/CategorySelector';
 import MilestoneManager from '../components/MilestoneManager';
 import { createProject, createMilestone } from '../api';
+import { useCurrency } from '../contexts/CurrencyContext';
 
 /**
  * CreateProject Component - Gig Creation for Freelancers
@@ -18,6 +19,7 @@ const CreateProject = () => {
     // 1. Context and Hooks
     const { user } = useContext(AuthContext);
     const { navigate } = useRouter();
+    const { formatPrice, userCurrency, exchangeRates, convertPrice } = useCurrency();
 
     // 2. State Management
     const [selectedPath, setSelectedPath] = useState('');
@@ -76,12 +78,23 @@ const CreateProject = () => {
         setError('');
 
         try {
+            // Convert Price from User Currency to USD (Base Currency)
+            // Backend expects USD
+            let budgetInUSD = projectDetails.budget;
+            if (userCurrency !== 'USD') {
+                // Inverse calculation: UserValue / Rate = BaseValue
+                // Because convertPrice does: BaseValue * Rate = UserValue
+                if (exchangeRates[userCurrency]) {
+                    budgetInUSD = parseFloat(projectDetails.budget) / exchangeRates[userCurrency];
+                }
+            }
+
             // Prepare FormData for API call
             const formData = new FormData();
             formData.append('title', projectDetails.title);
             formData.append('description', projectDetails.description);
-            formData.append('budget', projectDetails.budget);
-            formData.append('price', projectDetails.budget);
+            formData.append('budget', budgetInUSD);
+            formData.append('price', budgetInUSD);
             formData.append('category', projectDetails.category);
 
             if (projectDetails.thumbnail) {
@@ -184,10 +197,10 @@ const CreateProject = () => {
                             {/* Price Field */}
                             <div>
                                 <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">
-                                    Price (R) *
+                                    Price ({userCurrency}) *
                                 </label>
                                 <div className="relative">
-                                    <span className="absolute left-3 top-2 text-gray-500">R</span>
+                                    <span className="absolute left-3 top-2 text-gray-500">{userCurrency}</span>
                                     <input
                                         type="number"
                                         name="budget"
@@ -197,12 +210,12 @@ const CreateProject = () => {
                                         placeholder="0.00"
                                         min="0"
                                         step="0.01"
-                                        className="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-colors"
+                                        className="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-colors"
                                         required
                                     />
                                 </div>
                                 <p className="mt-1 text-sm text-gray-500">
-                                    This is the fixed price clients will pay for your service.
+                                    Enter the price in your local currency. It will be converted to USD for processing.
                                 </p>
                             </div>
 
