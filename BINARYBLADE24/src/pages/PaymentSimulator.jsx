@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getOrders, markOrderPaid } from '../api';
 import { useCurrency } from '../contexts/CurrencyContext';
+import Loader from '../components/Loader';
 import { CreditCard, CheckCircle, Clock, XCircle, TrendingUp, Wallet, AlertCircle, RefreshCw } from 'lucide-react';
 
 const PaymentSimulator = () => {
