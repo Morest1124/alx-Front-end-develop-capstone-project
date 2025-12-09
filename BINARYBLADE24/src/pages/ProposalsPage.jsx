@@ -42,7 +42,78 @@ const ProposalsPage = () => {
     const [thumbnail, setThumbnail] = useState(null); // Add thumbnail state
     const [submitting, setSubmitting] = useState(false);
 
-    // ... (fetch hooks)
+    const fetchReceivedProposals = async () => {
+        try {
+            setReceivedLoading(true);
+            const myProjects = await getClientProjects();
+            // Flatten proposals from all projects
+            const allProposals = [];
+            for (const project of myProjects) {
+                const proposals = await getProposalsForProject(project.id);
+                if (Array.isArray(proposals)) {
+                    allProposals.push(...proposals);
+                }
+            }
+            setReceivedProposals(allProposals);
+            setReceivedError(null);
+        } catch (err) {
+            console.error("Error fetching received proposals:", err);
+            setReceivedError("Failed to fetch proposals.");
+        } finally {
+            setReceivedLoading(false);
+        }
+    };
+
+    const fetchSubmittedProposals = async () => {
+        if (!user?.user_id && !user?.id) return;
+        try {
+            setSubmittedLoading(true);
+            const userId = user.user_id || user.id;
+            const data = await getFreelancerProposals(userId);
+            setSubmittedProposals(Array.isArray(data) ? data : []);
+            setSubmittedError(null);
+        } catch (err) {
+            console.error("Error fetching submitted proposals:", err);
+            setSubmittedError("Failed to fetch your proposals.");
+        } finally {
+            setSubmittedLoading(false);
+        }
+    };
+
+    const fetchAvailableJobs = async () => {
+        try {
+            setAvailableLoading(true);
+            const data = await getOpenJobs();
+            const jobs = Array.isArray(data) ? data : (data.results || []);
+            // Filter for OPEN JOBS only (freelancers apply to jobs)
+            const openJobs = jobs.filter(job =>
+                (job.project_type === 'JOB' || !job.project_type) &&
+                job.status === 'OPEN'
+            );
+
+            setAvailableJobs(openJobs);
+            setAvailableError(null);
+        } catch (err) {
+            console.error("Error fetching available jobs:", err);
+            setAvailableError("Failed to load available jobs.");
+        } finally {
+            setAvailableLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (isClient) {
+            if (activeTab === 'received') {
+                fetchReceivedProposals();
+            }
+        } else {
+            if (activeTab === 'submitted') {
+                fetchSubmittedProposals();
+            } else if (activeTab === 'available') {
+                fetchAvailableJobs();
+            }
+        }
+    }, [isClient, activeTab, user]);
 
     const handleSubmitProposal = async (e) => {
         e.preventDefault();

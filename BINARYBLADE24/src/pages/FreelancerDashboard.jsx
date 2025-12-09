@@ -101,7 +101,7 @@ const FreelancerDashboard = () => {
               title="Active Projects"
               value={dashboardData.active_projects}
               icon="Briefcase"
-              to="/freelancer/projects/active"
+              to="/freelancer/projects"
               bgColor="bg-white"
               textColor="text-[var(--color-accent)]"
             />
