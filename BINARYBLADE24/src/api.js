@@ -1,22 +1,69 @@
 import axios from "axios";
 
+// Simple in-memory cache for GET requests
+const requestCache = new Map();
+const CACHE_TTL = 30000; // 30 seconds
+
 // Create a pre-configured axios instance
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api/",
-  // baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api",
+  // baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api/",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api",
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 60000, // 60 seconds timeout
+  timeout: 15000, // 15 seconds timeout (reduced for poor connections)
 });
 
-// Add a request interceptor to include the token in all requests
+// Retry configuration for poor internet connections
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // Start with 1 second
+
+// Exponential backoff retry logic
+const retryRequest = async (config, retryCount = 0) => {
+  try {
+    return await axios(config);
+  } catch (error) {
+    // Only retry on network errors or 5xx server errors, not on 4xx client errors
+    const shouldRetry =
+      retryCount < MAX_RETRIES &&
+      (!error.response || error.response.status >= 500 || error.code === 'ECONNABORTED');
+
+    if (shouldRetry) {
+      const delay = RETRY_DELAY * Math.pow(2, retryCount); // Exponential backoff
+      console.log(`Retrying request (attempt ${retryCount + 1}/${MAX_RETRIES}) after ${delay}ms...`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return retryRequest(config, retryCount + 1);
+    }
+    throw error;
+  }
+};
+
+// Add a request interceptor to include the token and handle caching
 apiClient.interceptors.request.use(
-  (config) => {
+  async (config) => {
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Check cache for GET requests
+    if (config.method === 'get') {
+      const cacheKey = `${config.baseURL}${config.url}`;
+      const cached = requestCache.get(cacheKey);
+
+      if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+        console.log(`Cache hit for ${cacheKey}`);
+        // Return cached data by creating a resolved promise that looks like an axios response
+        config.adapter = () => Promise.resolve({
+          data: cached.data,
+          status: 200,
+          statusText: 'OK (cached)',
+          headers: {},
+          config: config
+        });
+      }
+    }
+
     return config;
   },
   (error) => {
@@ -26,11 +73,44 @@ apiClient.interceptors.request.use(
 
 // Handle responses and errors globally
 apiClient.interceptors.response.use(
-  (response) => response.data, // Return the data part of the response
-  (error) => {
+  (response) => {
+    // Cache GET request responses
+    if (response.config.method === 'get') {
+      const cacheKey = `${response.config.baseURL}${response.config.url}`;
+      requestCache.set(cacheKey, {
+        data: response.data,
+        timestamp: Date.now()
+      });
+    }
+
+    // Handle Django REST framework pagination
+    // If response has 'results' array, extract it (paginated response)
+    // Otherwise return the data as-is
+    const data = response.data;
+    if (data && typeof data === 'object' && Array.isArray(data.results)) {
+      // Paginated response - return just the results array for backward compatibility
+      return data.results;
+    }
+
+    return data; // Return the data part of the response
+  },
+  async (error) => {
+    // Retry logic with exponential backoff
+    if (error.config && !error.config.__isRetry) {
+      error.config.__isRetry = true;
+      try {
+        const response = await retryRequest(error.config, 0);
+        return response.data;
+      } catch (retryError) {
+        error = retryError; // Use the final error after retries
+      }
+    }
+
     // Handle errors globally
     let message;
-    if (error.response?.status === 401) {
+    if (error.code === 'ECONNABORTED') {
+      message = "Request timeout. Please check your internet connection and try again.";
+    } else if (error.response?.status === 401) {
       console.error("Authentication Error from backend:", error.response.data);
       // Check if this is a login or register request
       const isAuthRequest = error.config?.url?.includes('/auth/login/') ||
@@ -66,6 +146,8 @@ apiClient.interceptors.response.use(
         "This email or username is already registered. Please try another one.";
     } else if (error.response?.status >= 500) {
       message = "Server error. Please try again later.";
+    } else if (!error.response) {
+      message = "Network error. Please check your internet connection.";
     } else {
       message =
         error.response?.data?.detail ||
@@ -76,6 +158,17 @@ apiClient.interceptors.response.use(
     return Promise.reject(new Error(message));
   }
 );
+
+// Clear cache on mutations (POST, PUT, PATCH, DELETE)
+const clearCacheOnMutation = (method) => {
+  const originalMethod = apiClient[method];
+  apiClient[method] = async (...args) => {
+    requestCache.clear(); // Clear all cache on mutations
+    return originalMethod.apply(apiClient, args);
+  };
+};
+
+['post', 'put', 'patch', 'delete'].forEach(clearCacheOnMutation);
 
 export const login = async (credentials) => {
   const data = await apiClient.post("/auth/login/", credentials);
