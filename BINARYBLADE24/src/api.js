@@ -5,9 +5,25 @@ const requestCache = new Map();
 const CACHE_TTL = 30000; // 30 seconds
 
 // Create a pre-configured axios instance
+// Helper to determine the API URL based on environment
+const getApiUrl = () => {
+  // 1. If VITE_API_BASE_URL is explicitly set in .env, use it
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+
+  // 2. Otherwise, determine based on the browser's current hostname
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return "http://127.0.0.1:8000/api";
+  }
+
+  // 3. Fallback to production URL for deployed environment
+  return "https://binaryblade2411.pythonanywhere.com/api/";
+};
+
 const apiClient = axios.create({
-  // baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api/",
-  baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api",
+  baseURL: getApiUrl(),
   headers: {
     "Content-Type": "application/json",
   },
