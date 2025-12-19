@@ -119,9 +119,9 @@ apiClient.interceptors.response.use(
       if (isAuthRequest) {
         // For login/register, show specific error without triggering logout
         message = "Invalid email or password. Please try again.";
-      } else {
-        // For other protected routes, trigger logout
-        message = "Your session has expired. Please log in again.";
+      // } else {
+      //   // For other protected routes, trigger logout
+      //   message = "Your session has expired. Please log in again.";
         // Only trigger global logout for 401 errors on protected routes
         setTimeout(() => {
           window.dispatchEvent(new Event("auth:logout"));
