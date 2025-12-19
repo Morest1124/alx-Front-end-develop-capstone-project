@@ -54,7 +54,8 @@ const FreelancerProposals = () => {
         try {
             setAvailableLoading(true);
             const data = await getOpenJobs();
-            const jobs = data.filter(project => project.project_type === 'JOB' && project.status === 'OPEN');
+            // Filter for OPEN GIGS (freelancer service offerings in Fiverr model)
+            const jobs = data.filter(project => project.project_type === 'GIG' && project.status === 'OPEN');
             setAvailableJobs(jobs);
             setAvailableError(null);
         } catch (err) {
@@ -228,7 +229,7 @@ const FreelancerProposals = () => {
                                             <h3 className="text-2xl font-semibold text-gray-900 mb-2">{job.title}</h3>
                                             <p className="text-gray-600">{job.description}</p>
                                         </div>
-                                        <span className="ml-4 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">JOB</span>
+                                        <span className="ml-4 px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">GIG</span>
                                     </div>
                                     <div className="flex justify-between items-center border-t pt-4 mt-4">
                                         <div>

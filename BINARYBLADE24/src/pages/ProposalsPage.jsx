@@ -85,9 +85,10 @@ const ProposalsPage = () => {
             setAvailableLoading(true);
             const data = await getOpenJobs();
             const jobs = Array.isArray(data) ? data : (data.results || []);
-            // Filter for OPEN JOBS only (freelancers apply to jobs)
+            // Filter for OPEN GIGS only (freelancer service offerings)
+            // In Fiverr model: Freelancers create GIGs, Clients browse and hire
             const openJobs = jobs.filter(job =>
-                (job.project_type === 'JOB' || !job.project_type) &&
+                job.project_type === 'GIG' &&
                 job.status === 'OPEN'
             );
 
@@ -395,7 +396,7 @@ const ProposalsPage = () => {
                                             <h3 className="text-2xl font-semibold text-gray-900 mb-2">{job.title}</h3>
                                             <p className="text-gray-600">{job.description}</p>
                                         </div>
-                                        <span className="ml-4 badge-info">JOB</span>
+                                        <span className="ml-4 badge-info">GIG</span>
                                     </div>
                                     <div className="flex justify-between items-center border-t pt-4 mt-4">
                                         <div>
