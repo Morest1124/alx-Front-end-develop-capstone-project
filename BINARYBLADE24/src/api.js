@@ -6,8 +6,8 @@ const CACHE_TTL = 30000; // 30 seconds
 
 // Create a pre-configured axios instance
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api/",
-  // baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api",
+  // baseURL: import.meta.env.VITE_API_BASE_URL || "https://binaryblade2411.pythonanywhere.com/api/",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api",
   headers: {
     "Content-Type": "application/json",
   },

@@ -5,6 +5,7 @@ import Loader from "./Loader";
 import { useRouter } from "../contexts/Routers";
 import { useCurrency } from "../contexts/CurrencyContext";
 import { Star } from "lucide-react";
+import { startConversation } from "../api";
 
 const Gigs = () => {
   const { user } = useContext(AuthContext);
@@ -12,9 +13,26 @@ const Gigs = () => {
   const { gigs, loading } = useContext(GigsContext);
   const { navigate } = useRouter();
 
-  const handleContact = (e, gig) => {
+  const handleContact = async (e, gig) => {
     e.stopPropagation();
-    alert(`Contacting ${gig.owner_details?.first_name || 'freelancer'}`);
+
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      // Create or get existing conversation
+      const freelancerId = gig.client?.id || gig.owner_details?.id;
+      const conversation = await startConversation(gig.id, freelancerId);
+
+      // Navigate to messages with conversation selected
+      const messagePath = user.role?.toUpperCase() === 'CLIENT' ? '/client/messages' : '/freelancer/messages';
+      navigate(messagePath, { state: { selectedConversationId: conversation.id } });
+    } catch (error) {
+      console.error("Failed to start conversation:", error);
+      alert("Failed to start conversation. Please try again.");
+    }
   };
 
   const handleViewGig = (gig) => {

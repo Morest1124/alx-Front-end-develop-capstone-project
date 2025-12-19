@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { getFreelancerJobs } from "../api";
+import React, { useState, useEffect, useContext } from "react";
+import { getFreelancerJobs, startConversation } from "../api";
 import GigsContent from "../pages/GigsContent";
 import { useRouter } from "../contexts/Routers";
+import { AuthContext } from '../contexts/AuthContext';
 import Loader from "./Loader";
 
 const ProjectsPage = () => {
   const { navigate } = useRouter();
+  const { user } = useContext(AuthContext);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -45,9 +47,26 @@ const ProjectsPage = () => {
     setSelectedProject(null);
   };
 
-  const handleContact = (e, project) => {
+  const handleContact = async (e, project) => {
     e.stopPropagation();
-    alert(`Contacting ${project.client}`);
+
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      // Create or get existing conversation with the client
+      const clientId = project.client?.id || project.client_details?.id;
+      const conversation = await startConversation(project.id, clientId);
+
+      // Navigate to messages
+      const messagePath = user.role?.toUpperCase() === 'CLIENT' ? '/client/messages' : '/freelancer/messages';
+      navigate(messagePath, { state: { selectedConversationId: conversation.id } });
+    } catch (error) {
+      console.error("Failed to start conversation:", error);
+      alert("Failed to start conversation. Please try again.");
+    }
   };
 
   const handleViewProject = (project) => {

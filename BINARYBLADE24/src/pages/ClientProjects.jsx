@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { getClientProjects } from "../api";
+import { getClientProjects, startConversation } from "../api";
 import { useRouter } from "../contexts/Routers";
 import { AuthContext } from '../contexts/AuthContext';
 import Loader from '../components/Loader';
@@ -69,9 +69,28 @@ const ClientProjects = () => {
     setSelectedProject(null);
   };
 
-  const handleContact = (e, project) => {
+  const handleContact = async (e, project) => {
     e.stopPropagation();
-    alert(`Contacting freelancer for project: ${project.title}`);
+
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    try {
+      // For client's projects, get the freelancer ID from accepted proposals
+      // In a real scenario, you'd need to track which freelancer is assigned
+      // For now, we'll use the client field (which might be the freelancer in the GIG model)
+      const freelancerId = project.client?.id || project.owner_details?.id;
+      const conversation = await startConversation(project.id, freelancerId);
+
+      // Navigate to messages
+      const messagePath = user.role?.toUpperCase() === 'CLIENT' ? '/client/messages' : '/freelancer/messages';
+      navigate(messagePath, { state: { selectedConversationId: conversation.id } });
+    } catch (error) {
+      console.error("Failed to start conversation:", error);
+      alert("Failed to start conversation. Please try again.");
+    }
   };
 
   const handleViewProject = (project) => {
