@@ -5,7 +5,7 @@ import { useCurrency } from '../contexts/CurrencyContext';
 import { AuthContext } from '../contexts/AuthContext';
 import { ShoppingCart, MessageCircle, Check, Star } from 'lucide-react';
 
-import { getProjectDetails, approveProject, createOrder, markOrderPaid, startConversation } from '../api';
+import { getProjectDetails, approveProject, createOrder, markOrderPaid, startConversation, recordProjectView } from '../api';
 
 const fetchProjectById = async (id) => {
   try {
@@ -33,6 +33,8 @@ const ProjectDetailsPage = ({ projectId }) => {
       fetchProjectById(projectId).then(data => {
         setProject(data);
         setIsLoading(false);
+        // Record the view (impression)
+        recordProjectView(projectId).catch(err => console.error("Failed to record view:", err));
       });
     }
   }, [projectId]);

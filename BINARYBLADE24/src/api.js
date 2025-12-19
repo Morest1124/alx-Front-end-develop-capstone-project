@@ -286,6 +286,11 @@ export const getProjectDetails = (projectId) => {
   return apiClient.get(`/projects/${projectId}/`);
 };
 
+// Record a view (impression) for a project
+export const recordProjectView = (projectId) => {
+  return apiClient.post(`/projects/${projectId}/view/`);
+};
+
 // Update user profile
 export const updateUserProfile = (userId, profileData) => {
   return apiClient.put(`/auth/users/${userId}/`, profileData);
