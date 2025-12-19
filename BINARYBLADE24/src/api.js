@@ -119,9 +119,9 @@ apiClient.interceptors.response.use(
       if (isAuthRequest) {
         // For login/register, show specific error without triggering logout
         message = "Invalid email or password. Please try again.";
-      // } else {
-      //   // For other protected routes, trigger logout
-      //   message = "Your session has expired. Please log in again.";
+        // } else {
+        //   // For other protected routes, trigger logout
+        //   message = "Your session has expired. Please log in again.";
         // Only trigger global logout for 401 errors on protected routes
         setTimeout(() => {
           window.dispatchEvent(new Event("auth:logout"));
@@ -503,3 +503,24 @@ export const downloadFile = (fileId) => {
   return apiClient.get(`/auth/files/${fileId}/download/`, { responseType: 'blob' });
 };
 
+// ===== NOTIFICATIONS API =====
+
+// Get all notifications for the authenticated user
+export const getNotifications = () => {
+  return apiClient.get('/notifications/notifications/');
+};
+
+// Get count of unread notifications
+export const getUnreadCount = () => {
+  return apiClient.get('/notifications/notifications/unread_count/');
+};
+
+// Mark a single notification as read
+export const markNotificationRead = (notificationId) => {
+  return apiClient.post(`/notifications/notifications/${notificationId}/mark_read/`);
+};
+
+// Mark all notifications as read
+export const markAllNotificationsRead = () => {
+  return apiClient.post('/notifications/notifications/mark_all_read/');
+};

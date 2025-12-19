@@ -17,6 +17,7 @@ import {
 import logo from '../assets/BinaryBlade-official.png';
 import { AuthContext } from "../contexts/AuthContext";
 import { useRouter, Link } from "../contexts/Routers";
+import NotificationBell from "./NotificationBell";
 
 // Links for unauthenticated users
 const PublicNavLinks = () => {
@@ -230,59 +231,65 @@ const Navbar = () => {
 
             {/* User/Profile Section (Only logged in) */}
             {user.isLoggedIn && (
-              <div className="relative ml-4">
-                <button
-                  onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center space-x-2 p-2 ml-4 rounded-full bg-gray-100 hover:bg-gray-200 transition"
-                >
-                  <User size={20} className="text-gray-700" />
-                  <span className="text-xs font-semibold text-gray-900 hidden lg:inline">
-                    {user.username}
-                  </span>
-                  {getRoleBadge()}
-                  <span>
-                    <img
-                      className=" h-auto rounded-4xl w-5"
-                      src="https://s3-figma-hubfile-images-production.figma.com/hub/file/carousel/img/3a5bd9c55f194c0af002a43912a5c643a3743107/f442a1ccf0d3c93dae3f42c751c1d51cfc9194da"
-                    ></img>
-                  </span>
-                </button>
+              <>
+                {/* Profile Dropdown */}
+                <div className="relative ml-4">
+                  <button
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                    className="flex items-center space-x-2 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition"
+                  >
+                    <User size={20} className="text-gray-700" />
+                    <span className="text-xs font-semibold text-gray-900 hidden lg:inline">
+                      {user.username}
+                    </span>
+                    {getRoleBadge()}
+                    <span>
+                      <img
+                        className=" h-auto rounded-4xl w-5"
+                        src="https://s3-figma-hubfile-images-production.figma.com/hub/file/carousel/img/3a5bd9c55f194c0af002a43912a5c643a3743107/f442a1ccf0d3c93dae3f42c751c1d51cfc9194da"
+                      ></img>
+                    </span>
+                  </button>
 
-                {/* Profile Dropdown Menu */}
-                {isProfileOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black ring-opacity-5 transition-0.9">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">{user.username}</p>
-                      {/* <p className="text-sm font-medium text-gray-900">{user.username}</p> */}
-                      <p className="text-xs text-gray-500 capitalize">{user.role?.toLowerCase()}</p>
-                    </div>
-                    <Link
-                      to="/settings"
-                      className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[var(--color-accent-light)] w-full"
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      <Settings size={16} className="mr-2" /> Settings
-                    </Link>
-                    {user.availableRoles?.length > 1 && (
-                      <button
-                        onClick={handleSwitchRole}
-                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[var(--color-accent-light)] w-full text-left"
+                  {/* Profile Dropdown Menu */}
+                  {isProfileOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl py-1 ring-1 ring-black ring-opacity-5 transition-0.9">
+                      <div className="px-4 py-2 border-b border-gray-100">
+                        <p className="text-sm font-medium text-gray-900">{user.username}</p>
+                        {/* <p className="text-sm font-medium text-gray-900">{user.username}</p> */}
+                        <p className="text-xs text-gray-500 capitalize">{user.role?.toLowerCase()}</p>
+                      </div>
+                      <Link
+                        to="/settings"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[var(--color-accent-light)] w-full"
+                        onClick={() => setIsProfileOpen(false)}
                       >
-                        <User size={16} className="mr-2" /> Switch to{" "}
-                        {user.role?.toUpperCase() === "CLIENT"
-                          ? "Freelancer"
-                          : "Client"}
+                        <Settings size={16} className="mr-2" /> Settings
+                      </Link>
+                      {user.availableRoles?.length > 1 && (
+                        <button
+                          onClick={handleSwitchRole}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-[var(--color-accent-light)] w-full text-left"
+                        >
+                          <User size={16} className="mr-2" /> Switch to{" "}
+                          {user.role?.toUpperCase() === "CLIENT"
+                            ? "Freelancer"
+                            : "Client"}
+                        </button>
+                      )}
+                      <button
+                        onClick={handleLogout}
+                        className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
+                      >
+                        <LogIn size={16} className="mr-2 rotate-180" /> Log Out
                       </button>
-                    )}
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full text-left"
-                    >
-                      <LogIn size={16} className="mr-2 rotate-180" /> Log Out
-                    </button>
-                  </div>
-                )}
-              </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Notification Bell - Separate from profile dropdown */}
+                <NotificationBell />
+              </>
             )}
           </nav>
 
