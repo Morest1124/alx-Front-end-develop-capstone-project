@@ -43,7 +43,7 @@ import CurrencySelector from './CurrencySelector';
 import FileUpload from './FileUpload';
 
 const Settings = () => {
-  const { user } = useContext(AuthContext);
+  const { user, updateUser } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('account');
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
@@ -52,7 +52,8 @@ const Settings = () => {
   // Form states for different sections
   const [accountData, setAccountData] = useState({
     username: user.username || '',
-    fullName: user.name || '',
+    firstName: user.name?.split(' ')[0] || '',
+    lastName: user.name?.split(' ').slice(1).join(' ') || '',
     email: user.email || '',
     phone: '',
     phoneCountryCode: '',
@@ -125,7 +126,8 @@ const Settings = () => {
       const userData = await getUserAccount();
       setAccountData({
         username: userData.username || '',
-        fullName: `${userData.first_name || ''} ${userData.last_name || ''}`.trim(),
+        firstName: userData.first_name || '',
+        lastName: userData.last_name || '',
         email: userData.email || '',
         phone: userData.phone_number || '',
         phoneCountryCode: userData.phone_country_code || '',
@@ -200,18 +202,28 @@ const Settings = () => {
     try {
       if (section === 'Account') {
         // Prepare data for backend
-        const names = accountData.fullName.split(' ');
         const updateData = {
           username: accountData.username,
           email: accountData.email,
-          first_name: names[0] || '',
-          last_name: names.slice(1).join(' ') || '',
+          first_name: accountData.firstName,
+          last_name: accountData.lastName,
           phone_number: accountData.phone,
           phone_country_code: accountData.phoneCountryCode,
           address: accountData.address,
           country_origin: accountData.country,
         };
         await updateUserAccount(updateData);
+
+        // Update global user context to reflect changes immediately
+        updateUser({
+          name: accountData.username,
+          // Note: we're using username as the display name in context based on login logic,
+          // but strictly speaking it could be `firstName lastName`. 
+          // However, since the user complained "dashboard does update the username", 
+          // let's ensure username is synced if that's what's shown.
+          // Re-reading login logic: name = userData.username || (first + last)
+          // So if username is present, it's used.
+        });
       } else if (section === 'Password') {
         if (securityData.newPassword !== securityData.confirmPassword) {
           throw new Error('Passwords do not match');
@@ -345,14 +357,28 @@ const Settings = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <User size={16} className="inline mr-2" />
-              Full Name
+              First Name
             </label>
             <input
               type="text"
-              value={accountData.fullName}
-              onChange={(e) => setAccountData({ ...accountData, fullName: e.target.value })}
+              value={accountData.firstName}
+              onChange={(e) => setAccountData({ ...accountData, firstName: e.target.value })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Enter full name"
+              placeholder="Enter first name"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              <User size={16} className="inline mr-2" />
+              Last Name
+            </label>
+            <input
+              type="text"
+              value={accountData.lastName}
+              onChange={(e) => setAccountData({ ...accountData, lastName: e.target.value })}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Enter last name"
             />
           </div>
 

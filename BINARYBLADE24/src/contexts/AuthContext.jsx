@@ -267,9 +267,17 @@ const AuthProvider = ({ children }) => {
     }, 300);
   };
 
+  const updateUser = (updates) => {
+    setUser((prevUser) => {
+      const newUser = { ...prevUser, ...updates };
+      localStorage.setItem("user", JSON.stringify(newUser));
+      return newUser;
+    });
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user, login, register, logout, loading, error, switchRole, setError }}
+      value={{ user, login, register, logout, loading, error, switchRole, setError, updateUser }}
     >
       {isSwitchingRole && <LoadingOverlay message="Switching role..." />}
       {children}
