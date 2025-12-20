@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ArrowRight, CheckCircle, Shield, Globe, Star, Users, Zap } from "lucide-react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../contexts/AuthContext';
 
 // Image imports for hero collage
 import webDevImg from '../assets/web_development.png';
