@@ -120,8 +120,8 @@ const CreateProject = () => {
             }
 
             // Success feedback and redirection
-            alert('Gig created successfully!');
-            navigate('/freelancer/gigs');
+            alert(`${user.role?.toLowerCase() === 'client' ? 'Project' : 'Gig'} created successfully!`);
+            navigate(user.role?.toLowerCase() === 'client' ? '/client/projects' : '/freelancer/gigs');
         } catch (error) {
             console.error('Failed to create gig:', error);
             setError(error.message || 'Failed to create gig. Please try again.');
@@ -136,9 +136,13 @@ const CreateProject = () => {
             <div className="max-w-3xl mx-auto">
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden">
                     <div className="px-6 py-8">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-2">Create a Gig</h2>
+                        <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                            {user.role?.toLowerCase() === 'client' ? 'Post a Job' : 'Create a Gig'}
+                        </h2>
                         <p className="text-gray-600 mb-6">
-                            Showcase your skills and attract clients
+                            {user.role?.toLowerCase() === 'client'
+                                ? 'Describe your project requirements and find the best talent'
+                                : 'Showcase your skills and attract clients'}
                         </p>
 
                         {error && (
@@ -151,7 +155,7 @@ const CreateProject = () => {
                             {/* Title Field */}
                             <div>
                                 <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                                    Gig Title *
+                                    {user.role?.toLowerCase() === 'client' ? 'Project Title *' : 'Gig Title *'}
                                 </label>
                                 <input
                                     type="text"
@@ -159,7 +163,7 @@ const CreateProject = () => {
                                     id="title"
                                     value={projectDetails.title}
                                     onChange={handleChange}
-                                    placeholder="e.g., I will design a professional logo"
+                                    placeholder={user.role?.toLowerCase() === 'client' ? "e.g., Need a React Developer for Dashboard" : "e.g., I will design a professional logo"}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-colors"
                                     required
                                 />
@@ -168,7 +172,7 @@ const CreateProject = () => {
                             {/* Description Field */}
                             <div>
                                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                                    What service do you offer? *
+                                    {user.role?.toLowerCase() === 'client' ? 'Project Description *' : 'What service do you offer? *'}
                                 </label>
                                 <textarea
                                     name="description"
@@ -190,7 +194,7 @@ const CreateProject = () => {
                                 <CategorySelector
                                     selectedPath={selectedPath}
                                     onSelect={handleCategorySelect}
-                                    label="Select Gig Category..."
+                                    label={user.role?.toLowerCase() === 'client' ? "Select Project Category..." : "Select Gig Category..."}
                                 />
                             </div>
 
@@ -222,7 +226,7 @@ const CreateProject = () => {
                             {/* Thumbnail Upload */}
                             <div>
                                 <label htmlFor="thumbnail" className="block text-sm font-medium text-gray-700 mb-1">
-                                    Gig Image (Optional)
+                                    {user.role?.toLowerCase() === 'client' ? 'Project Image (Optional)' : 'Gig Image (Optional)'}
                                 </label>
                                 <input
                                     type="file"
@@ -236,7 +240,9 @@ const CreateProject = () => {
 
                             {/* Milestone Manager */}
                             <div className="border-t pt-6">
-                                <h3 className="text-xl font-semibold text-gray-900 mb-3">Gig Milestones (Optional)</h3>
+                                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                                    {user.role?.toLowerCase() === 'client' ? 'Project Milestones (Optional)' : 'Gig Milestones (Optional)'}
+                                </h3>
                                 <MilestoneManager
                                     milestones={milestones}
                                     setMilestones={setMilestones}
@@ -258,7 +264,7 @@ const CreateProject = () => {
                                     disabled={isSubmitting}
                                     className="px-8 py-2 btn-primary focus:ring-4 focus:ring-[var(--color-accent-light)] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                 >
-                                    {isSubmitting ? 'Creating...' : 'Create Gig'}
+                                    {isSubmitting ? 'Creating...' : (user.role?.toLowerCase() === 'client' ? 'Post Project' : 'Create Gig')}
                                 </button>
                             </div>
                         </form>

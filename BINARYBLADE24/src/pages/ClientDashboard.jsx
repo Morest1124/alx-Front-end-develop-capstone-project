@@ -64,6 +64,18 @@ const ClientDashboard = () => {
 
   return (
     <PageWrapper title={`Dashboard | ${user.name}`}>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold text-gray-800">Overview</h2>
+        <DashboardCard
+          title=""
+          value="Post a Job"
+          icon="Plus"
+          to="/client/post-job"
+          bgColor="bg-[var(--color-accent)]"
+          textColor="text-white"
+          className="!py-2 !px-6 !shadow-md hover:scale-105 transition-transform"
+        />
+      </div>
       {dashboardData && (
         <div className="space-y-10">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
