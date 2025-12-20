@@ -141,6 +141,10 @@ const ProjectDetailsPage = ({ projectId }) => {
                   {project.status}
                 </span>
               </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Views:</span>
+                <span className="text-gray-600">{project.view_count || 0}</span>
+              </div>
               {/* Gig Rating */}
               <div className="flex justify-between items-center">
                 <span className="font-medium">Gig Rating:</span>
