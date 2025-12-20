@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useRouter } from '../contexts/Routers';
 import { getGig } from '../api';
 import { useCurrency } from '../contexts/CurrencyContext';
+import { AuthContext } from '../contexts/AuthContext';
 
 const GigDetailsPage = ({ gigId }) => {
   const { navigate } = useRouter();
+  const { user } = useContext(AuthContext);
   const [gig, setGig] = useState(null);
   const [mainImage, setMainImage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
@@ -86,7 +88,7 @@ const GigDetailsPage = ({ gigId }) => {
             <div className="price text-3xl font-bold text-[var(--color-success)]">
               {formatPrice(gig.price, 'USD')}
             </div>
-            {gig.freelancer !== (user.username || user.first_name + ' ' + user.last_name) ? (
+            {gig.owner_details?.id !== (user?.userId || user?.id) ? (
               <button className="mt-6 w-full btn-success py-3 px-6 text-lg font-semibold transition-transform transform hover:scale-105">
                 Accept Offer
               </button>
