@@ -86,9 +86,15 @@ const GigDetailsPage = ({ gigId }) => {
             <div className="price text-3xl font-bold text-[var(--color-success)]">
               {formatPrice(gig.price, 'USD')}
             </div>
-            <button className="mt-6 w-full btn-success py-3 px-6 text-lg font-semibold transition-transform transform hover:scale-105">
-              Accept Offer
-            </button>
+            {gig.freelancer !== (user.username || user.first_name + ' ' + user.last_name) ? (
+              <button className="mt-6 w-full btn-success py-3 px-6 text-lg font-semibold transition-transform transform hover:scale-105">
+                Accept Offer
+              </button>
+            ) : (
+              <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-center">
+                This is your gig listing.
+              </div>
+            )}
           </div>
         </div>
       </div>

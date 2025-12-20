@@ -207,40 +207,56 @@ const ProjectDetailsPage = ({ projectId }) => {
             {/* Freelancer: Submit Proposal & Contact Client (Only for Jobs) */}
             {user && user.role?.toUpperCase() === 'FREELANCER' && project.project_type === 'JOB' && project.status === 'OPEN' && (
               <div className="mt-6 space-y-3">
-                <button className="w-full btn-primary py-3 text-lg font-semibold transition-transform transform hover:scale-105">
-                  Submit a Proposal
-                </button>
+                {project.owner_details?.id !== (user.userId || user.id) ? (
+                  <>
+                    <button className="w-full btn-primary py-3 text-lg font-semibold transition-transform transform hover:scale-105">
+                      Submit a Proposal
+                    </button>
 
-                <button
-                  onClick={handleContact}
-                  className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2 border border-gray-300"
-                >
-                  <MessageCircle size={20} />
-                  <span>Contact Client</span>
-                </button>
+                    <button
+                      onClick={handleContact}
+                      className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2 border border-gray-300"
+                    >
+                      <MessageCircle size={20} />
+                      <span>Contact Client</span>
+                    </button>
+                  </>
+                ) : (
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-center">
+                    This is your job listing. You cannot submit proposals to it.
+                  </div>
+                )}
               </div>
             )}
 
             {/* Client: Buy Gig & Contact Freelancer (Only for Gigs) */}
             {user && user.role?.toUpperCase() === 'CLIENT' && project.project_type === 'GIG' && (
               <div className="mt-6 space-y-3">
-                {/* Buy Gig Button - More Prominent */}
-                <button
-                  onClick={() => setShowPricingModal(true)}
-                  className="w-full bg-gradient-to-r from-[var(--color-success)] to-[var(--color-success-hover)] text-white py-4 rounded-lg text-xl font-bold hover:from-[var(--color-success-hover)] hover:to-[var(--color-success)] transition-all transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2"
-                >
-                  <ShoppingCart size={24} />
-                  <span>Buy This Gig</span>
-                </button>
+                {project.owner_details?.id !== (user.userId || user.id) ? (
+                  <>
+                    {/* Buy Gig Button - More Prominent */}
+                    <button
+                      onClick={() => setShowPricingModal(true)}
+                      className="w-full bg-gradient-to-r from-[var(--color-success)] to-[var(--color-success-hover)] text-white py-4 rounded-lg text-xl font-bold hover:from-[var(--color-success-hover)] hover:to-[var(--color-success)] transition-all transform hover:scale-105 shadow-lg flex items-center justify-center space-x-2"
+                    >
+                      <ShoppingCart size={24} />
+                      <span>Buy This Gig</span>
+                    </button>
 
-                {/* Contact Freelancer Button - Secondary */}
-                <button
-                  onClick={handleContact}
-                  className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2 border border-gray-300"
-                >
-                  <MessageCircle size={20} />
-                  <span>Contact Freelancer</span>
-                </button>
+                    {/* Contact Freelancer Button - Secondary */}
+                    <button
+                      onClick={handleContact}
+                      className="w-full bg-gray-100 text-gray-700 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 transition-colors flex items-center justify-center space-x-2 border border-gray-300"
+                    >
+                      <MessageCircle size={20} />
+                      <span>Contact Freelancer</span>
+                    </button>
+                  </>
+                ) : (
+                  <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-center">
+                    This is your gig listing. You cannot purchase it.
+                  </div>
+                )}
               </div>
             )}
           </div>

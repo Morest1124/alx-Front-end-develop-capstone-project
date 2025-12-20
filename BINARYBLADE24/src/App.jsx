@@ -157,6 +157,7 @@ const AppContent = () => {
             <Route path="/freelancer/dashboard" element={<FreelancerDashboard />} />
             <Route path="/freelancer/jobs" element={<FreelancerDashboard />} />
             <Route path="/freelancer/projects" element={<MyProjects />} />
+            <Route path="/freelancer/projects/concluded" element={<MyProjects />} />
             <Route path="/freelancer/gigs" element={<GigsPage />} />
             <Route path="/freelancer/proposals" element={<ProposalsPage />} />
             <Route path="/freelancer/create-gig" element={<CreateProject />} />
@@ -207,9 +208,9 @@ const App = () => {
                 transition-duration: 200ms;
             }
         `}</style>
-               <RouterProvider>
+        <RouterProvider>
           <AuthProvider>
-            <CurrencyProvider>  
+            <CurrencyProvider>
               <GigsProvider>
                 <ClientDashboardProvider>
                   <EarningsProvider>
@@ -217,7 +218,7 @@ const App = () => {
                   </EarningsProvider>
                 </ClientDashboardProvider>
               </GigsProvider>
-            </CurrencyProvider> 
+            </CurrencyProvider>
           </AuthProvider>
         </RouterProvider>
       </div>
