@@ -1,10 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Link } from "../contexts/Routers";
 import { AuthContext } from "../contexts/AuthContext";
 import AuthLayout from "./AuthLayout";
 import SignUpForm from "./SignUpForm";
 
 const SignUp = () => {
+  const location = useLocation();
   const [username, setUsername] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -13,6 +15,15 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("freelancer");
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const roleParam = params.get('role');
+    if (roleParam && (roleParam === 'client' || roleParam === 'freelancer')) {
+      setRole(roleParam);
+    }
+  }, [location]);
+
   const {
     register,
     loading,

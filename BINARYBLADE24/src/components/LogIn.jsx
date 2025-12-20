@@ -38,7 +38,7 @@ const LogIn = () => {
             Email Address
           </label>
           <div className="relative group">
-            <div className={`absolute inset-0 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-secondary)] rounded-xl blur-sm opacity-0 group-hover:opacity-20 transition-opacity duration-300 ${focusedField === 'email' ? 'opacity-30' : ''}`}></div>
+            <div className={`absolute inset-0 bg-[var(--color-accent)] rounded-xl blur-md opacity-0 transition-opacity duration-300 ${focusedField === 'email' ? 'opacity-10' : ''}`}></div>
             <div className="relative flex items-center">
               <Mail className={`absolute left-4 w-5 h-5 transition-colors duration-300 ${focusedField === 'email' ? 'text-[var(--color-accent)]' : 'text-gray-400'}`} />
               <input
@@ -48,7 +48,7 @@ const LogIn = () => {
                 onFocus={() => setFocusedField('email')}
                 onBlur={() => setFocusedField(null)}
                 placeholder="you@example.com"
-                className="w-full pl-12 pr-4 py-3 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:border-[var(--color-accent)] focus:bg-white transition-all duration-300 placeholder:text-gray-400"
+                className="w-full pl-12 pr-4 py-3 bg-white border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:border-[var(--color-accent)] transition-all duration-300 placeholder:text-gray-400"
                 required
                 disabled={loading}
               />
@@ -62,7 +62,7 @@ const LogIn = () => {
             Password
           </label>
           <div className="relative group">
-            <div className={`absolute inset-0 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-secondary)] rounded-xl blur-sm opacity-0 group-hover:opacity-20 transition-opacity duration-300 ${focusedField === 'password' ? 'opacity-30' : ''}`}></div>
+            <div className={`absolute inset-0 bg-[var(--color-accent)] rounded-xl blur-md opacity-0 transition-opacity duration-300 ${focusedField === 'password' ? 'opacity-10' : ''}`}></div>
             <div className="relative flex items-center">
               <Lock className={`absolute left-4 w-5 h-5 transition-colors duration-300 ${focusedField === 'password' ? 'text-[var(--color-accent)]' : 'text-gray-400'}`} />
               <input
@@ -72,7 +72,7 @@ const LogIn = () => {
                 onFocus={() => setFocusedField('password')}
                 onBlur={() => setFocusedField(null)}
                 placeholder="••••••••"
-                className="w-full pl-12 pr-12 py-3 bg-white/50 backdrop-blur-sm border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:border-[var(--color-accent)] focus:bg-white transition-all duration-300 placeholder:text-gray-400"
+                className="w-full pl-12 pr-12 py-3 bg-white border-2 border-gray-200 rounded-xl shadow-sm focus:outline-none focus:border-[var(--color-accent)] transition-all duration-300 placeholder:text-gray-400"
                 required
                 disabled={loading}
               />

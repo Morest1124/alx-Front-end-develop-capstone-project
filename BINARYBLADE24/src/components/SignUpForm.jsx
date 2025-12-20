@@ -169,16 +169,16 @@ const SignUpForm = ({
         {" "}
         <button
           type="submit"
-          className="w-full px-4 py-2 font-medium text-white bg-[var(--color-accent)] rounded-md hover:bg-[var(--color-accent-hover)] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-accent)] disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full px-4 py-3 font-bold text-white bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-secondary)] rounded-xl hover:from-[var(--color-accent-hover)] hover:to-[var(--color-secondary-hover)] transform transition hover:scale-[1.02] active:scale-[0.98] shadow-lg disabled:opacity-50 flex items-center justify-center gap-2"
           disabled={loading}
         >
           {loading ? (
             <>
               <Loader size="small" color="white" />
-              Signing up...
+              Creating Account...
             </>
           ) : (
-            "Sign Up"
+            `Join as ${role === 'client' ? 'Client' : 'Freelancer'}`
           )}
         </button>
       </div>
