@@ -222,3 +222,39 @@
 .animation-delay-4000 {
 	animation-delay: 4s;
 }
+.animate-float-slow {
+		animation: float 5s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+		animation: float 4s ease-in-out infinite;
+		animation-delay: 1.5s;
+}
+
+@keyframes bounce-slow {
+		0%, 100% {
+			transform: translateY(-5%);
+			animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+		}
+		50% {
+			transform: translateY(0);
+			animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+		}
+}
+
+.animate-bounce-slow {
+		animation: bounce-slow 3s infinite;
+}
+
+@keyframes pulse-slow {
+		0%, 100% {
+			opacity: 1;
+		}
+		50% {
+			opacity: 0.6;
+		}
+}
+
+.animate-pulse-slow {
+		animation: pulse-slow 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

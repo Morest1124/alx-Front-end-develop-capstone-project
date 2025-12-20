@@ -100,13 +100,13 @@ const AppContent = () => {
       <main>
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<HowItWorks />} />
+          <Route path="/" element={<PublicHome />} />
           <Route path="/jobs" element={<FindWork />} />
           <Route path="/find-work" element={<FindWork />} />
           <Route path="/talent" element={<Talent />} />
           <Route path="/find-talent" element={<Talent />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
-          <Route path="/about" element={<PublicHome />} />
+          <Route path="/about" element={<HowItWorks />} />
 
           {/* Auth Routes - Redirect to dashboard if already logged in */}
           <Route
