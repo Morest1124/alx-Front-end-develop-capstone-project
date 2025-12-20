@@ -1,9 +1,15 @@
 import React from 'react';
 import {
   User, Briefcase, Shield, DollarSign, Search, MessageSquare,
-  CheckCircle, Star, Clock, Lock, ChevronRight
+  CheckCircle, Star, Clock, Lock, ChevronRight, Code, Database, Palette, Headset
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+
+// Image imports
+import webDevImg from '../assets/web_development.png';
+import dataScienceImg from '../assets/data_science.png';
+import graphicDesignImg from '../assets/graphic_design.png';
+import virtualAssistantImg from '../assets/virtual_assistant.png';
 
 const HowItWorks = () => {
   const scrollToSection = (sectionId) => {
@@ -12,6 +18,37 @@ const HowItWorks = () => {
       element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
+
+  const freelanceCategories = [
+    {
+      title: "Web Development",
+      icon: Code,
+      image: webDevImg,
+      description: "From React applications to robust backends, our developers build the modern web.",
+      details: ["Frontend (React, Vue)", "Backend (Node, Python)", "Fullstack Solutions"]
+    },
+    {
+      title: "Data Science & AI",
+      icon: Database,
+      image: dataScienceImg,
+      description: "Extract insights from data and build intelligent machine learning models.",
+      details: ["Data Analysis", "Machine Learning", "Predictive Modeling"]
+    },
+    {
+      title: "Creative Design",
+      icon: Palette,
+      image: graphicDesignImg,
+      description: "Compelling brand identities, sleek UI/UX, and stunning digital illustrations.",
+      details: ["Logo & Branding", "UI/UX Design", "Illustration"]
+    },
+    {
+      title: "Virtual Assistance",
+      icon: Headset,
+      image: virtualAssistantImg,
+      description: "Expert administrative support, data entry, and project management.",
+      details: ["Data Entry", "Email Management", "Scheduling"]
+    }
+  ];
 
   const clientSteps = [
     {
@@ -230,7 +267,51 @@ const HowItWorks = () => {
         </div>
       </div>
 
-      {/* Categories SEO Section */}
+      {/* Freelance Excellence Section */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6">Expertise Across Industries</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Whether it's data analytics, complex engineering, or creative storytelling,
+              find specialists who bring your vision to life.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {freelanceCategories.map((cat, index) => (
+              <div key={index} className="group bg-gray-50 rounded-3xl overflow-hidden border border-gray-100 transition-all hover:shadow-2xl hover:-translate-y-2">
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={cat.image}
+                    alt={cat.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <cat.icon size={24} className="mb-2" />
+                    <h3 className="text-xl font-bold">{cat.title}</h3>
+                  </div>
+                </div>
+                <div className="p-6">
+                  <p className="text-gray-600 text-sm mb-4 leading-relaxed">
+                    {cat.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {cat.details.map((detail, i) => (
+                      <span key={i} className="px-3 py-1 bg-white border border-gray-200 rounded-full text-xs font-medium text-gray-500">
+                        {detail}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Popular Professional Services Section (Original) */}
       <div className="py-16 px-4 max-w-7xl mx-auto">
         <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Popular Professional Services</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
