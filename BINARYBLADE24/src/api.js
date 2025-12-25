@@ -171,7 +171,11 @@ apiClient.interceptors.response.use(
         error.message ||
         "Something went wrong. Please try again.";
     }
-    return Promise.reject(new Error(message));
+
+    // Return a custom error object that includes the response
+    const customError = new Error(message);
+    customError.response = error.response;
+    return Promise.reject(customError);
   }
 );
 
