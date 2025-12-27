@@ -406,6 +406,45 @@ export const cancelOrder = (orderId) => {
   return apiClient.post(`/orders/orders/${orderId}/cancel_order/`);
 };
 
+// ===== ESCROW API =====
+
+// Get all escrow contracts
+export const getEscrowContracts = () => {
+  return apiClient.get("/escrow/");
+};
+
+// Create a new escrow contract
+export const createEscrowContract = (contractData) => {
+  return apiClient.post("/escrow/", contractData);
+};
+
+// Fund a milestone into escrow
+export const fundMilestone = (contractId, milestoneId) => {
+  return apiClient.post(`/escrow/${contractId}/fund_milestone/`, { milestone_id: milestoneId });
+};
+
+// Submit work for a milestone
+export const submitEscrowWork = (contractId, milestoneId, deliveryNote, deliveryUrl) => {
+  return apiClient.post(`/escrow/${contractId}/submit_work/`, { 
+    milestone_id: milestoneId,
+    delivery_note: deliveryNote,
+    delivery_url: deliveryUrl
+  });
+};
+
+// Request revision for a milestone
+export const requestEscrowRevision = (contractId, milestoneId, feedback) => {
+  return apiClient.post(`/escrow/${contractId}/request_revision/`, { 
+    milestone_id: milestoneId,
+    feedback: feedback
+  });
+};
+
+// Release escrow funds to freelancer
+export const releaseEscrow = (contractId, milestoneId) => {
+  return apiClient.post(`/escrow/${contractId}/release_escrow/`, { milestone_id: milestoneId });
+};
+
 // ===== COMMENTS API =====
 
 // Get all comments for a project

@@ -34,6 +34,7 @@ import Tax from "./pages/Tax";
 import PaymentSimulator from "./pages/PaymentSimulator";
 import MyOrders from "./pages/MyOrders";
 import FreelancerOrders from "./pages/FreelancerOrders";
+import Trustflow from "./pages/Trustflow";
 import { fetchRates } from "./utils/currency";
 
 
@@ -129,6 +130,7 @@ const AppContent = () => {
             <Route path="/settings" element={<Settings />} />
             <Route path="/settings/tax" element={<Tax />} />
             <Route path="/payment-simulator" element={<PaymentSimulator />} />
+            <Route path="/trustflow" element={<Trustflow />} />
 
             {/* Messages can be accessed by both, path differs but component is same */}
             <Route path="/client/messages" element={<Messages />} />
