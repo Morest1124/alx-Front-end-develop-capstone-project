@@ -11,6 +11,7 @@ import UnknownPage from "./pages/UnknownPage";
 import PageWrapper from "./pages/PageWrapper";
 import Projects from "./components/Projects";
 import Talent from "./components/Talent";
+import FindTalent from "./pages/FindTalent";
 import GigsPage from "./components/Gigs";
 import LogIn from "./components/LogIn";
 import SignUp from "./components/SignUp";
@@ -104,8 +105,8 @@ const AppContent = () => {
           <Route path="/" element={<PublicHome />} />
           <Route path="/jobs" element={<FindWork />} />
           <Route path="/find-work" element={<FindWork />} />
-          <Route path="/talent" element={<Talent />} />
-          <Route path="/find-talent" element={<Talent />} />
+          <Route path="/talent" element={<FindTalent />} />
+          <Route path="/find-talent" element={<FindTalent />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/about" element={<HowItWorks />} />
 
