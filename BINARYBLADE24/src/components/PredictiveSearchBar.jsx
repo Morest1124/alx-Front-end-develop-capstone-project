@@ -2,15 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { getSearchSuggestions } from '../api';
 
-const PredictiveSearchBar = ({ 
-    onSearch, 
-    placeholder, 
-    allowedTypes = ['user', 'project', 'category'] 
+const PredictiveSearchBar = ({
+    onSearch,
+    placeholder,
+    allowedTypes = ['user', 'project', 'category']
 }) => {
     const [query, setQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [showSuggestions, setShowSuggestions] = useState(false);
-    
+
     const navigate = useNavigate();
     const location = useLocation(); // Better than window.location
     const wrapperRef = useRef(null);
@@ -66,27 +66,29 @@ const PredictiveSearchBar = ({
         setQuery(suggestion.text);
         setShowSuggestions(false);
 
-        // 1. If it's a Project, go straight to details
+        // 1. If it's a Project, always go straight to details (it's a specific resource)
         if (suggestion.type === 'project') {
             navigate(`/projects/${suggestion.id}`);
             return;
         }
 
-        // 2. If it's a Freelancer (User), go to profile
-        if (suggestion.type === 'user') {
-            navigate(`/profile/${suggestion.id}`);
+        // 2. If it's a Freelancer (User) or Category
+        // If the parent component provided an onSearch handler (like FindTalent/FindWork), use it.
+        // This keeps the user on the current page ("silently reload") instead of navigating away.
+        if (onSearch) {
+            onSearch(suggestion.text);
             return;
         }
 
-        // 3. If it's a Category
+        // Fallback Navigation if no handler provided
+        if (suggestion.type === 'user') {
+            // Since /profile/:id doesn't exist yet, go to Find Talent with search
+            navigate(`/find-talent?q=${suggestion.text}`);
+            return;
+        }
+
         if (suggestion.type === 'category') {
-            // If we are already on the Find Work page, just trigger the search callback
-            if (location.pathname.includes('/find-work')) {
-                if (onSearch) onSearch(suggestion.text);
-            } else {
-                // Otherwise navigate there with the category pre-filled
-                navigate(`/find-work?search=${suggestion.text}`);
-            }
+            navigate(`/find-work?search=${suggestion.text}`);
             return;
         }
     };
@@ -136,7 +138,7 @@ const PredictiveSearchBar = ({
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => query.length >= 2 && setShowSuggestions(true)}
                 />
-                
+
                 {/* Search Button (Inside Input) */}
                 <button
                     type="submit"

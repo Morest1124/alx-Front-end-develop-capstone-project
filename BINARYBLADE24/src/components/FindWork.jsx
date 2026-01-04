@@ -179,6 +179,12 @@ const FindWork = () => {
           <p className="text-gray-600 mb-8 text-lg">
             Browse {projects.length} available jobs posted by clients
           </p>
+          {/* Debug Indicator - Temporary for User Verification */}
+          {searchTerm && (
+            <p className="text-sm text-[var(--color-primary)] font-mono mb-4 bg-blue-50 inline-block px-3 py-1 rounded">
+              Searching for: "{searchTerm}"
+            </p>
+          )}
 
           <div className="max-w-3xl mx-auto">
             <PredictiveSearchBar

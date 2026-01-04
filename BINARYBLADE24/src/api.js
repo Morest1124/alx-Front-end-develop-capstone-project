@@ -65,7 +65,9 @@ apiClient.interceptors.request.use(
 
     // Check cache for GET requests
     if (config.method === 'get') {
-      const cacheKey = `${config.baseURL}${config.url}`;
+      // Create a cache key that includes params to differentiate searches
+      const params = config.params ? JSON.stringify(config.params) : '';
+      const cacheKey = `${config.baseURL}${config.url}?${params}`;
       const cached = requestCache.get(cacheKey);
 
       if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
@@ -93,7 +95,8 @@ apiClient.interceptors.response.use(
   (response) => {
     // Cache GET request responses
     if (response.config.method === 'get') {
-      const cacheKey = `${response.config.baseURL}${response.config.url}`;
+      const params = response.config.params ? JSON.stringify(response.config.params) : '';
+      const cacheKey = `${response.config.baseURL}${response.config.url}?${params}`;
       requestCache.set(cacheKey, {
         data: response.data,
         timestamp: Date.now()
