@@ -58,7 +58,8 @@ const retryRequest = async (config, retryCount = 0) => {
 apiClient.interceptors.request.use(
   async (config) => {
     const token = localStorage.getItem("token");
-    if (token) {
+    // Skip token if skipAuth is set (for public endpoints)
+    if (token && !config.skipAuth) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
@@ -270,6 +271,20 @@ export const getClients = () => {
   return apiClient.get("/auth/users/clients/");
 };
 
+// Global Search API
+export const globalSearch = (params) => {
+  return apiClient.get("/auth/search/global/", { params, skipAuth: true });
+};
+
+export const getSearchOptions = () => {
+  return apiClient.get("/auth/search/options/", { skipAuth: true });
+};
+
+// Autocomplete suggestions
+export const getSearchSuggestions = (query) => {
+  return apiClient.get("/auth/search/suggest/", { params: { q: query }, skipAuth: true });
+};
+
 // Get all projects (OPEN only - for Find Work)
 export const getProjects = () => {
   return apiClient.get("/projects/");
@@ -370,8 +385,8 @@ export const getPublicProposals = () => {
 };
 
 // Get all open projects (jobs) that freelancers can submit proposals to
-export const getOpenJobs = () => {
-  return apiClient.get("/projects/");
+export const getOpenJobs = (params) => {
+  return apiClient.get("/projects/", { params });
 };
 
 // ===== ORDER API =====
@@ -425,7 +440,7 @@ export const fundMilestone = (contractId, milestoneId) => {
 
 // Submit work for a milestone
 export const submitEscrowWork = (contractId, milestoneId, deliveryNote, deliveryUrl) => {
-  return apiClient.post(`/escrow/${contractId}/submit_work/`, { 
+  return apiClient.post(`/escrow/${contractId}/submit_work/`, {
     milestone_id: milestoneId,
     delivery_note: deliveryNote,
     delivery_url: deliveryUrl
@@ -434,7 +449,7 @@ export const submitEscrowWork = (contractId, milestoneId, deliveryNote, delivery
 
 // Request revision for a milestone
 export const requestEscrowRevision = (contractId, milestoneId, feedback) => {
-  return apiClient.post(`/escrow/${contractId}/request_revision/`, { 
+  return apiClient.post(`/escrow/${contractId}/request_revision/`, {
     milestone_id: milestoneId,
     feedback: feedback
   });
