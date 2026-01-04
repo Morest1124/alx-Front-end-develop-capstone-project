@@ -215,7 +215,16 @@ const FindWork = () => {
                 >
                   <option value="">All Categories</option>
                   {categories.map(cat => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                    <React.Fragment key={cat.id}>
+                      <option value={cat.id} className="font-bold text-gray-900 bg-gray-50">
+                        {cat.name}
+                      </option>
+                      {cat.subcategories && cat.subcategories.map(sub => (
+                        <option key={sub.id} value={sub.id} className="text-gray-700">
+                          &nbsp;&nbsp;&nbsp;&nbsp;{sub.name}
+                        </option>
+                      ))}
+                    </React.Fragment>
                   ))}
                 </select>
               </div>
