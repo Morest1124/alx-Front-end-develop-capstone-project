@@ -11,7 +11,8 @@ import {
 import { useRouter } from '../contexts/Routers';
 import { useCurrency } from '../contexts/CurrencyContext';
 import Loader from '../components/Loader';
-import { Briefcase, Send, CheckCircle, XCircle, Clock, FileText, Inbox } from 'lucide-react';
+import PredictiveSearchBar from '../components/PredictiveSearchBar';
+import { Briefcase, Send, CheckCircle, XCircle, Clock, FileText, Inbox, Search } from 'lucide-react';
 
 const ProposalsPage = () => {
     const { user } = useContext(AuthContext);
@@ -34,6 +35,7 @@ const ProposalsPage = () => {
     const [availableJobs, setAvailableJobs] = useState([]);
     const [availableLoading, setAvailableLoading] = useState(false);
     const [availableError, setAvailableError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     // Proposal Modal State
     const [showProposalModal, setShowProposalModal] = useState(false);
@@ -80,15 +82,15 @@ const ProposalsPage = () => {
         }
     };
 
-    const fetchAvailableJobs = async () => {
+    const fetchAvailableJobs = async (search = '') => {
         try {
             setAvailableLoading(true);
-            const data = await getOpenJobs();
+            const data = await getOpenJobs({ search, project_type: 'JOB' });
             const jobs = Array.isArray(data) ? data : (data.results || []);
-            // Filter for OPEN GIGS only (freelancer service offerings)
-            // In Fiverr model: Freelancers create GIGs, Clients browse and hire
+
+            // Further filter to ensure we ONLY have OPEN JOBs (Client requirements)
             const openJobs = jobs.filter(job =>
-                job.project_type === 'GIG' &&
+                job.project_type === 'JOB' &&
                 job.status === 'OPEN'
             );
 
@@ -111,7 +113,7 @@ const ProposalsPage = () => {
             if (activeTab === 'submitted') {
                 fetchSubmittedProposals();
             } else if (activeTab === 'available') {
-                fetchAvailableJobs();
+                fetchAvailableJobs(searchTerm);
             }
         }
     }, [isClient, activeTab, user]);
@@ -374,6 +376,36 @@ const ProposalsPage = () => {
             {/* Available Work Tab (for Freelancers) */}
             {!isClient && activeTab === 'available' && (
                 <div>
+                    <div className="mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <Search size={24} className="text-[var(--color-accent)]" />
+                            Find Work Opportunities
+                        </h2>
+                        <PredictiveSearchBar
+                            onSearch={(val) => {
+                                setSearchTerm(val);
+                                fetchAvailableJobs(val);
+                            }}
+                            placeholder="Search for jobs (e.g., 'Web Development', 'React Consultant')..."
+                        />
+                        {searchTerm && (
+                            <div className="mt-4 flex items-center justify-between">
+                                <p className="text-sm text-gray-500">
+                                    Showing results for: <span className="font-semibold text-[var(--color-accent)]">"{searchTerm}"</span>
+                                </p>
+                                <button
+                                    onClick={() => {
+                                        setSearchTerm('');
+                                        fetchAvailableJobs('');
+                                    }}
+                                    className="text-sm text-gray-400 hover:text-gray-600 underline"
+                                >
+                                    Clear Search
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
                     {availableLoading ? (
                         <div className="text-center p-8">
                             <Loader size="large" />
@@ -396,7 +428,7 @@ const ProposalsPage = () => {
                                             <h3 className="text-2xl font-semibold text-gray-900 mb-2">{job.title}</h3>
                                             <p className="text-gray-600">{job.description}</p>
                                         </div>
-                                        <span className="ml-4 badge-info">GIG</span>
+                                        <span className="ml-4 badge-info uppercase tracking-wider">{job.project_type}</span>
                                     </div>
                                     <div className="flex justify-between items-center border-t pt-4 mt-4">
                                         <div>
