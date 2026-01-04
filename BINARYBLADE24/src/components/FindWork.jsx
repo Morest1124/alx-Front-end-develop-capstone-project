@@ -1,51 +1,51 @@
 import React, { useState, useEffect } from "react";
 import { useIntersectionObserver } from "../hooks/useIntersectionObserver";
 import { useRouter } from "../contexts/Routers";
-import { getPublicProposals } from "../api";
+import { getOpenJobs } from "../api";
 import { formatToZAR } from "../utils/currency";
 import Loader from "./Loader";
 
-// Card component for displaying a single proposal
-const ProposalCard = ({ proposal, handleViewProposal }) => {
+// Card component for displaying a single project
+const ProjectCard = ({ project, handleViewProject }) => {
   const [ref, isIntersecting] = useIntersectionObserver({ threshold: 0.1 });
 
   return (
     <div
       ref={ref}
-      onClick={() => handleViewProposal(proposal)}
+      onClick={() => handleViewProject(project)}
       className={`bg-white rounded-lg shadow-md hover:shadow-xl overflow-hidden transition-all duration-500 ease-in-out cursor-pointer ${isIntersecting ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
     >
-      {proposal.project?.thumbnail && (
+      {project.thumbnail && (
         <img
-          src={proposal.project.thumbnail}
-          alt={proposal.project.title}
+          src={project.thumbnail}
+          alt={project.title}
           className="w-full h-48 object-cover"
         />
       )}
-      {!proposal.project?.thumbnail && (
+      {!project.thumbnail && (
         <div className="w-full h-48 bg-gradient-to-br from-[var(--color-secondary)] to-[var(--color-accent)] flex items-center justify-center">
           <span className="text-white text-4xl font-bold">
-            {proposal.project?.title?.charAt(0) || "P"}
+            {project.title?.charAt(0) || "P"}
           </span>
         </div>
       )}
       <div className="p-4">
         <h3 className="text-lg font-bold text-gray-900 line-clamp-2 mb-2">
-          {proposal.project?.title || "Untitled Project"}
+          {project.title || "Untitled Project"}
         </h3>
         <p className="text-sm text-gray-600 line-clamp-3 mb-3">
-          {proposal.cover_letter || "No description provided"}
+          {project.description || "No description provided"}
         </p>
 
-        {/* Freelancer Info */}
-        {proposal.freelancer && (
+        {/* Client Info */}
+        {project.client && (
           <div className="flex items-center mt-2 mb-3">
             <div className="w-8 h-8 rounded-full bg-[var(--color-accent)] flex items-center justify-center text-white font-semibold">
-              {proposal.freelancer.first_name?.charAt(0) || 'F'}
+              {project.client.first_name?.charAt(0) || 'C'}
             </div>
             <p className="ml-2 text-sm text-gray-700">
-              {proposal.freelancer.first_name} {proposal.freelancer.last_name}
+              {project.client.first_name} {project.client.last_name || ''}
             </p>
           </div>
         )}
@@ -54,12 +54,12 @@ const ProposalCard = ({ proposal, handleViewProposal }) => {
           <div>
             <p className="text-xs text-gray-500">Budget</p>
             <p className="text-lg font-bold text-[var(--color-success)]">
-              {formatToZAR(proposal.bid_amount || proposal.project?.budget)}
+              {formatToZAR(project.budget || 0)}
             </p>
           </div>
           <div className="text-right">
             <span className="badge-info">
-              {proposal.status || "PENDING"}
+              {project.status || "OPEN"}
             </span>
           </div>
         </div>
@@ -69,43 +69,43 @@ const ProposalCard = ({ proposal, handleViewProposal }) => {
 };
 
 const FindWork = () => {
-  const [proposals, setProposals] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const { navigate } = useRouter();
 
   useEffect(() => {
-    const fetchProposals = async () => {
+    const fetchProjects = async () => {
       try {
         setLoading(true);
-        console.log('Fetching public proposals for Find Work...');
-        const proposalsData = await getPublicProposals();
-        console.log('Proposals fetched:', proposalsData);
-        setProposals(proposalsData);
+        console.log('Fetching open projects for Find Work...');
+        const projectsData = await getOpenJobs();
+        console.log('Projects fetched:', projectsData);
+        setProjects(projectsData);
         setError(null);
       } catch (error) {
-        console.error("Failed to fetch proposals:", error);
-        setError(error.message || "Failed to load proposals");
-        setProposals([]);
+        console.error("Failed to fetch projects:", error);
+        setError(error.message || "Failed to load projects");
+        setProjects([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProposals();
+    fetchProjects();
   }, []);
 
-  const handleViewProposal = (proposal) => {
+  const handleViewProject = (project) => {
     // Navigate to project details page
-    if (proposal.project?.id) {
-      navigate(`/projects/${proposal.project.id}`);
+    if (project.id) {
+      navigate(`/projects/${project.id}`);
     }
   };
 
-  const filteredProposals = proposals.filter((proposal) =>
-    proposal.project?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    proposal.cover_letter?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProjects = projects.filter((project) =>
+    project.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    project.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   if (loading) {
@@ -131,31 +131,31 @@ const FindWork = () => {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h2 className="text-4xl font-bold mb-2">Find Work - Browse Proposals</h2>
+        <h2 className="text-4xl font-bold mb-2">Find Work - Browse Projects</h2>
         <p className="text-gray-600 mb-4">
-          Browse {proposals.length} available {proposals.length === 1 ? 'proposal' : 'proposals'} from clients
+          Browse {projects.length} available {projects.length === 1 ? 'project' : 'projects'} from clients
         </p>
         <input
           type="text"
-          placeholder="Search for proposals..."
+          placeholder="Search for projects..."
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)]"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
 
-      {filteredProposals.length === 0 ? (
+      {filteredProjects.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
           <p className="text-gray-500 text-lg">
             {searchTerm
-              ? `No proposals found matching "${searchTerm}"`
-              : "No proposals available at the moment. Check back soon!"}
+              ? `No projects found matching "${searchTerm}"`
+              : "No projects available at the moment. Check back soon!"}
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProposals.map((proposal) => (
-            <ProposalCard key={proposal.id} proposal={proposal} handleViewProposal={handleViewProposal} />
+          {filteredProjects.map((project) => (
+            <ProjectCard key={project.id} project={project} handleViewProject={handleViewProject} />
           ))}
         </div>
       )}

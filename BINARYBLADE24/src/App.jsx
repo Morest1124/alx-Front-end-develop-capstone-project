@@ -142,7 +142,7 @@ const AppContent = () => {
           <Route element={<ProtectedRoute allowedRoles={["CLIENT"]} />}>
             <Route path="/client/dashboard" element={<ClientDashboard />} />
             <Route path="/client/projects" element={<ClientProjects />} />
-            <Route path="/client/talent" element={<Talent />} />
+            <Route path="/client/talent" element={<FindTalent />} />
             <Route path="/client/proposals" element={<ProposalsPage />} />
             <Route path="/client/post-job" element={<CreateProject />} />
             <Route

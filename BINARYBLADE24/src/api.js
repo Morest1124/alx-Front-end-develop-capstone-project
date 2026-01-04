@@ -15,11 +15,11 @@ const getApiUrl = () => {
   // 2. Otherwise, determine based on the browser's current hostname
   const hostname = window.location.hostname;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
-    // return "http://127.0.0.1:8000/api";
+    return "http://127.0.0.1:8000/api";
   }
 
   // 3. Fallback to production URL for deployed environment
-  return "https://binaryblade2411.pythonanywhere.com/api/";
+  // return "https://binaryblade2411.pythonanywhere.com/api/";
 };
 
 const apiClient = axios.create({
