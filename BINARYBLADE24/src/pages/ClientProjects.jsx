@@ -1,37 +1,51 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useMemo } from "react";
+import {
+  Search,
+  MapPin,
+  Clock,
+  DollarSign,
+  CheckCircle2,
+  AlertCircle,
+  MoreVertical,
+  ChevronRight,
+  ExternalLink,
+  MessageSquare,
+  FileText,
+  Briefcase,
+  History,
+  TrendingUp,
+  Layout,
+  Filter
+} from "lucide-react";
 import { getClientProjects, startConversation } from "../api";
-import { useRouter } from "../contexts/Routers";
+import { useNavigate as useRouter } from "react-router-dom";
 import { AuthContext } from '../contexts/AuthContext';
+import { useCurrency } from '../contexts/CurrencyContext';
 import Loader from '../components/Loader';
 
 const ClientProjects = () => {
-  const { navigate } = useRouter();
+  const navigate = useRouter();
   const { user } = useContext(AuthContext);
+  const { userCurrency, formatPrice } = useCurrency();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedProject, setSelectedProject] = useState(null);
-
-  console.log("Current User:", user);
+  const [activeTab, setActiveTab] = useState("all");
 
   const fetchProjects = async () => {
     try {
       setLoading(true);
       setError(null);
       let data = await getClientProjects();
-      console.log("Fetched projects:", data);
 
-      // Handle potential pagination
       if (!Array.isArray(data) && data.results && Array.isArray(data.results)) {
-        console.log('Detected paginated response, using .results');
         data = data.results;
       }
 
       if (Array.isArray(data)) {
         setProjects(data);
       } else {
-        console.error("API response is not an array:", data);
         setProjects([]);
         setError("Invalid data format received from server.");
       }
@@ -47,246 +61,256 @@ const ClientProjects = () => {
     fetchProjects();
   }, []);
 
-  console.log("All projects:", projects);
+  const filteredProjects = useMemo(() => {
+    return projects.filter((project) =>
+      project.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [projects, searchTerm]);
 
-  const filteredProjects = projects.filter((project) =>
-    project.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-  console.log("Filtered projects:", filteredProjects);
-
-  const activeProjects = filteredProjects.filter(
-    (p) => p.status === "IN_PROGRESS"
-  );
-  const pastProjects = filteredProjects.filter((p) => p.status === "COMPLETED");
-  console.log("Active projects:", activeProjects);
-  console.log("Past projects:", pastProjects);
-
-  const openModal = (project) => {
-    setSelectedProject(project);
-  };
-
-  const closeModal = () => {
-    setSelectedProject(null);
-  };
+  const projectsByStatus = useMemo(() => {
+    return {
+      open: filteredProjects.filter(p => p.status === "OPEN"),
+      active: filteredProjects.filter(p => p.status === "IN_PROGRESS"),
+      completed: filteredProjects.filter(p => p.status === "COMPLETED"),
+      canceled: filteredProjects.filter(p => p.status === "CANCELED")
+    };
+  }, [filteredProjects]);
 
   const handleContact = async (e, project) => {
     e.stopPropagation();
-
-    if (!user) {
+    if (!user.isLoggedIn) {
       navigate('/login');
       return;
     }
 
     try {
-      // For client's projects, get the freelancer ID from accepted proposals
-      // In a real scenario, you'd need to track which freelancer is assigned
-      // For now, we'll use the client field (which might be the freelancer in the GIG model)
-      const freelancerId = project.client?.id || project.owner_details?.id;
+      // Logic for client to contact the assigned freelancer
+      // This assumes the project has an associated freelancer through an accepted proposal
+      const freelancerId = project.freelancer?.id || project.owner_details?.id;
+      if (!freelancerId) {
+        alert("No freelancer assigned to this project yet.");
+        return;
+      }
       const conversation = await startConversation(project.id, freelancerId);
-
-      // Navigate to messages
-      const messagePath = user.role?.toUpperCase() === 'CLIENT' ? '/client/messages' : '/freelancer/messages';
-      navigate(messagePath, { state: { selectedConversationId: conversation.id } });
+      navigate('/client/messages', { state: { selectedConversationId: conversation.id } });
     } catch (error) {
       console.error("Failed to start conversation:", error);
       alert("Failed to start conversation. Please try again.");
     }
   };
 
-  const handleViewProject = (project) => {
-    navigate(`/projects/${project.id}`);
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'OPEN': return 'bg-sky-100 text-sky-700 border-sky-200';
+      case 'IN_PROGRESS': return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'COMPLETED': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      case 'CANCELED': return 'bg-rose-100 text-rose-700 border-rose-200';
+      default: return 'bg-slate-100 text-slate-700 border-slate-200';
+    }
   };
+
+  const ProjectCard = ({ project }) => (
+    <div
+      onClick={() => navigate(`/projects/${project.id}`)}
+      className="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 overflow-hidden cursor-pointer"
+    >
+      <div className="relative h-48 overflow-hidden">
+        <img
+          src={project.thumbnail || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80"}
+          alt={project.title}
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute top-4 left-4">
+          <span className={`px-3 py-1.5 rounded-full text-xs font-bold border backdrop-blur-md ${getStatusStyle(project.status)}`}>
+            {project.status.replace('_', ' ')}
+          </span>
+        </div>
+      </div>
+
+      <div className="p-6">
+        <div className="flex justify-between items-start mb-3">
+          <h3 className="text-lg font-bold text-slate-900 line-clamp-1 group-hover:text-sky-600 transition-colors">
+            {project.title}
+          </h3>
+          <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+            <MoreVertical size={18} />
+          </button>
+        </div>
+
+        <p className="text-slate-500 text-sm line-clamp-2 mb-6 h-10">
+          {project.description}
+        </p>
+
+        <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+          <div className="flex flex-col">
+            <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">Budget</span>
+            <span className="text-lg font-extrabold text-slate-900">
+              {formatPrice(project.budget)}
+            </span>
+          </div>
+          <div className="flex gap-2">
+            {project.status === 'OPEN' ? (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate('/client/proposals', { state: { projectId: project.id } });
+                }}
+                className="p-3 bg-sky-50 text-sky-600 rounded-2xl hover:bg-sky-100 transition-colors"
+                title="Manage Proposals"
+              >
+                <Layout size={20} />
+              </button>
+            ) : (
+              <button
+                onClick={(e) => handleContact(e, project)}
+                className="p-3 bg-sky-50 text-sky-600 rounded-2xl hover:bg-sky-100 transition-colors"
+                title="Message Freelancer"
+              >
+                <MessageSquare size={20} />
+              </button>
+            )}
+            <button className="p-3 bg-slate-50 text-slate-600 rounded-2xl hover:bg-slate-100 transition-colors">
+              <ChevronRight size={20} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const Section = ({ title, icon: Icon, projects, color }) => (
+    <div className="mb-16">
+      <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center gap-4">
+          <div className={`p-3 rounded-2xl bg-${color}-50 text-${color}-600`}>
+            <Icon size={24} />
+          </div>
+          <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{title}</h2>
+          <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-sm font-bold">
+            {projects.length}
+          </span>
+        </div>
+        <div className="h-[1px] flex-1 bg-slate-100 mx-8 hidden md:block" />
+      </div>
+
+      {projects.length === 0 ? (
+        <div className="bg-white rounded-[2rem] border border-dashed border-slate-200 p-12 text-center">
+          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+            <Icon size={32} />
+          </div>
+          <h3 className="text-slate-900 font-bold mb-1">No {title.toLowerCase()} found</h3>
+          <p className="text-slate-400 text-sm max-w-xs mx-auto">
+            You don't have any projects in this status at the moment.
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {projects.map(project => <ProjectCard key={project.id} project={project} />)}
+        </div>
+      )}
+    </div>
+  );
 
   if (loading) {
     return (
-      <div className="p-8 flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-slate-50/50 flex flex-col items-center justify-center py-20">
         <Loader size="large" />
-        <p className="mt-4 text-gray-600">Loading projects...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="p-8 flex flex-col items-center justify-center">
-        <div className="text-red-500 mb-4">{error}</div>
-        <button
-          onClick={fetchProjects}
-          className="px-4 py-2 bg-[var(--color-accent)] text-white rounded hover:bg-[var(--color-accent-hover)] transition-colors"
-        >
-          Retry
-        </button>
+        <p className="mt-6 text-slate-500 font-medium animate-pulse">Organizing your projects...</p>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="min-h-screen bg-[#F8FAFC] py-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-6 p-4 bg-white rounded-lg shadow-md">
-          <input
-            type="text"
-            placeholder="Search..."
-            className="px-4 py-2 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)]"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
 
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Active Projects</h2>
-        {activeProjects.length === 0 ? (
-          <div className="text-center py-8 bg-white rounded-lg shadow-sm mb-8">
-            <p className="text-gray-500">No active projects found.</p>
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-2 text-sky-600 font-bold text-sm tracking-widest uppercase mb-3">
+              <TrendingUp size={16} />
+              Project Portfolio
+            </div>
+            <h1 className="text-5xl font-black text-slate-900 tracking-tight mb-4">
+              My <span className="text-sky-600">Projects</span>
+            </h1>
+            <p className="text-slate-500 text-lg leading-relaxed">
+              Track your hiring progress, manage active work, and review your project history all in one place.
+            </p>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {activeProjects.map((project) => (
-              <div
-                key={project.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform duration-200 hover:scale-105"
-                onClick={() => handleViewProject(project)}
-              >
-                <div className="relative">
-                  <img
-                    src={project.thumbnail || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvamVjdHxlbnwwfHwwfHx8MA%3D%3D"}
-                    alt={project.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <span
-                    className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${project.status === "IN_PROGRESS"
-                      ? "bg-yellow-500"
-                      : "bg-green-500"
-                      }`}
-                  >
-                    {project.status}
-                  </span>
-                  <div className="absolute bottom-0 left-0 p-4 flex items-center"></div>
-                </div>
-                <div className="p-4">
-                  <h2 className="text-xl font-bold text-gray-800 text-center">
-                    {project.title}
-                  </h2>
-                  <div className="flex justify-between items-center mt-4">
-                    <p className="text-lg font-bold text-green-600">
-                      R{project.budget}
-                    </p>
-                    <div className="flex items-center">
-                      <span className="text-yellow-500">★</span>
-                      <span className="ml-1 text-gray-600">
-                        {project.rating || "N/A"}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="text-center mt-4 flex justify-center space-x-4">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openModal(project);
-                      }}
-                      className="btn-secondary px-4 py-2"
-                    >
-                      Send
-                    </button>
-                    <button
-                      onClick={(e) => handleContact(e, project)}
-                      className="btn-primary px-4 py-2"
-                    >
-                      Contact Freelancer
-                    </button>
-                  </div>
-                </div>
+
+          <div className="flex items-center gap-4">
+            <div className="relative group">
+              <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-sky-500 transition-colors">
+                <Search size={18} />
               </div>
-            ))}
-          </div>
-        )}
-
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          Completed Projects
-        </h2>
-        {pastProjects.length === 0 ? (
-          <div className="text-center py-8 bg-white rounded-lg shadow-sm">
-            <p className="text-gray-500">No completed projects found.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pastProjects.map((project) => (
-              <div
-                key={project.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform duration-200 hover:scale-105"
-                onClick={() => handleViewProject(project)}
-              >
-                <div className="relative">
-                  <img
-                    src={project.thumbnail || "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cHJvamVjdHxlbnwwfHwwfHx8MA%3D%3D"}
-                    alt={project.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <span
-                    className={`absolute top-2 right-2 text-white px-2 py-1 text-xs font-bold rounded ${project.status === "IN_PROGRESS"
-                      ? "bg-yellow-500"
-                      : "bg-green-500"
-                      }`}
-                  >
-                    {project.status}
-                  </span>
-                  <div className="absolute bottom-0 left-0 p-4 flex items-center"></div>
-                </div>
-                <div className="p-4">
-                  <h2 className="text-xl font-bold text-gray-800 text-center">
-                    {project.title}
-                  </h2>
-                  <div className="flex justify-between items-center mt-4">
-                    <p className="text-lg font-bold text-green-600">
-                      R{project.budget}
-                    </p>
-                    <div className="flex items-center">
-                      <span className="text-yellow-500">★</span>
-                      <span className="ml-1 text-gray-600">
-                        {project.rating || "N/A"}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="text-center mt-4 flex justify-center space-x-4">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openModal(project);
-                      }}
-                      className="btn-secondary px-4 py-2"
-                    >
-                      Send
-                    </button>
-                    <button
-                      onClick={(e) => handleContact(e, project)}
-                      className="btn-primary px-4 py-2"
-                    >
-                      Contact Freelancer
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {selectedProject && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-8 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">Project Details</h2>
-            <p><strong>Name:</strong> {selectedProject.name}</p>
-            <p><strong>Last Name:</strong> {selectedProject.lastName}</p>
-            <p><strong>ID:</strong> {selectedProject.id}</p>
-            <p><strong>Country of Origin:</strong> {selectedProject.countryOfOrigin}</p>
+              <input
+                type="text"
+                placeholder="Search projects by title..."
+                className="w-full md:w-80 pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-[1.5rem] focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 outline-none text-slate-600 font-medium shadow-sm transition-all"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
             <button
-              onClick={closeModal}
-              className="mt-4 btn-danger px-4 py-2"
+              onClick={() => navigate('/client/post-job')}
+              className="bg-sky-600 hover:bg-sky-700 text-white px-8 py-4 rounded-[1.5rem] font-bold shadow-lg shadow-sky-200 flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
             >
-              Close
+              <Briefcase size={20} />
+              Post New Job
             </button>
           </div>
         </div>
-      )}
+
+        {error ? (
+          <div className="bg-rose-50 border border-rose-100 rounded-3xl p-8 text-center max-w-lg mx-auto mt-20">
+            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-rose-500 shadow-sm">
+              <AlertCircle size={32} />
+            </div>
+            <h3 className="text-rose-900 font-bold text-lg mb-2">Something went wrong</h3>
+            <p className="text-rose-700 mb-6">{error}</p>
+            <button
+              onClick={fetchProjects}
+              className="px-8 py-3 bg-rose-600 text-white font-bold rounded-2xl hover:bg-rose-700 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <Section
+              title="Open Requests"
+              icon={Briefcase}
+              projects={projectsByStatus.open}
+              color="sky"
+            />
+
+            <Section
+              title="Active Work"
+              icon={Clock}
+              projects={projectsByStatus.active}
+              color="amber"
+            />
+
+            <Section
+              title="Completed History"
+              icon={History}
+              projects={projectsByStatus.completed}
+              color="emerald"
+            />
+
+            {projectsByStatus.canceled.length > 0 && (
+              <Section
+                title="Canceled Projects"
+                icon={AlertCircle}
+                projects={projectsByStatus.canceled}
+                color="slate"
+              />
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
