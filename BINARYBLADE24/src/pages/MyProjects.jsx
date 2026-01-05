@@ -1,81 +1,79 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useMemo } from 'react';
+import {
+    Briefcase,
+    Clock,
+    CheckCircle2,
+    User,
+    Calendar,
+    DollarSign,
+    Search,
+    TrendingUp,
+    MessageSquare,
+    ChevronRight,
+    MoreVertical,
+    History,
+    AlertCircle,
+    Layout
+} from 'lucide-react';
 import { AuthContext } from '../contexts/AuthContext';
-import { getOrders } from '../api';
-import PageWrapper from './PageWrapper';
+import { getOrders, startConversation } from '../api';
 import { useCurrency } from '../contexts/CurrencyContext';
-import { Link, useRouter } from '../contexts/Routers';
+import { useNavigate as useRouter } from 'react-router-dom';
 import Loader from '../components/Loader';
-import { Briefcase, Clock, CheckCircle, User, Calendar, DollarSign } from 'lucide-react';
 
 const MyProjects = () => {
     const { user } = useContext(AuthContext);
-    const { currentPath } = useRouter();
+    const navigate = useRouter();
     const { formatPrice } = useCurrency();
     const [projects, setProjects] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [activeTab, setActiveTab] = useState('active'); // 'active' or 'past'
+    const [searchTerm, setSearchTerm] = useState("");
 
-    // Set active tab based on URL
-    useEffect(() => {
-        if (currentPath.includes('/concluded')) {
-            setActiveTab('past');
-        } else {
-            setActiveTab('active');
+    const fetchProjects = async () => {
+        try {
+            setLoading(true);
+            const data = await getOrders();
+            const currentUserId = user.userId || user.id;
+
+            const freelancerOrders = data.filter(order => {
+                if (order.client == currentUserId) return false;
+                if (order.items && order.items.length > 0) {
+                    return order.items.some(item => item.freelancer == currentUserId);
+                }
+                return true;
+            });
+
+            const transformedProjects = freelancerOrders.map(order => {
+                const item = order.items && order.items.length > 0 ? order.items[0] : {};
+                const project = item.project_details || {};
+
+                return {
+                    id: order.id,
+                    projectId: project.id,
+                    title: project.title || `Order #${order.order_number}`,
+                    description: project.description || `Order for ${item.tier} tier`,
+                    budget: order.total_amount,
+                    status: order.status,
+                    client_details: order.client_details,
+                    created_at: order.created_at,
+                    updated_at: order.updated_at,
+                    thumbnail: project.thumbnail
+                };
+            });
+
+            setProjects(transformedProjects);
+            setError(null);
+        } catch (err) {
+            console.error('Error fetching projects:', err);
+            setError(err.message || "Failed to fetch your projects.");
+            setProjects([]);
+        } finally {
+            setLoading(false);
         }
-    }, [currentPath]);
+    };
 
     useEffect(() => {
-        const fetchProjects = async () => {
-            try {
-                setLoading(true);
-                const data = await getOrders();
-
-                // Filter orders where the current user is the freelancer
-                const currentUserId = user.userId || user.id;
-
-                const freelancerOrders = data.filter(order => {
-                    // If user is client, skip
-                    if (order.client == currentUserId) return false;
-
-                    // If items are populated, check if user is freelancer on any item
-                    if (order.items && order.items.length > 0) {
-                        return order.items.some(item => item.freelancer == currentUserId);
-                    }
-
-                    // Fallback: if not client, assume freelancer (due to API filter)
-                    return true;
-                });
-
-                // Transform orders into project-like structure for display
-                const transformedProjects = freelancerOrders.map(order => {
-                    const item = order.items && order.items.length > 0 ? order.items[0] : {};
-                    const project = item.project_details || {};
-
-                    return {
-                        id: order.id,
-                        projectId: project.id,
-                        title: project.title || `Order #${order.order_number}`,
-                        description: project.description || `Order for ${item.tier} tier`,
-                        budget: order.total_amount,
-                        status: order.status,
-                        client_details: order.client_details,
-                        created_at: order.created_at,
-                        updated_at: order.updated_at
-                    };
-                });
-
-                setProjects(transformedProjects);
-                setError(null);
-            } catch (err) {
-                console.error('Error fetching projects:', err);
-                setError(err.message || "Failed to fetch your projects.");
-                setProjects([]);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         if (user?.isLoggedIn) {
             fetchProjects();
         } else {
@@ -83,220 +81,243 @@ const MyProjects = () => {
         }
     }, [user?.isLoggedIn, user?.userId, user?.id]);
 
-    // Filter projects based on active tab
-    const activeProjects = projects.filter(p =>
-        p.status === 'PENDING' ||
-        p.status === 'PAID' ||
-        p.status === 'IN_PROGRESS'
-    );
-    const pastProjects = projects.filter(p => p.status === 'COMPLETED');
+    const filteredProjects = useMemo(() => {
+        return projects.filter((project) =>
+            project.title.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    }, [projects, searchTerm]);
 
-    const getStatusConfig = (status) => {
-        const configs = {
-            COMPLETED: {
-                color: 'bg-green-100 text-green-800',
-                icon: CheckCircle,
-                text: 'Completed'
-            },
-            PAID: {
-                color: 'bg-blue-100 text-blue-800',
-                icon: DollarSign,
-                text: 'In Progress'
-            },
-            PENDING: {
-                color: 'bg-yellow-100 text-yellow-800',
-                icon: Clock,
-                text: 'Pending Payment'
-            },
-            IN_PROGRESS: {
-                color: 'bg-[var(--color-accent-light)] text-[var(--color-accent)]',
-                icon: Briefcase,
-                text: 'Active'
-            }
+    const projectsByStatus = useMemo(() => {
+        return {
+            active: filteredProjects.filter(p => p.status === 'IN_PROGRESS' || p.status === 'PAID'),
+            pending: filteredProjects.filter(p => p.status === 'PENDING'),
+            completed: filteredProjects.filter(p => p.status === 'COMPLETED'),
+            canceled: filteredProjects.filter(p => p.status === 'CANCELED')
         };
-        return configs[status] || configs.PENDING;
+    }, [filteredProjects]);
+
+    const handleContact = async (e, project) => {
+        e.stopPropagation();
+        try {
+            const clientId = project.client_details?.id;
+            if (!clientId) {
+                alert("Client details not available.");
+                return;
+            }
+            const conversation = await startConversation(project.projectId || project.id, clientId);
+            navigate('/freelancer/messages', { state: { selectedConversationId: conversation.id } });
+        } catch (error) {
+            console.error("Failed to start conversation:", error);
+            alert("Failed to start conversation. Please try again.");
+        }
     };
+
+    const getStatusStyle = (status) => {
+        switch (status) {
+            case 'PENDING': return 'bg-sky-100 text-sky-700 border-sky-200';
+            case 'IN_PROGRESS': return 'bg-amber-100 text-amber-700 border-amber-200';
+            case 'PAID': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+            case 'COMPLETED': return 'bg-indigo-100 text-indigo-700 border-indigo-200';
+            case 'CANCELED': return 'bg-rose-100 text-rose-700 border-rose-200';
+            default: return 'bg-slate-100 text-slate-700 border-slate-200';
+        }
+    };
+
+    const ProjectCard = ({ project }) => (
+        <div
+            onClick={() => navigate(`/projects/${project.projectId || project.id}`)}
+            className="group bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 overflow-hidden cursor-pointer"
+        >
+            <div className="relative h-48 overflow-hidden">
+                <img
+                    src={project.thumbnail || "https://images.unsplash.com/photo-1454165833767-027ffea9e7a7?w=800&auto=format&fit=crop&q=80"}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute top-4 left-4">
+                    <span className={`px-3 py-1.5 rounded-full text-xs font-bold border backdrop-blur-md ${getStatusStyle(project.status)}`}>
+                        {project.status.replace('_', ' ')}
+                    </span>
+                </div>
+            </div>
+
+            <div className="p-6">
+                <div className="flex justify-between items-start mb-3">
+                    <h3 className="text-lg font-bold text-slate-900 line-clamp-1 group-hover:text-sky-600 transition-colors">
+                        {project.title}
+                    </h3>
+                    <button className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-lg transition-colors">
+                        <MoreVertical size={18} />
+                    </button>
+                </div>
+
+                <p className="text-slate-500 text-sm line-clamp-2 mb-6 h-10">
+                    {project.description}
+                </p>
+
+                <div className="flex items-center gap-2 mb-6 text-xs font-bold text-slate-400 uppercase tracking-tighter">
+                    <User size={14} className="text-sky-500" />
+                    {project.client_details?.first_name} {project.client_details?.last_name}
+                </div>
+
+                <div className="flex items-center justify-between pt-6 border-t border-slate-50">
+                    <div className="flex flex-col">
+                        <span className="text-xs text-slate-400 font-medium uppercase tracking-wider">Earnings</span>
+                        <span className="text-lg font-extrabold text-slate-900">
+                            {formatPrice(project.budget)}
+                        </span>
+                    </div>
+                    <div className="flex gap-2">
+                        <button
+                            onClick={(e) => handleContact(e, project)}
+                            className="p-3 bg-sky-50 text-sky-600 rounded-2xl hover:bg-sky-100 transition-colors"
+                            title="Message Client"
+                        >
+                            <MessageSquare size={20} />
+                        </button>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                navigate('/freelancer/billing');
+                            }}
+                            className="p-3 bg-slate-50 text-slate-600 rounded-2xl hover:bg-slate-100 transition-colors"
+                            title="View Billing"
+                        >
+                            <Layout size={20} />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const Section = ({ title, icon: Icon, projects, color }) => (
+        <div className="mb-16">
+            <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                    <div className={`p-3 rounded-2xl bg-${color}-50 text-${color}-600`}>
+                        <Icon size={24} />
+                    </div>
+                    <h2 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{title}</h2>
+                    <span className="bg-slate-100 text-slate-500 px-3 py-1 rounded-full text-sm font-bold">
+                        {projects.length}
+                    </span>
+                </div>
+                <div className="h-[1px] flex-1 bg-slate-100 mx-8 hidden md:block" />
+            </div>
+
+            {projects.length === 0 ? (
+                <div className="bg-white rounded-[2rem] border border-dashed border-slate-200 p-12 text-center">
+                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300">
+                        <Icon size={32} />
+                    </div>
+                    <h3 className="text-slate-900 font-bold mb-1">No {title.toLowerCase()} found</h3>
+                    <p className="text-slate-400 text-sm max-w-xs mx-auto">
+                        You don't have any projects in this category at the moment.
+                    </p>
+                </div>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {projects.map(project => <ProjectCard key={project.id} project={project} />)}
+                </div>
+            )}
+        </div>
+    );
 
     if (loading) {
         return (
-            <PageWrapper title="My Projects">
-                <div className="flex flex-col items-center justify-center p-12">
-                    <Loader size="large" />
-                    <p className="mt-4 text-gray-600">Loading your projects...</p>
-                </div>
-            </PageWrapper>
+            <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center py-20">
+                <Loader size="large" />
+                <p className="mt-6 text-slate-500 font-medium animate-pulse">Syncing your work...</p>
+            </div>
         );
     }
-
-    if (error) {
-        return (
-            <PageWrapper title="My Projects">
-                <div className="text-center p-8 bg-red-50 border border-red-200 rounded-lg">
-                    <p className="text-red-700 font-semibold">Error: {error}</p>
-                </div>
-            </PageWrapper>
-        );
-    }
-
-    const displayProjects = activeTab === 'active' ? activeProjects : pastProjects;
 
     return (
-        <PageWrapper title="My Projects">
-            {/* Header Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div className="bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-secondary)] rounded-xl shadow-lg p-6 text-white">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-white/80">Active Projects</span>
-                        <Briefcase className="w-6 h-6 text-white/60" />
+        <div className="min-h-screen bg-[#F8FAFC] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+            <div className="max-w-7xl mx-auto">
+
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                    <div className="max-w-2xl">
+                        <div className="flex items-center gap-2 text-sky-600 font-bold text-sm tracking-widest uppercase mb-3">
+                            <TrendingUp size={16} />
+                            Career Growth
+                        </div>
+                        <h1 className="text-5xl font-black text-slate-900 tracking-tight mb-4">
+                            My <span className="text-sky-600">Work</span>
+                        </h1>
+                        <p className="text-slate-500 text-lg leading-relaxed">
+                            Manage your active orders, track deliverables, and keep your clients happy with timely updates.
+                        </p>
                     </div>
-                    <div className="text-4xl font-bold">{activeProjects.length}</div>
-                    <div className="text-sm text-white/70 mt-1">Currently working on</div>
+
+                    <div className="flex items-center gap-4">
+                        <div className="relative group">
+                            <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-sky-500 transition-colors">
+                                <Search size={18} />
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Search orders..."
+                                className="w-full md:w-80 pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-[1.5rem] focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 outline-none text-slate-600 font-medium shadow-sm transition-all"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                    </div>
                 </div>
 
-                <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                    <div className="flex items-center justify-between mb-2">
-                        <span className="text-gray-600">Completed</span>
-                        <CheckCircle className="w-6 h-6 text-green-500" />
-                    </div>
-                    <div className="text-4xl font-bold text-green-600">{pastProjects.length}</div>
-                    <div className="text-sm text-gray-500 mt-1">Successfully finished</div>
-                </div>
-            </div>
-
-            {/* Tab Navigation */}
-            <div className="flex border-b border-gray-200 mb-6">
-                <button
-                    onClick={() => setActiveTab('active')}
-                    className={`py-3 px-6 text-lg font-semibold transition-colors ${activeTab === 'active'
-                        ? 'border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]'
-                        : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                >
-                    <Briefcase className="w-5 h-5 inline mr-2" />
-                    Active Projects ({activeProjects.length})
-                </button>
-                <button
-                    onClick={() => setActiveTab('past')}
-                    className={`py-3 px-6 text-lg font-semibold transition-colors ${activeTab === 'past'
-                        ? 'border-b-2 border-[var(--color-accent)] text-[var(--color-accent)]'
-                        : 'text-gray-500 hover:text-gray-700'
-                        }`}
-                >
-                    <CheckCircle className="w-5 h-5 inline mr-2" />
-                    Completed ({pastProjects.length})
-                </button>
-            </div>
-
-            {/* Projects List */}
-            <div className="space-y-6">
-                {displayProjects.length === 0 ? (
-                    <div className="text-center py-12 bg-gray-50 rounded-xl border-2 border-dashed border-gray-300">
-                        {activeTab === 'active' ? (
-                            <>
-                                <Briefcase className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                                <p className="text-gray-500 text-lg font-medium">No active projects</p>
-                                <p className="text-gray-400 text-sm mt-2">You don't have any active projects at the moment.</p>
-                            </>
-                        ) : (
-                            <>
-                                <CheckCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                                <p className="text-gray-500 text-lg font-medium">No completed projects</p>
-                                <p className="text-gray-400 text-sm mt-2">You haven't completed any projects yet.</p>
-                            </>
-                        )}
+                {error ? (
+                    <div className="bg-rose-50 border border-rose-100 rounded-3xl p-8 text-center max-w-lg mx-auto mt-20">
+                        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 text-rose-500 shadow-sm">
+                            <AlertCircle size={32} />
+                        </div>
+                        <h3 className="text-rose-900 font-bold text-lg mb-2">Something went wrong</h3>
+                        <p className="text-rose-700 mb-6">{error}</p>
+                        <button
+                            onClick={fetchProjects}
+                            className="px-8 py-3 bg-rose-600 text-white font-bold rounded-2xl hover:bg-rose-700 transition-colors"
+                        >
+                            Try Again
+                        </button>
                     </div>
                 ) : (
-                    displayProjects.map((project) => {
-                        const statusConfig = getStatusConfig(project.status);
-                        const StatusIcon = statusConfig.icon;
+                    <div className="space-y-4">
+                        <Section
+                            title="Active Orders"
+                            icon={Briefcase}
+                            projects={projectsByStatus.active}
+                            color="sky"
+                        />
 
-                        return (
-                            <div
-                                key={project.id}
-                                className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200"
-                            >
-                                {/* Project Header with Gradient */}
-                                <div className="bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-secondary)] p-6 text-white">
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex-1">
-                                            <h3 className="text-2xl font-bold mb-2">
-                                                {project.title}
-                                            </h3>
-                                            <p className="text-white/90 line-clamp-2">
-                                                {project.description}
-                                            </p>
-                                        </div>
-                                        <div className="ml-6 text-right">
-                                            <div className="text-3xl font-bold">
-                                                {formatPrice(project.budget, 'USD')}
-                                            </div>
-                                            <div className="text-sm text-white/70 mt-1">Earnings</div>
-                                        </div>
-                                    </div>
-                                </div>
+                        <Section
+                            title="Pending Actions"
+                            icon={Clock}
+                            projects={projectsByStatus.pending}
+                            color="amber"
+                        />
 
-                                {/* Project Details */}
-                                <div className="p-6">
-                                    <div className="flex flex-wrap gap-4 mb-4">
-                                        {/* Status Badge */}
-                                        <div className="flex items-center">
-                                            <span className={`px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 ${statusConfig.color}`}>
-                                                <StatusIcon className="w-4 h-4" />
-                                                {statusConfig.text}
-                                            </span>
-                                        </div>
+                        <Section
+                            title="Completed History"
+                            icon={History}
+                            projects={projectsByStatus.completed}
+                            color="emerald"
+                        />
 
-                                        {/* Client Info */}
-                                        {project.client_details && (
-                                            <div className="flex items-center text-gray-700">
-                                                <User className="w-4 h-4 mr-2 text-gray-500" />
-                                                <span className="font-medium">Client:</span>
-                                                <span className="ml-2">
-                                                    {project.client_details.first_name} {project.client_details.last_name}
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Timestamps */}
-                                    <div className="flex flex-wrap gap-6 text-sm text-gray-600 mb-4">
-                                        <div className="flex items-center">
-                                            <Calendar className="w-4 h-4 mr-2 text-gray-400" />
-                                            <span className="font-medium mr-1">Started:</span>
-                                            {new Date(project.created_at).toLocaleDateString('en-US', {
-                                                year: 'numeric',
-                                                month: 'short',
-                                                day: 'numeric'
-                                            })}
-                                        </div>
-                                        <div className="flex items-center">
-                                            <Clock className="w-4 h-4 mr-2 text-gray-400" />
-                                            <span className="font-medium mr-1">Updated:</span>
-                                            {new Date(project.updated_at).toLocaleDateString('en-US', {
-                                                year: 'numeric',
-                                                month: 'short',
-                                                day: 'numeric'
-                                            })}
-                                        </div>
-                                    </div>
-
-                                    {/* Action Button */}
-                                    <div className="pt-4 border-t border-gray-200">
-                                        <Link
-                                            to={`/freelancer/billing`}
-                                            className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-secondary)] text-white font-semibold rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200"
-                                        >
-                                            <Briefcase className="w-5 h-5 mr-2" />
-                                            View Order Details
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })
+                        {projectsByStatus.canceled.length > 0 && (
+                            <Section
+                                title="Canceled"
+                                icon={AlertCircle}
+                                projects={projectsByStatus.canceled}
+                                color="slate"
+                            />
+                        )}
+                    </div>
                 )}
             </div>
-        </PageWrapper>
+        </div>
     );
 };
 
