@@ -5,7 +5,7 @@ import { useCurrency } from '../contexts/CurrencyContext';
 import { AuthContext } from '../contexts/AuthContext';
 import { ShoppingCart, MessageCircle, Check, Star } from 'lucide-react';
 
-import { getProjectDetails, approveProject, createOrder, markOrderPaid, startConversation, recordProjectView } from '../api';
+import { getProjectDetails, approveProject, createOrder, markOrderPaid, startConversation, recordProjectView, submitProposal } from '../api';
 
 const fetchProjectById = async (id) => {
   try {
@@ -26,6 +26,12 @@ const ProjectDetailsPage = ({ projectId }) => {
   const [isApproving, setIsApproving] = useState(false);
   const [showPricingModal, setShowPricingModal] = useState(false);
   const [selectedTier, setSelectedTier] = useState(null);
+
+  // Proposal Submission States
+  const [showProposalModal, setShowProposalModal] = useState(false);
+  const [coverLetter, setCoverLetter] = useState('');
+  const [thumbnail, setThumbnail] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (projectId) {
@@ -55,6 +61,40 @@ const ProjectDetailsPage = ({ projectId }) => {
     } catch (error) {
       console.error("Failed to start conversation:", error);
       alert("Failed to start conversation. Please try again.");
+    }
+  };
+
+  const handleSubmitProposal = async (e) => {
+    e.preventDefault();
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const formData = new FormData();
+      formData.append('cover_letter', coverLetter);
+      if (thumbnail) {
+        formData.append('thumbnail', thumbnail);
+      }
+
+      await submitProposal(project.id, formData);
+      alert("Proposal submitted successfully!");
+
+      // Refresh project to update 'user_has_submitted' flag
+      const updatedProject = await getProjectDetails(projectId);
+      setProject(updatedProject);
+
+      // Close modal and reset
+      setShowProposalModal(false);
+      setCoverLetter('');
+      setThumbnail(null);
+    } catch (error) {
+      console.error("Failed to submit proposal:", error);
+      alert(error.response?.data?.detail || error.response?.data?.message || "Failed to submit proposal. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -209,9 +249,18 @@ const ProjectDetailsPage = ({ projectId }) => {
               <div className="mt-6 space-y-3">
                 {project.owner_details?.id !== (user.userId || user.id) ? (
                   <>
-                    <button className="w-full btn-primary py-3 text-lg font-semibold transition-transform transform hover:scale-105">
-                      Submit a Proposal
-                    </button>
+                    {project.user_has_submitted ? (
+                      <div className="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-center font-medium">
+                        ✓ You have already submitted a proposal for this project.
+                      </div>
+                    ) : (
+                      <button
+                        onClick={() => setShowProposalModal(true)}
+                        className="w-full btn-primary py-3 text-lg font-semibold transition-transform transform hover:scale-105"
+                      >
+                        Submit a Proposal
+                      </button>
+                    )}
 
                     <button
                       onClick={handleContact}
@@ -473,6 +522,143 @@ const ProjectDetailsPage = ({ projectId }) => {
                 )}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Proposal Submission Modal */}
+      {showProposalModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl animate-in fade-in zoom-in duration-300">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Submit Your Proposal</h2>
+              <button
+                onClick={() => setShowProposalModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mb-6 p-4 bg-blue-50 rounded-xl border border-blue-100">
+              <h3 className="font-semibold text-lg text-blue-900">{project.title}</h3>
+              <div className="mt-2 flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-blue-700">Project Budget</p>
+                  <p className="text-2xl font-bold text-blue-900">{formatPrice(project.budget, 'USD')}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-blue-700">Client</p>
+                  <p className="font-medium text-blue-900">{project.owner_details?.first_name} {project.owner_details?.last_name}</p>
+                </div>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmitProposal} className="space-y-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Cover Letter <span className="text-red-500">*</span>
+                </label>
+                <textarea
+                  value={coverLetter}
+                  onChange={(e) => setCoverLetter(e.target.value)}
+                  required
+                  rows={8}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all resize-none"
+                  placeholder="Explain why you are the best fit for this project. Highlight your relevant skills and approach..."
+                />
+                <p className="text-xs text-gray-500 mt-2 flex items-start gap-1">
+                  <span>💡</span>
+                  A great cover letter focuses on the client's needs and how you can solve their problem.
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Attach Sample or Thumbnail (Optional)
+                </label>
+                <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-xl hover:border-[var(--color-accent)] transition-colors cursor-pointer relative">
+                  <div className="space-y-1 text-center">
+                    <svg
+                      className="mx-auto h-12 w-12 text-gray-400"
+                      stroke="currentColor"
+                      fill="none"
+                      viewBox="0 0 48 48"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    <div className="flex text-sm text-gray-600">
+                      <label htmlFor="file-upload" className="relative cursor-pointer bg-white rounded-md font-medium text-[var(--color-accent)] hover:text-[var(--color-accent-hover)] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-[var(--color-accent)]">
+                        <span>Upload a file</span>
+                        <input
+                          id="file-upload"
+                          name="file-upload"
+                          type="file"
+                          className="sr-only"
+                          onChange={(e) => setThumbnail(e.target.files[0])}
+                          accept="image/*"
+                        />
+                      </label>
+                      <p className="pl-1">or drag and drop</p>
+                    </div>
+                    <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                  </div>
+                  {thumbnail && (
+                    <div className="absolute inset-0 bg-white bg-opacity-90 rounded-xl flex items-center justify-center p-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="bg-green-100 p-2 rounded-full">
+                          <Check className="text-green-600" size={20} />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-sm font-medium text-gray-900 truncate max-w-[200px]">{thumbnail.name}</p>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setThumbnail(null);
+                            }}
+                            className="text-xs text-red-500 hover:underline"
+                          >
+                            Remove file
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowProposalModal(false)}
+                  className="w-full sm:w-1/2 px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition font-semibold"
+                  disabled={submitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="w-full sm:w-1/2 btn-primary py-3 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  disabled={submitting || !coverLetter.trim()}
+                >
+                  {submitting ? (
+                    <>
+                      <Loader size="small" color="white" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <span>Submit Proposal</span>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
