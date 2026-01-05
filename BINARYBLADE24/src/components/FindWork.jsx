@@ -97,7 +97,7 @@ const FindWork = () => {
 
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [budgetRange, setBudgetRange] = useState({ min: 0, max: 100000 });
+  const [budgetRange, setBudgetRange] = useState({ min: "", max: "" });
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   useEffect(() => {
@@ -124,7 +124,7 @@ const FindWork = () => {
           ...(searchTerm ? { search: searchTerm } : {})
         };
 
-        Object.keys(params).forEach(key => (params[key] === '' || params[key] === null) && delete params[key]);
+        Object.keys(params).forEach(key => (params[key] === '' || params[key] === null || params[key] === undefined) && delete params[key]);
 
         const projectsData = await getOpenJobs(params);
         setProjects(projectsData);

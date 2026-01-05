@@ -171,7 +171,7 @@ const FindTalent = () => {
     const [projectsLoading, setProjectsLoading] = useState(false);
 
     const [selectedCategory, setSelectedCategory] = useState('');
-    const [priceRange, setPriceRange] = useState({ min: 0, max: 100000 });
+    const [priceRange, setPriceRange] = useState({ min: "", max: "" });
     const [selectedRating, setSelectedRating] = useState('');
 
     const [activeSearchTerm, setActiveSearchTerm] = useState('');
@@ -227,7 +227,7 @@ const FindTalent = () => {
             try {
                 const params = {
                     q: activeSearchTerm,
-                    type: (activeSearchTerm || selectedCategory) ? 'all' : 'freelancers',
+                    type: 'all',
                     project_type: 'GIG',
                     category: selectedCategory,
                     min_price: priceRange.min,
@@ -235,7 +235,7 @@ const FindTalent = () => {
                     rating: selectedRating
                 };
 
-                Object.keys(params).forEach(key => (params[key] === '' || params[key] === null) && delete params[key]);
+                Object.keys(params).forEach(key => (params[key] === '' || params[key] === null || params[key] === undefined) && delete params[key]);
 
                 const response = await globalSearch(params);
                 setResults({
