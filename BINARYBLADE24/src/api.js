@@ -19,7 +19,8 @@ const getApiUrl = () => {
   }
 
   // 3. Fallback to production URL for deployed environment
-  // return "https://binaryblade2411.pythonanywhere.com/api/";
+  return "https://binaryblade2411.pythonanywhere.com/api/";
+  
 };
 
 const apiClient = axios.create({
