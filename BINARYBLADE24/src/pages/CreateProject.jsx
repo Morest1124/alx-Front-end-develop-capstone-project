@@ -1,71 +1,79 @@
-import React, { useState, useContext } from 'react';
-import { useRouter } from '../contexts/Routers';
+import React, { useState, useEffect, useMemo, useContext } from 'react';
+import {
+    Plus,
+    Info,
+    CheckCircle2,
+    ChevronRight,
+    Image as ImageIcon,
+    DollarSign,
+    FileText,
+    Layers,
+    AlertCircle,
+    ArrowLeft,
+    Rocket,
+    X,
+    Calendar
+} from 'lucide-react';
+
+import { useNavigate as useRouter } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
 import CategorySelector from '../components/CategorySelector';
 import MilestoneManager from '../components/MilestoneManager';
 import { createProject, createMilestone } from '../api';
 import { useCurrency } from '../contexts/CurrencyContext';
 
+// Mocks removed. Using actual components and API functions.
+
 /**
- * CreateProject Component - Gig Creation for Freelancers
- * 
- * Pure Fiverr Model:
- * - ONLY Freelancers can create gigs (service offerings)
- * - Accessed via /freelancer/create-gig route
- * - Clients browse and purchase gigs, they don't post jobs
+ * MAIN COMPONENT
  */
-
 const CreateProject = () => {
-    // 1. Context and Hooks
     const { user } = useContext(AuthContext);
-    const { navigate } = useRouter();
-    const { formatPrice, userCurrency, exchangeRates, convertPrice } = useCurrency();
+    const { userCurrency, convertPrice, exchangeRates } = useCurrency();
+    const router = useRouter(); // useNavigate
+    const navigate = (path) => router(path);
 
-    // 2. State Management
     const [selectedPath, setSelectedPath] = useState('');
     const [projectDetails, setProjectDetails] = useState({
         title: '',
         description: '',
         budget: '',
-        price: '', // Same as budget for simplicity
-        category: '', // Stores subcategory ID
+        price: '',
+        category: '',
         thumbnail: null,
     });
+    const [previewUrl, setPreviewUrl] = useState(null);
     const [milestones, setMilestones] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 
-    // 3. Handlers
-
-    // Handle 3-Level category selection
     const handleCategorySelect = (mainName, subName, subId) => {
         const fullPath = `${mainName} / ${subName}`;
         setSelectedPath(fullPath);
         setProjectDetails(prev => ({ ...prev, category: subId }));
     };
 
-    // Handle form field changes
     const handleChange = (e) => {
         const { name, value } = e.target;
         setProjectDetails((prev) => ({
             ...prev,
             [name]: value,
-            // Keep price in sync with budget
             ...(name === 'budget' ? { price: value } : {})
         }));
     };
 
-    // Handle file selection
     const handleFileChange = (e) => {
-        setProjectDetails((prev) => ({ ...prev, thumbnail: e.target.files[0] }));
+        const file = e.target.files[0];
+        if (file) {
+            setProjectDetails((prev) => ({ ...prev, thumbnail: file }));
+            setPreviewUrl(URL.createObjectURL(file));
+        }
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validation
-        if (!projectDetails.category) {
+        if (!projectDetails.category && !selectedPath) {
             setError('Please select a category.');
             return;
         }
@@ -78,218 +86,294 @@ const CreateProject = () => {
         setError('');
 
         try {
-            // Convert Price from User Currency to USD (Base Currency)
-            // Backend expects USD
-            let budgetInUSD = projectDetails.budget;
-            if (userCurrency !== 'USD') {
-                // Inverse calculation: UserValue / Rate = BaseValue
-                // Because convertPrice does: BaseValue * Rate = UserValue
-                if (exchangeRates[userCurrency]) {
-                    budgetInUSD = parseFloat(projectDetails.budget) / exchangeRates[userCurrency];
-                }
-            }
-
-            // Prepare FormData for API call
             const formData = new FormData();
+
+            // Convert price/budget to USD for backend consistency
+            const amountInUSD = convertPrice(projectDetails.budget, userCurrency, 'USD');
+
             formData.append('title', projectDetails.title);
             formData.append('description', projectDetails.description);
-            formData.append('budget', budgetInUSD);
-            formData.append('price', budgetInUSD);
+            formData.append('budget', amountInUSD);
+            formData.append('price', amountInUSD);
             formData.append('category', projectDetails.category);
 
             if (projectDetails.thumbnail) {
                 formData.append('thumbnail', projectDetails.thumbnail);
             }
 
-            // 1. Create the gig
-            const newProject = await createProject(formData);
+            // Determine project type
+            const isClient = user.role?.toUpperCase() === 'CLIENT';
+            formData.append('project_type', isClient ? 'JOB' : 'GIG');
 
-            // 2. Create milestones if any were added
-            if (milestones.length > 0 && newProject.id) {
-                const milestonePromises = milestones.map(milestone => {
-                    return createMilestone({
-                        project: newProject.id,
-                        title: milestone.title,
-                        description: milestone.description,
-                        amount: milestone.amount,
-                        due_date: milestone.due_date,
-                        status: 'PENDING'
-                    });
-                });
-                await Promise.all(milestonePromises);
+            const response = await createProject(formData);
+            const projectId = response.id || response.data?.id;
+
+            if (!projectId) {
+                throw new Error('Project ID not received from server.');
             }
 
-            // Success feedback and redirection
-            alert(`${user.role?.toLowerCase() === 'client' ? 'Project' : 'Gig'} created successfully!`);
-            navigate(user.role?.toLowerCase() === 'client' ? '/client/projects' : '/freelancer/gigs');
-        } catch (error) {
-            console.error('Failed to create gig:', error);
-            setError(error.message || 'Failed to create gig. Please try again.');
+            if (milestones.length > 0) {
+                await Promise.all(milestones.map(m => {
+                    // Convert milestone amount to USD as well
+                    const milestoneAmountInUSD = convertPrice(m.amount, userCurrency, 'USD');
+                    return createMilestone({
+                        ...m,
+                        amount: milestoneAmountInUSD,
+                        project: projectId
+                    });
+                }));
+            }
+
+            navigate(isClient ? '/client/projects' : '/freelancer/gigs');
+        } catch (err) {
+            setError(err.message || 'An error occurred while publishing.');
+            console.error('Submit Error:', err);
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    // 4. Render
+    const isClient = user?.role?.toLowerCase() === 'client';
+
     return (
-        <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mx-auto">
-                <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-                    <div className="px-6 py-8">
-                        <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                            {user.role?.toLowerCase() === 'client' ? 'Post a Job' : 'Create a Gig'}
-                        </h2>
-                        <p className="text-gray-600 mb-6">
-                            {user.role?.toLowerCase() === 'client'
-                                ? 'Describe your project requirements and find the best talent'
-                                : 'Showcase your skills and attract clients'}
+        <div className="min-h-screen bg-slate-50/50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
+            <div className="max-w-4xl mx-auto">
+
+                {/* Header Section */}
+                <div className="mb-10 flex items-center justify-between">
+                    <div>
+                        <button
+                            type="button"
+                            onClick={() => router(-1)}
+                            className="flex items-center text-slate-500 hover:text-sky-600 text-sm font-medium mb-4 transition-colors group"
+                        >
+                            <ArrowLeft size={16} className="mr-1 group-hover:-translate-x-1 transition-transform" />
+                            Back to Dashboard
+                        </button>
+                        <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight flex items-center gap-3">
+                            {isClient ? <FileText className="text-sky-500" /> : <Rocket className="text-sky-500" />}
+                            {isClient ? 'Post a New Job' : 'Create Your Gig'}
+                        </h1>
+                        <p className="mt-2 text-slate-500 text-lg">
+                            {isClient
+                                ? 'Define your project and find the perfect freelancer to bring it to life.'
+                                : 'Set up your service and start attracting clients from around the world.'}
                         </p>
+                    </div>
+                </div>
 
-                        {error && (
-                            <div className="mb-6 bg-[var(--color-error-light)] border border-[var(--color-error)] text-[var(--color-error)] px-4 py-3 rounded">
-                                {error}
-                            </div>
-                        )}
+                {error && (
+                    <div className="mb-8 flex items-center p-4 text-red-800 bg-red-50 border border-red-100 rounded-2xl animate-in slide-in-from-top-4">
+                        <AlertCircle className="flex-shrink-0 w-5 h-5 mr-3" />
+                        <span className="text-sm font-medium">{error}</span>
+                    </div>
+                )}
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            {/* Title Field */}
+                <form onSubmit={handleSubmit} className="space-y-8">
+
+                    {/* Step 1: Basic Info Card */}
+                    <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100">
+                        <div className="p-8 border-b border-slate-50 flex items-center gap-4 bg-slate-50/30">
+                            <div className="w-10 h-10 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold">1</div>
+                            <h2 className="text-xl font-bold text-slate-800 tracking-tight">Project Overview</h2>
+                        </div>
+
+                        <div className="p-8 space-y-6">
                             <div>
-                                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                                    {user.role?.toLowerCase() === 'client' ? 'Project Title *' : 'Gig Title *'}
+                                <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">
+                                    {isClient ? 'Job Title' : 'Gig Title'} <span className="text-sky-500">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     name="title"
-                                    id="title"
                                     value={projectDetails.title}
                                     onChange={handleChange}
-                                    placeholder={user.role?.toLowerCase() === 'client' ? "e.g., Need a React Developer for Dashboard" : "e.g., I will design a professional logo"}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-colors"
+                                    placeholder={isClient ? "e.g., Need a React Expert for SaaS" : "e.g., I will design a modern minimalist logo"}
+                                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 transition-all outline-none text-slate-900 placeholder:text-slate-400"
                                     required
                                 />
                             </div>
 
-                            {/* Description Field */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">
+                                        Category <span className="text-sky-500">*</span>
+                                    </label>
+                                    <CategorySelector
+                                        selectedPath={selectedPath}
+                                        onSelect={handleCategorySelect}
+                                        label={isClient ? "Select Job Type..." : "Select Service Area..."}
+                                    />
+                                    {selectedPath && (
+                                        <p className="mt-2 text-xs font-bold text-emerald-600 flex items-center">
+                                            <CheckCircle2 size={12} className="mr-1" /> Selected: {selectedPath}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">
+                                        Price / Budget ({userCurrency}) <span className="text-sky-500">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold border-r border-slate-200 pr-3">
+                                            {userCurrency}
+                                        </div>
+                                        <input
+                                            type="number"
+                                            name="budget"
+                                            value={projectDetails.budget}
+                                            onChange={handleChange}
+                                            placeholder="0.00"
+                                            min="0"
+                                            step="0.01"
+                                            className="w-full pl-20 pr-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 transition-all outline-none text-slate-900"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
                             <div>
-                                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                                    {user.role?.toLowerCase() === 'client' ? 'Project Description *' : 'What service do you offer? *'}
+                                <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wider">
+                                    Description <span className="text-sky-500">*</span>
                                 </label>
                                 <textarea
                                     name="description"
-                                    id="description"
                                     rows="6"
                                     value={projectDetails.description}
                                     onChange={handleChange}
-                                    placeholder="Describe what you offer, your experience, and what's included..."
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-colors"
+                                    placeholder="Dive into the details... What are the goals, requirements, and deliverables?"
+                                    className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 transition-all outline-none text-slate-900 placeholder:text-slate-400 resize-none"
                                     required
                                 />
                             </div>
+                        </div>
+                    </div>
 
-                            {/* 3-Level Category Selection */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">
-                                    Category *
-                                </label>
-                                <CategorySelector
-                                    selectedPath={selectedPath}
-                                    onSelect={handleCategorySelect}
-                                    label={user.role?.toLowerCase() === 'client' ? "Select Project Category..." : "Select Gig Category..."}
-                                />
-                            </div>
-
-                            {/* Price Field */}
-                            <div>
-                                <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">
-                                    Price ({userCurrency}) *
-                                </label>
-                                <div className="relative">
-                                    <span className="absolute left-3 top-2 text-gray-500">{userCurrency}</span>
-                                    <input
-                                        type="number"
-                                        name="budget"
-                                        id="budget"
-                                        value={projectDetails.budget}
-                                        onChange={handleChange}
-                                        placeholder="0.00"
-                                        min="0"
-                                        step="0.01"
-                                        className="w-full pl-12 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-colors"
-                                        required
-                                    />
-                                </div>
-                                <p className="mt-1 text-sm text-gray-500">
-                                    Enter the price in your local currency. It will be converted to USD for processing.
-                                </p>
-                            </div>
-
-                            {/* Thumbnail Upload */}
-                            <div>
-                                <label htmlFor="thumbnail" className="block text-sm font-medium text-gray-700 mb-1">
-                                    {user.role?.toLowerCase() === 'client' ? 'Project Image (Optional)' : 'Gig Image (Optional)'}
-                                </label>
+                    {/* Step 2: Visuals Card */}
+                    <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100">
+                        <div className="p-8 border-b border-slate-50 flex items-center gap-4 bg-slate-50/30">
+                            <div className="w-10 h-10 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold">2</div>
+                            <h2 className="text-xl font-bold text-slate-800 tracking-tight">Media & Attachments</h2>
+                        </div>
+                        <div className="p-8">
+                            <label className="block text-sm font-bold text-slate-700 mb-4 uppercase tracking-wider">
+                                Cover Thumbnail
+                            </label>
+                            <div className="relative group">
                                 <input
                                     type="file"
-                                    name="thumbnail"
                                     id="thumbnail"
                                     accept="image/*"
                                     onChange={handleFileChange}
-                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[var(--color-accent-light)] file:text-[var(--color-accent)] hover:file:bg-[var(--color-accent-hover)] hover:file:text-white transition-colors"
+                                    className="hidden"
                                 />
-                            </div>
-
-                            {/* Milestone Manager */}
-                            <div className="border-t pt-6">
-                                <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                                    {user.role?.toLowerCase() === 'client' ? 'Project Milestones (Optional)' : 'Gig Milestones (Optional)'}
-                                </h3>
-                                <MilestoneManager
-                                    milestones={milestones}
-                                    setMilestones={setMilestones}
-                                    totalBudget={parseFloat(projectDetails.budget) || 0}
-                                />
-                            </div>
-
-                            {/* Submit Buttons */}
-                            <div className="flex items-center justify-between pt-4">
-                                <button
-                                    type="button"
-                                    onClick={() => navigate(-1)}
-                                    className="px-6 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
+                                <label
+                                    htmlFor="thumbnail"
+                                    className={`flex flex-col items-center justify-center border-2 border-dashed rounded-3xl p-10 cursor-pointer transition-all ${previewUrl ? 'border-sky-500 bg-sky-50/20' : 'border-slate-200 hover:border-sky-400 hover:bg-slate-50'
+                                        }`}
                                 >
-                                    Cancel
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="px-8 py-2 btn-primary focus:ring-4 focus:ring-[var(--color-accent-light)] disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-                                >
-                                    {isSubmitting ? 'Creating...' : (user.role?.toLowerCase() === 'client' ? 'Post Project' : 'Create Gig')}
-                                </button>
+                                    {previewUrl ? (
+                                        <div className="relative w-full aspect-video rounded-xl overflow-hidden shadow-md">
+                                            <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                                <p className="text-white text-sm font-bold">Change Image</p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-sm text-slate-400 mb-4 group-hover:scale-110 transition-transform">
+                                                <ImageIcon size={32} />
+                                            </div>
+                                            <p className="text-slate-900 font-bold">Click to upload image</p>
+                                            <p className="text-slate-400 text-xs mt-1">PNG, JPG or WebP (Max 5MB)</p>
+                                        </>
+                                    )}
+                                </label>
                             </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
 
-                {/* Display selected category */}
-                {selectedPath && (
-                    <div className="mt-6 bg-[var(--color-success-light)] border border-[var(--color-success)] rounded-lg p-4">
-                        <h3 className="font-semibold text-[var(--color-success)] mb-2">✓ Category Selected:</h3>
-                        <p className="text-[var(--color-success)]">{selectedPath}</p>
+                    {/* Step 3: Milestones Card */}
+                    <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 overflow-hidden border border-slate-100">
+                        <div className="p-8 border-b border-slate-50 flex items-center gap-4 bg-slate-50/30">
+                            <div className="w-10 h-10 rounded-full bg-sky-500 text-white flex items-center justify-center font-bold">3</div>
+                            <h2 className="text-xl font-bold text-slate-800 tracking-tight">Project Milestones</h2>
+                        </div>
+                        <div className="p-8">
+                            <div className="mb-6 flex items-start gap-3 bg-amber-50 p-4 rounded-2xl border border-amber-100">
+                                <Info className="text-amber-500 flex-shrink-0 mt-0.5" size={18} />
+                                <p className="text-sm text-amber-800 leading-relaxed">
+                                    Break your project into manageable phases. Each milestone represents a delivery point and a payment trigger.
+                                </p>
+                            </div>
+                            <MilestoneManager
+                                milestones={milestones}
+                                setMilestones={setMilestones}
+                                totalBudget={parseFloat(projectDetails.budget) || 0}
+                            />
+                        </div>
                     </div>
-                )}
 
-                {/* Tips section */}
-                <div className="mt-6 bg-[var(--color-info-light)] border border-[var(--color-info)] rounded-lg p-4">
-                    <h3 className="font-semibold text-[var(--color-info)] mb-2">
-                        💡 Tips for success:
-                    </h3>
-                    <ul className="text-sm text-[var(--color-info)] space-y-1">
-                        <li>• Choose the most specific category for better visibility.</li>
-                        <li>• Be specific about what you deliver.</li>
-                        <li>• Price competitively to attract clients.</li>
-                        <li>• Use a clear, eye-catching image.</li>
-                    </ul>
+                    {/* Bottom Actions */}
+                    <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-6">
+                        <div className="text-slate-500 text-sm hidden md:flex items-center">
+                            <div className="w-2 h-2 rounded-full bg-sky-500 mr-2 animate-pulse" />
+                            All fields marked with * are required to publish.
+                        </div>
+                        <div className="flex items-center gap-4 w-full sm:w-auto">
+                            <button
+                                type="button"
+                                onClick={() => router(-1)}
+                                className="flex-1 sm:flex-none px-8 py-4 text-slate-600 font-bold hover:bg-slate-100 rounded-2xl transition-all"
+                            >
+                                Save Draft
+                            </button>
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="flex-1 sm:flex-none px-12 py-4 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-2xl shadow-lg shadow-sky-200 disabled:opacity-50 transition-all flex items-center justify-center gap-2 group"
+                            >
+                                {isSubmitting ? (
+                                    <>
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                        Creating...
+                                    </>
+                                ) : (
+                                    <>
+                                        {isClient ? 'Publish Job' : 'Publish Gig'}
+                                        <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                {/* Sidebar-style Tips (Bottom) */}
+                <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="bg-emerald-50 p-6 rounded-[2rem] border border-emerald-100">
+                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-emerald-500 shadow-sm mb-4">
+                            <CheckCircle2 size={24} />
+                        </div>
+                        <h4 className="font-bold text-emerald-900 mb-1">Be Specific</h4>
+                        <p className="text-emerald-700 text-xs leading-relaxed">Clear titles and detailed descriptions reduce revision cycles by 40%.</p>
+                    </div>
+                    <div className="bg-sky-50 p-6 rounded-[2rem] border border-sky-100">
+                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-sky-500 shadow-sm mb-4">
+                            <ImageIcon size={24} />
+                        </div>
+                        <h4 className="font-bold text-sky-900 mb-1">Visual Impact</h4>
+                        <p className="text-sky-700 text-xs leading-relaxed">High-quality thumbnails increase click-through rates by up to 3x.</p>
+                    </div>
+                    <div className="bg-violet-50 p-6 rounded-[2rem] border border-violet-100">
+                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-violet-500 shadow-sm mb-4">
+                            <Layers size={24} />
+                        </div>
+                        <h4 className="font-bold text-violet-900 mb-1">Milestones</h4>
+                        <p className="text-violet-700 text-xs leading-relaxed">Defining milestones builds trust and ensures timely payments.</p>
+                    </div>
                 </div>
             </div>
         </div>

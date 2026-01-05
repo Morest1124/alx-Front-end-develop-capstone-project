@@ -16,7 +16,7 @@ const getApiUrl = () => {
   const hostname = window.location.hostname;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     // Point to local development backend when running locally
-    //return "http://localhost:8000/api/";
+    // return "http://localhost:8000/api/";
   }
 
   // 3. Fallback to production URL for deployed environment
@@ -151,16 +151,19 @@ apiClient.interceptors.response.use(
     } else if (error.response?.status === 400) {
       const errorData = error.response.data;
       if (errorData.email) {
-        message = "Email error: " + errorData.email[0];
+        message = "Email error: " + (Array.isArray(errorData.email) ? errorData.email[0] : errorData.email);
       } else if (errorData.password) {
-        message = "Password error: " + errorData.password[0];
+        message = "Password error: " + (Array.isArray(errorData.password) ? errorData.password[0] : errorData.password);
       } else if (errorData.username) {
-        message = "Username error: " + errorData.username[0];
+        message = "Username error: " + (Array.isArray(errorData.username) ? errorData.username[0] : errorData.username);
+      } else if (typeof errorData === 'object') {
+        // Handle field-specific validation errors (e.g., { "title": ["This field is required."] })
+        const fieldErrors = Object.entries(errorData)
+          .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(', ') : value}`)
+          .join(' | ');
+        message = fieldErrors || errorData.detail || errorData.message || "Please check your input and try again.";
       } else {
-        message =
-          errorData.detail ||
-          errorData.message ||
-          "Please check your input and try again.";
+        message = errorData.detail || errorData.message || "Please check your input and try again.";
       }
     } else if (error.response?.status === 409) {
       message =
@@ -219,17 +222,10 @@ export const getGig = (gigId) => {
 export const createProject = async (projectData) => {
   try {
     const response = await apiClient.post("/projects/", projectData);
-    if (!response) {
-      throw new Error("No response received from server");
-    }
     return response;
   } catch (error) {
     console.error("Error creating project:", error);
-    throw new Error(
-      error.response?.data?.message ||
-      error.response?.data?.detail ||
-      "Failed to create project. Please try again."
-    );
+    throw error; // Use the enriched error from interceptor
   }
 };
 
@@ -378,9 +374,14 @@ export const getCategories = () => {
   return apiClient.get("/projects/categories/");
 };
 
-// Create a milestone for a project
-export const createMilestone = (milestoneData) => {
-  return apiClient.post("/projects/milestones/", milestoneData);
+export const createMilestone = async (milestoneData) => {
+  try {
+    const response = await apiClient.post("/projects/milestones/", milestoneData);
+    return response;
+  } catch (error) {
+    console.error("Error creating milestone:", error);
+    throw error;
+  }
 };
 
 // Get all public proposals (for Find Work page)
