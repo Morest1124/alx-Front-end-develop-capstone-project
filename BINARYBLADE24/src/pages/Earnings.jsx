@@ -103,7 +103,7 @@ const Earnings = () => {
       {/* Recent Orders */}
       <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
         <h3 className="text-2xl font-bold mb-4 flex items-center">
-          <Package className="w-6 h-6 mr-2 text-indigo-600" />
+          <Package className="w-6 h-6 mr-2 text-sky-600" />
           Recent Orders
         </h3>
         {loading ? (
@@ -118,7 +118,7 @@ const Earnings = () => {
         ) : (
           <div className="space-y-3">
             {orders.slice(0, 5).map((order) => (
-              <div key={order.id} className="border border-gray-200 rounded-lg p-4 hover:border-indigo-300 transition">
+              <div key={order.id} className="border border-gray-200 rounded-lg p-4 hover:border-sky-600300 transition">
                 <div className="flex justify-between items-start">
                   <div className="flex-1">
                     <div className="flex items-center space-x-3 mb-2">

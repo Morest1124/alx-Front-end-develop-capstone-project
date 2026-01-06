@@ -222,7 +222,7 @@ const HowItWorks = () => {
         <div className="grid md:grid-cols-3 gap-8">
           {freelancerSteps.map((step, index) => (
             <div key={index} className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-indigo-50 text-[var(--color-secondary)]">
+              <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-6 bg-sky-60050 text-[var(--color-secondary)]">
                 <step.icon size={28} />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-3">{step.title}</h3>

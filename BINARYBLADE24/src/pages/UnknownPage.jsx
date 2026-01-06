@@ -77,7 +77,7 @@ const App = () => {
                 className="absolute w-[35vw] h-[35vw] min-w-[200px] min-h-[200px] rounded-full opacity-50 pointer-events-none"
                 style={{
                     ...blobStyle,
-                    background: 'radial-gradient(circle, rgba(37, 99, 235, 0.7) 0%, rgba(15, 23, 42, 0.0) 70%)', // Deep Blue Accent
+                    background: 'radial-gradient(circle, rgba(85, 132, 235, 0.7) 0%, rgba(15, 23, 42, 0.0) 70%)', // Deep Blue Accent
                     bottom: '0%', 
                     right: '0%', 
                 }}

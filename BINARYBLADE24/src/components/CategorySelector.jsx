@@ -145,7 +145,7 @@ const CategorySelector = ({ selectedPath = '', onSelect, label = 'Select Categor
             <div className="relative inline-block w-full">
                 <button
                     ref={buttonRef}
-                    className="w-full text-left py-3 px-4 border border-gray-300 bg-white rounded-lg text-gray-700 hover:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition duration-150 flex justify-between items-center"
+                    className="w-full text-left py-3 px-4 border border-gray-300 bg-white rounded-lg text-gray-700 hover:border-sky-600500 focus:outline-none focus:ring-2 focus:ring-sky-600500 transition duration-150 flex justify-between items-center"
                     aria-haspopup="true"
                     aria-expanded={isDropdownOpen}
                     onClick={toggleDropdown}
@@ -167,12 +167,12 @@ const CategorySelector = ({ selectedPath = '', onSelect, label = 'Select Categor
 
                     {/* Column 1: Main Categories */}
                     <div className="p-2 category-scroll max-h-96 overflow-y-auto">
-                        <h3 className="text-xs font-bold uppercase text-indigo-600 px-2 py-1 mb-1">Area of Expertise</h3>
+                        <h3 className="text-xs font-bold uppercase text-sky-600 px-2 py-1 mb-1">Area of Expertise</h3>
                         <div>
                             {categoriesData.map((category, index) => (
                                 <button
                                     key={category.id}
-                                    className={`w-full text-left p-2 rounded-md transition duration-150 focus:outline-none text-gray-700 ${hoveredMainIndex === index ? 'bg-indigo-100 text-indigo-800' : 'hover:bg-indigo-50 hover:text-indigo-700'}`}
+                                    className={`w-full text-left p-2 rounded-md transition duration-150 focus:outline-none text-gray-700 ${hoveredMainIndex === index ? 'bg-sky-600100 text-sky-600800' : 'hover:bg-sky-60050 hover:text-sky-600700'}`}
                                     onMouseEnter={() => handleMainHover(index)}
                                     onClick={() => handleMainHover(index)}
                                     role="menuitem"
@@ -185,13 +185,13 @@ const CategorySelector = ({ selectedPath = '', onSelect, label = 'Select Categor
 
                     {/* Column 2: Subcategories */}
                     <div className="p-2 category-scroll max-h-96 overflow-y-auto bg-gray-50 md:bg-white">
-                        <h3 className="text-xs font-bold uppercase text-indigo-600 px-2 py-1 mb-1">Specific Role</h3>
+                        <h3 className="text-xs font-bold uppercase text-sky-600 px-2 py-1 mb-1">Specific Role</h3>
                         <div>
                             {subcategories.length > 0 ? (
                                 subcategories.map((sub, index) => (
                                     <button
                                         key={sub.id}
-                                        className={`w-full text-left p-2 rounded-md transition duration-150 focus:outline-none text-gray-700 ${hoveredSubIndex === index ? 'bg-indigo-50 text-indigo-700' : 'hover:bg-indigo-100 hover:text-indigo-800'}`}
+                                        className={`w-full text-left p-2 rounded-md transition duration-150 focus:outline-none text-gray-700 ${hoveredSubIndex === index ? 'bg-sky-60050 text-sky-600700' : 'hover:bg-sky-600100 hover:text-sky-600800'}`}
                                         onMouseEnter={() => handleSubHover(index)}
                                         onClick={() => handleFinalSelect(currentMainCategory.name, sub.name, sub.id)}
                                         role="menuitem"
@@ -207,12 +207,12 @@ const CategorySelector = ({ selectedPath = '', onSelect, label = 'Select Categor
 
                     {/* Column 3: Items (Key Tasks) */}
                     <div className="p-2 category-scroll max-h-96 overflow-y-auto bg-gray-100 md:bg-gray-50">
-                        <h3 className="text-xs font-bold uppercase text-indigo-600 px-2 py-1 mb-1">Key Tasks</h3>
+                        <h3 className="text-xs font-bold uppercase text-sky-600 px-2 py-1 mb-1">Key Tasks</h3>
                         <div>
                             {items.length > 0 ? (
                                 items.map((item, index) => (
                                     <div key={index} className="text-sm p-2 rounded-md text-gray-600 hover:text-gray-900 transition duration-150">
-                                        <span className="text-indigo-500 mr-2">•</span>{item}
+                                        <span className="text-sky-600500 mr-2">•</span>{item}
                                     </div>
                                 ))
                             ) : (

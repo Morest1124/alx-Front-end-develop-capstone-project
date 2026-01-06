@@ -121,14 +121,14 @@ const FreelancerProposals = () => {
             <div className="flex space-x-4 mb-6 border-b border-gray-200">
                 <button
                     onClick={() => setActiveTab('submitted')}
-                    className={`pb-3 px-4 font-semibold transition-colors ${activeTab === 'submitted' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                    className={`pb-3 px-4 font-semibold transition-colors ${activeTab === 'submitted' ? 'text-sky-600 border-b-2 border-sky-600' : 'text-gray-500 hover:text-gray-700'}`}
                 >
                     <FileText size={18} className="inline mr-2" />
                     My Submissions ({submittedProposals.length})
                 </button>
                 <button
                     onClick={() => setActiveTab('available')}
-                    className={`pb-3 px-4 font-semibold transition-colors ${activeTab === 'available' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-500 hover:text-gray-700'}`}
+                    className={`pb-3 px-4 font-semibold transition-colors ${activeTab === 'available' ? 'text-sky-600 border-b-2 border-sky-600' : 'text-gray-500 hover:text-gray-700'}`}
                 >
                     <Briefcase size={18} className="inline mr-2" />
                     Available Work
@@ -149,7 +149,7 @@ const FreelancerProposals = () => {
                             <p className="text-gray-600 text-lg">You haven't submitted any proposals yet.</p>
                             <button
                                 onClick={() => setActiveTab('available')}
-                                className="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+                                className="mt-4 px-6 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-600700 transition"
                             >
                                 Browse Available Work
                             </button>
@@ -178,7 +178,7 @@ const FreelancerProposals = () => {
                                         <div className="flex justify-between items-center">
                                             <div>
                                                 <p className="text-sm text-gray-500">Your Bid</p>
-                                                <p className="text-2xl font-bold text-indigo-600">{formatPrice(proposal.bid_amount, 'USD')}</p>
+                                                <p className="text-2xl font-bold text-sky-600">{formatPrice(proposal.bid_amount, 'USD')}</p>
                                             </div>
                                             <div className="text-right">
                                                 <p className="text-sm text-gray-500">Submitted</p>
@@ -242,7 +242,7 @@ const FreelancerProposals = () => {
                                         </div>
                                         <button
                                             onClick={() => openProposalModal(job)}
-                                            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold"
+                                            className="px-6 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-600700 transition font-semibold"
                                         >
                                             Submit Proposal
                                         </button>
@@ -270,7 +270,7 @@ const FreelancerProposals = () => {
                                     onChange={(e) => setCoverLetter(e.target.value)}
                                     required
                                     rows={8}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-600500"
                                     placeholder="Explain why you are the best fit for this project..."
                                 />
                                 <p className="text-xs text-gray-500 mt-1">
@@ -286,7 +286,7 @@ const FreelancerProposals = () => {
                                     type="file"
                                     onChange={(e) => setThumbnail(e.target.files[0])}
                                     accept="image/*"
-                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-sky-60050 file:text-sky-600700 hover:file:bg-sky-600100"
                                 />
                                 <p className="text-xs text-gray-500 mt-1">
                                     Upload a relevant sample or thumbnail for your proposal.
@@ -309,7 +309,7 @@ const FreelancerProposals = () => {
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="px-6 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-600700 transition font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                                     disabled={submitting || !coverLetter.trim()}
                                 >
                                     {submitting ? 'Submitting...' : 'Submit Proposal'}

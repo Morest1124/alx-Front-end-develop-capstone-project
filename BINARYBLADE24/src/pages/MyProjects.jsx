@@ -117,7 +117,7 @@ const MyProjects = () => {
             case 'PENDING': return 'bg-sky-100 text-sky-700 border-sky-200';
             case 'IN_PROGRESS': return 'bg-amber-100 text-amber-700 border-amber-200';
             case 'PAID': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
-            case 'COMPLETED': return 'bg-indigo-100 text-indigo-700 border-indigo-200';
+            case 'COMPLETED': return 'bg-sky-600100 text-sky-600700 border-sky-600200';
             case 'CANCELED': return 'bg-rose-100 text-rose-700 border-rose-200';
             default: return 'bg-slate-100 text-slate-700 border-slate-200';
         }

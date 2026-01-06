@@ -89,7 +89,7 @@ const CreateGigForm = () => {
             name="title"
             value={formData.title}
             onChange={handleChange}
-            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-600500 focus:border-sky-600500"
             required
           />
         </div>
@@ -102,7 +102,7 @@ const CreateGigForm = () => {
             name="description"
             value={formData.description}
             onChange={handleChange}
-            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-600500 focus:border-sky-600500"
             rows="5"
             required
           ></textarea>
@@ -118,7 +118,7 @@ const CreateGigForm = () => {
               name="budget"
               value={formData.budget}
               onChange={handleChange}
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-600500 focus:border-sky-600500"
               required
               min="1"
               step="0.01"
@@ -158,7 +158,7 @@ const CreateGigForm = () => {
               name="duration"
               value={formData.duration}
               onChange={handleChange}
-              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-600500 focus:border-sky-600500"
               required
             />
           </div>
@@ -174,7 +174,7 @@ const CreateGigForm = () => {
             value={formData.skills}
             onChange={handleChange}
             placeholder="e.g., React, Node.js, Python"
-            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-600500 focus:border-sky-600500"
             required
           />
         </div>
@@ -187,7 +187,7 @@ const CreateGigForm = () => {
             name="requirements"
             value={formData.requirements}
             onChange={handleChange}
-            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-600500 focus:border-sky-600500"
             rows="3"
             placeholder="List any specific requirements or qualifications needed"
             required
@@ -197,7 +197,7 @@ const CreateGigForm = () => {
         <div>
           <button
             type="submit"
-            className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400"
+            className="w-full px-4 py-2 font-medium text-white bg-sky-600 rounded-md hover:bg-sky-600700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-600500 disabled:bg-sky-600400"
             disabled={loading}
           >
             {loading ? "Creating Gig..." : "Create Gig"}

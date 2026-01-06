@@ -174,7 +174,7 @@ const FreelancerOrders = () => {
                                                     day: 'numeric'
                                                 })}
                                             </p>
-                                            <p className="text-indigo-100 flex items-center mt-1">
+                                            <p className="text-sky-600100 flex items-center mt-1">
                                                 <User size={16} className="mr-2" />
                                                 Client: {order.client_details?.first_name} {order.client_details?.last_name}
                                             </p>
@@ -191,7 +191,7 @@ const FreelancerOrders = () => {
                                     <h4 className="text-lg font-semibold text-gray-900 mb-4">Order Items</h4>
                                     <div className="space-y-4">
                                         {order.items?.map((item) => (
-                                            <div key={item.id} className="border border-gray-200 rounded-lg p-4 hover:border-indigo-300 transition">
+                                            <div key={item.id} className="border border-gray-200 rounded-lg p-4 hover:border-sky-600300 transition">
                                                 <div className="flex justify-between items-start">
                                                     <div className="flex-1">
                                                         <h5 className="font-semibold text-gray-900 mb-2">

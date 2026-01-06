@@ -183,10 +183,10 @@ const AppContent = () => {
       <footer className="p-4 text-center text-sm text-gray-500 bg-white border-t">
         <p>&copy; 2025 BINARYBLADE24. All rights reserved.</p>
         <div className="flex justify-center space-x-4 mt-2">
-          <a href="/terms" className="hover:text-indigo-600">
+          <a href="/terms" className="hover:text-sky-600">
             Terms of Service
           </a>
-          <a href="/privacy" className="hover:text-indigo-600">
+          <a href="/privacy" className="hover:text-sky-600">
             Privacy Policy
           </a>
         </div>
