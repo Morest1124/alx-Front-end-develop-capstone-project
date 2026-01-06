@@ -182,7 +182,7 @@ const AuthProvider = ({ children }) => {
         : "/freelancer/dashboard";
         navigate(dashboardPath);
       // window.location.href = dashboardPath;
-      // window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error("Login failed:", error);
       setError(error.message);
@@ -219,7 +219,7 @@ const AuthProvider = ({ children }) => {
         : "/freelancer/dashboard";
         navigate(dashboardPath);
       // window.location.href = dashboardPath;
-      // window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error("Registration failed:", error);
       setError(error.message);
