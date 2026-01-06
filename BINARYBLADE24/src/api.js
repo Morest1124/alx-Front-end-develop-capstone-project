@@ -16,11 +16,11 @@ const getApiUrl = () => {
   const hostname = window.location.hostname;
   if (hostname === 'localhost' || hostname === '127.0.0.1') {
     // Point to local development backend when running locally
-    return "https://binaryblade2411.pythonanywhere.com/api/";
+    // return "http://localhost:8000/api/";
   }
   
   // 3. Fallback to production URL for deployed environment
-  // return "http://localhost:8000/api/";
+  return "https://binaryblade2411.pythonanywhere.com/api/";
 };
 
 const apiClient = axios.create({
