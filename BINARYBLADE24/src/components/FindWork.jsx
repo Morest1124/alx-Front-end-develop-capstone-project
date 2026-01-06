@@ -42,7 +42,7 @@ const ProjectCard = ({ project, handleViewProject }) => {
             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
           />
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center">
+          <div className="w-full h-full bg-gradient-to-br from-sky-400 to-sky-500 flex items-center justify-center">
             <Briefcase size={40} className="text-white/30" />
           </div>
         )}
@@ -162,7 +162,7 @@ const FindWork = () => {
       {/* Hero Header */}
       <div className="bg-white border-b border-slate-100 pt-16 pb-12 px-4 shadow-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-sky-50 rounded-full -mr-48 -mt-48 blur-3xl opacity-50" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-50 rounded-full -ml-32 -mb-32 blur-3xl opacity-50" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-50 rounded-full -ml-32 -mb-32 blur-3xl opacity-50" />
 
         <div className="max-w-7xl mx-auto relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-sky-50 text-sky-600 rounded-full text-xs font-black uppercase tracking-widest mb-6">

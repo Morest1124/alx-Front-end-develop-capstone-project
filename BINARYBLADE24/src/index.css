@@ -5,7 +5,7 @@
 		/* Primary Colors - Main backgrounds and surfaces */
 		--color-primary-bg: #F8FAFC;
 		--color-primary-surface: #FFFFFF;
-		--color-primary-dark: #0F172A;
+		--color-primary-dark: #1E293B;
 
 		/* Secondary Colors - Links, secondary actions */
 		--color-secondary: #3B82F6;
@@ -26,11 +26,13 @@
 		--color-warning-light: #FEF3C7;
 		--color-error: #EF4444;
 		--color-error-light: #FEE2E2;
+		--color-error-hover: #DC2626;
+        --color-error-dark: #B91C1C;
 		--color-info: #3B82F6;
 		--color-info-light: #DBEAFE;
 
 		/* Text Colors */
-		--color-text-primary: #0F172A;
+		--color-text-primary: var(--color-primary-dark);
 		--color-text-secondary: #64748B;
 		--color-text-muted: #94A3B8;
 		--color-text-inverse: #FFFFFF;
@@ -110,13 +112,13 @@
 	}
 
 	.btn-danger:hover:not(:disabled) {
-		background-color: #DC2626;
+		background-color: var(--color-error-hover);
 		transform: translateY(-1px);
 		box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 	}
 
 	.btn-danger:active:not(:disabled) {
-		background-color: #B91C1C;
+		background-color: var(--color-error-dark);
 		transform: translateY(0);
 	}
 

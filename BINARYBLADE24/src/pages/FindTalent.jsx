@@ -43,7 +43,7 @@ const FreelancerCard = ({ user }) => {
                     {profile.avatar ? (
                         <img src={profile.avatar} alt={user.username} className="h-24 w-24 rounded-2xl object-cover border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-500" />
                     ) : (
-                        <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center text-white text-2xl font-black border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-500">
+                        <div className="h-24 w-24 rounded-2xl bg-gradient-to-br from-sky-400 to-sky-500 flex items-center justify-center text-white text-2xl font-black border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-500">
                             {user.first_name?.[0]}{user.last_name?.[0]}
                         </div>
                     )}
@@ -113,7 +113,7 @@ const GigCard = ({ project }) => {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                 ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                    <div className="w-full h-full bg-gradient-to-br from-sky-400 to-sky-500 flex items-center justify-center">
                         <Briefcase size={40} className="text-white/30" />
                     </div>
                 )}
@@ -126,7 +126,7 @@ const GigCard = ({ project }) => {
             </div>
 
             <div className="p-6">
-                <h3 className="text-lg font-bold text-slate-900 line-clamp-1 mb-2 group-hover:text-indigo-600 transition-colors">
+                <h3 className="text-lg font-bold text-slate-900 line-clamp-1 mb-2 group-hover:text-sky-600 transition-colors">
                     {project.title || "Untitled Gig"}
                 </h3>
                 <p className="text-slate-500 text-sm line-clamp-2 mb-6 h-10">
@@ -149,7 +149,7 @@ const GigCard = ({ project }) => {
                             {formatPrice(project.budget || 0)}
                         </span>
                     </div>
-                    <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all duration-300">
+                    <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-sky-50 group-hover:text-sky-600 transition-all duration-300">
                         <ArrowRight size={20} />
                     </div>
                 </div>
@@ -277,23 +277,23 @@ const FindTalent = () => {
         <div className="min-h-screen bg-[#F8FAFC] pb-32">
             {/* Hero Header */}
             <div className="bg-white border-b border-slate-100 pt-16 pb-12 px-4 shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-50 rounded-full -mr-48 -mt-48 blur-3xl opacity-50" />
+                <div className="absolute top-0 right-0 w-96 h-96 bg-sky-50 rounded-full -mr-48 -mt-48 blur-3xl opacity-50" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-sky-50 rounded-full -ml-32 -mb-32 blur-3xl opacity-50" />
 
                 <div className="max-w-7xl mx-auto relative z-10 text-center">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 rounded-full text-xs font-black uppercase tracking-widest mb-6">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-sky-50 text-sky-600 rounded-full text-xs font-black uppercase tracking-widest mb-6">
                         <Users size={14} />
                         World-Class Talent
                     </div>
                     <h1 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter mb-6">
-                        Hire the Best <span className="text-indigo-600">Expertise</span>
+                        Hire the Best <span className="text-sky-600">Expertise</span>
                     </h1>
                     <p className="text-slate-500 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
                         Connect with specialized freelancers and explore premium service offerings.
                     </p>
 
                     <div className="max-w-3xl mx-auto mb-12">
-                        <div className="p-2 bg-white rounded-3xl shadow-2xl shadow-indigo-100 border border-slate-100 flex items-center">
+                        <div className="p-2 bg-white rounded-3xl shadow-2xl shadow-sky-100 border border-slate-100 flex items-center">
                             <div className="flex-1">
                                 <PredictiveSearchBar
                                     onSearch={handleSearch}
@@ -310,7 +310,7 @@ const FindTalent = () => {
                         <div className="flex flex-wrap items-center justify-center gap-3">
                             <button
                                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                                className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all ${isFilterOpen ? 'bg-slate-900 text-white shadow-xl' : 'bg-white text-slate-600 border border-slate-100 shadow-sm hover:border-indigo-200'
+                                className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold text-sm transition-all ${isFilterOpen ? 'bg-slate-900 text-white shadow-xl' : 'bg-white text-slate-600 border border-slate-100 shadow-sm hover:border-sky-200'
                                     }`}
                             >
                                 <Filter size={18} />
@@ -321,7 +321,7 @@ const FindTalent = () => {
                             <div className="hidden md:flex items-center gap-2 px-4 py-1.5 bg-slate-50 rounded-2xl border border-slate-100">
                                 <button
                                     onClick={() => setSelectedCategory("")}
-                                    className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${selectedCategory === "" ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                                    className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${selectedCategory === "" ? 'bg-white text-sky-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'
                                         }`}
                                 >
                                     All
@@ -330,7 +330,7 @@ const FindTalent = () => {
                                     <button
                                         key={cat.id}
                                         onClick={() => setSelectedCategory(cat.id)}
-                                        className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${selectedCategory === cat.id ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'
+                                        className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${selectedCategory === cat.id ? 'bg-white text-sky-600 shadow-sm' : 'text-slate-500 hover:text-slate-900'
                                             }`}
                                     >
                                         {cat.name}
@@ -404,7 +404,7 @@ const FindTalent = () => {
                 {loading ? (
                     <div className="flex flex-col justify-center items-center py-32">
                         <Loader size="large" />
-                        <p className="mt-4 text-slate-400 font-bold animate-pulse uppercase tracking-widest text-xs">Hunting for talent...</p>
+                        <p className="mt-4 text-sky-600 font-bold animate-pulse uppercase tracking-widest text-xs">Hunting for talent...</p>
                     </div>
                 ) : (
                     <div className="space-y-20">
@@ -413,10 +413,10 @@ const FindTalent = () => {
                             <section>
                                 <div className="flex items-center justify-between mb-10 pb-6 border-b border-slate-100">
                                     <div className="flex items-center gap-3">
-                                        <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+                                        <div className="p-2 bg-sky-600 text-sky-600 rounded-lg">
                                             <Users size={20} />
                                         </div>
-                                        <span className="text-slate-900 font-black text-xl tracking-tight uppercase">
+                                        <span className="text-sky-600 font-black text-xl tracking-tight uppercase">
                                             Top Freelancers ({results.freelancers.length})
                                         </span>
                                     </div>
@@ -452,9 +452,9 @@ const FindTalent = () => {
 
                         {/* Focused Talent Detail Section */}
                         {results.freelancers.length === 1 && focusedProjects.length > 0 && (
-                            <section className="bg-indigo-50/30 rounded-[3rem] p-12 border border-indigo-100">
+                            <section className="bg-sky-50/30 rounded-[3rem] p-12 border border-sky-100">
                                 <div className="flex items-center gap-3 mb-10">
-                                    <div className="p-2 bg-indigo-600 text-white rounded-lg">
+                                    <div className="p-2 bg-sky-600 text-white rounded-lg">
                                         <LayoutGrid size={20} />
                                     </div>
                                     <h3 className="text-2xl font-black text-slate-900 tracking-tight uppercase">

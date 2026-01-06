@@ -207,7 +207,7 @@ const Trustflow = () => {
     if (loading) return <div className="h-screen bg-slate-950 flex flex-col items-center justify-center text-green-500 font-mono"><div className="w-12 h-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>SECURE_HANDSHAKE_INIT...</div>;
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans selection:bg-blue-100">
+        <div className="min-h-screen bg-[var(--color-primary-bg)] text-slate-900 font-sans selection:bg-blue-100">
 
             {/* CANCELLATION MODAL */}
             {cancelConfirm && (
