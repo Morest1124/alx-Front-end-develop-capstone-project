@@ -105,8 +105,6 @@ apiClient.interceptors.response.use(
     }
 
     // Handle Django REST framework pagination
-    // If response has 'results' array, extract it (paginated response)
-    // Otherwise return the data as-is
     const data = response.data;
     if (data && typeof data === 'object' && Array.isArray(data.results)) {
       // Paginated response - return just the results array for backward compatibility
@@ -142,7 +140,7 @@ apiClient.interceptors.response.use(
         message = "Invalid email or password. Please try again.";
         // } else {
         //   // For other protected routes, trigger logout
-        //   message = "Your session has expired. Please log in again.";
+          message = "Your session has expired. Please log in again.";
         // Only trigger global logout for 401 errors on protected routes
         setTimeout(() => {
           window.dispatchEvent(new Event("auth:logout"));
@@ -204,7 +202,7 @@ export const login = async (credentials) => {
   if (data.access) {
     localStorage.setItem("token", data.access);
   }
-  return data;
+  return data
 };
 //Export endpoints to dedicated pages
 export const register = async (userData) => {

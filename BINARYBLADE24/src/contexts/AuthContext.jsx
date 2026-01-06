@@ -105,11 +105,11 @@ const AuthProvider = ({ children }) => {
 
         if (timeUntilExpiry <= 0) {
           // Token already expired
-          console.log("JWT token expired. Logging out...");
+          console.log("Your session has expired. Logging out...");
           logout();
         } else if (timeUntilExpiry < 5 * 60 * 1000) {
           // Less than 5 minutes until expiry, show warning
-          console.log(`JWT token expiring in ${Math.floor(timeUntilExpiry / 60000)} minutes`);
+          console.log(`Your session will expire in ${Math.floor(timeUntilExpiry / 60000)} minutes`);
         } else {
           // Set a timer to check again when token is about to expire
           const checkTimer = setTimeout(() => {
@@ -180,7 +180,9 @@ const AuthProvider = ({ children }) => {
       const dashboardPath = userRole.toLowerCase() === "client"
         ? "/client/dashboard"
         : "/freelancer/dashboard";
-      window.location.href = dashboardPath;
+        navigate(dashboardPath);
+      // window.location.href = dashboardPath;
+      // window.location.reload();
     } catch (error) {
       console.error("Login failed:", error);
       setError(error.message);
@@ -215,7 +217,9 @@ const AuthProvider = ({ children }) => {
       const dashboardPath = role.toLowerCase() === "client"
         ? "/client/dashboard"
         : "/freelancer/dashboard";
-      window.location.href = dashboardPath;
+        navigate(dashboardPath);
+      // window.location.href = dashboardPath;
+      // window.location.reload();
     } catch (error) {
       console.error("Registration failed:", error);
       setError(error.message);
@@ -238,7 +242,7 @@ const AuthProvider = ({ children }) => {
   const switchRole = () => {
     // Only allow switching if user has multiple roles
     if (!user.availableRoles || user.availableRoles.length < 2) {
-      console.warn('User does not have multiple roles');
+      console.warn('Only freelancers can switch roles');
       return;
     }
 
