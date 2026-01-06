@@ -107,11 +107,10 @@ apiClient.interceptors.response.use(
     // Handle Django REST framework pagination
     const data = response.data;
     if (data && typeof data === 'object' && Array.isArray(data.results)) {
-      // Paginated response - return just the results array for backward compatibility
       return data.results;
     }
 
-    return data; // Return the data part of the response
+    return data;
   },
   async (error) => {
     // Retry logic with exponential backoff

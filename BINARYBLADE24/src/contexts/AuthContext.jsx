@@ -180,9 +180,9 @@ const AuthProvider = ({ children }) => {
       const dashboardPath = userRole.toLowerCase() === "client"
         ? "/client/dashboard"
         : "/freelancer/dashboard";
+        window.location.reload();
         navigate(dashboardPath);
       // window.location.href = dashboardPath;
-      // window.location.reload();
     } catch (error) {
       console.error("Login failed:", error);
       setError(error.message);
@@ -217,9 +217,9 @@ const AuthProvider = ({ children }) => {
       const dashboardPath = role.toLowerCase() === "client"
         ? "/client/dashboard"
         : "/freelancer/dashboard";
+        window.location.reload();
         navigate(dashboardPath);
       // window.location.href = dashboardPath;
-      // window.location.reload();
     } catch (error) {
       console.error("Registration failed:", error);
       setError(error.message);
@@ -267,7 +267,7 @@ const AuthProvider = ({ children }) => {
     // Small delay to show loading animation before reload
     setTimeout(() => {
       // Force page reload to refresh entire UI for the new role
-      window.location.href = newPath;
+      window.location.reload();
     }, 300);
   };
 
