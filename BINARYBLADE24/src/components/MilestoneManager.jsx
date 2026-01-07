@@ -82,7 +82,7 @@ const MilestoneManager = ({ milestones, setMilestones, totalBudget }) => {
                 <button
                     type="button"
                     onClick={handleAddMilestone}
-                    className="col-span-1 md:col-span-2 bg-sky-600 text-white py-2 rounded hover:bg-sky-600700 flex items-center justify-center"
+                    className="col-span-1 md:col-span-2 bg-sky-600 text-white py-2 rounded hover:bg-sky-600 flex items-center justify-center"
                 >
                     <Plus size={16} className="mr-2" /> Add Milestone
                 </button>

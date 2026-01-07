@@ -1,4 +1,5 @@
 import React, { createContext, useState, useMemo } from 'react';
+import MyOrders from '../pages/MyOrders';
 
 const EarningsContext = createContext({
   transactions: [],
@@ -10,16 +11,11 @@ const EarningsContext = createContext({
 
 const TAX_RATE = 0.18; // 18%
 
-const mockTransactions = [
-  { id: 1, project: 'E-commerce Website', amount: 25000, date: '2025-10-20' },
-  { id: 2, project: 'Mobile App Design', amount: 35000, date: '2025-10-15' },
-  { id: 3, project: 'Logo Design', amount: 17000, date: '2025-10-10' },
-  { id: 4, project: 'Marketing Campaign', amount: 15000, date: '2025-09-25' },
-  { id: 5, project: 'API Integration', amount: 28000, date: '2025-09-18' },
-];
+const Transactions = MyOrders.length===0?[]:MyOrders;
+
 
 const EarningsProvider = ({ children }) => {
-  const [transactions] = useState(mockTransactions);
+  const [transactions] = useState(Transactions);
 
   const monthlyEarnings = useMemo(() => {
     const currentMonth = new Date().getMonth();

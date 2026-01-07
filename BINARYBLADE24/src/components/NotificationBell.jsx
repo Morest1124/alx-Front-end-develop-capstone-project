@@ -4,13 +4,6 @@ import { useRouter } from '../contexts/Routers';
 import { AuthContext } from '../contexts/AuthContext';
 import { getUnreadCount, getNotifications, markNotificationRead, markAllNotificationsRead } from '../api';
 
-/**
- * NotificationBell Component
- * 
- * Displays a bell icon with unread count badge.
- * Shows notification dropdown when clicked.
- * Polls for new notifications every 30 seconds.
- */
 const NotificationBell = () => {
     const { navigate } = useRouter();
     const { user } = useContext(AuthContext);
@@ -33,7 +26,7 @@ const NotificationBell = () => {
             const data = await getUnreadCount();
             setUnreadCount(data.unread_count || 0);
         } catch (error) {
-            console.error('Failed to fetch unread count:', error);
+            console.error('Failed to display unread count:', error);
         }
     };
 

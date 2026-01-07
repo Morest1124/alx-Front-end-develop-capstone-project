@@ -1,19 +1,3 @@
-/**
- * CategorySelector Component - 3-Level Hierarchical Selection
- * 
- * Matches the user's exact 3-column design but fetches data from backend.
- * 
- * Structure:
- * - Column 1: Main Categories (Area of Expertise)
- * - Column 2: Subcategories (Specific Role)
- * - Column 3: Items (Key Tasks)
- * 
- * Usage:
- * <CategorySelector 
- *   selectedPath={selectedPath}
- *   onSelect={(mainName, subName, subId) => {...}}
- * />
- */
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { getCategories } from '../api';

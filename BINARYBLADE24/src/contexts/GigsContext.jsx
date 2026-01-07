@@ -40,17 +40,17 @@ const GigsProvider = ({ children }) => {
 
       // Filter to show only GIG type projects (freelancer services)
       // TEMPORARY: Showing all projects to debug missing gigs
-      /*
+      
       const gigProjects = data.filter(p => {
         const projectType = p.project_type?.toUpperCase();
         return projectType === 'GIG';
       });
-      console.log('Filtered GIG projects:', gigProjects); // Debug log
-      setGigs(gigProjects);
-      */
+      // console.log('Filtered GIG projects:', gigProjects); // Debug log
+      // setGigs(gigProjects);
+      
 
       // Show ALL projects for now
-      console.log('Showing ALL projects (filter disabled):', data);
+      // console.log('Showing ALL projects (filter disabled):', data);
       setGigs(data);
     } catch (error) {
       console.error("Error fetching gigs:", error);

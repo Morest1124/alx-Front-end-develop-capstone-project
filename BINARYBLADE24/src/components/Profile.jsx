@@ -41,7 +41,7 @@ const ProfilePage = () => {
 
   // 6. Display the user's profile information
   if (!user) {
-    return <div>No user data found.</div>;
+    return <div>No user information found.</div>;
   }
 
   return (

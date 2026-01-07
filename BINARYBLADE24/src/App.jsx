@@ -37,6 +37,7 @@ import MyOrders from "./pages/MyOrders";
 import FreelancerOrders from "./pages/FreelancerOrders";
 import Trustflow from "./pages/Trustflow";
 import { fetchRates } from "./utils/currency";
+import ProjectSubmission from "./components/projectSubmission";
 
 
 // Protected Route Component
@@ -132,6 +133,7 @@ const AppContent = () => {
             <Route path="/settings/tax" element={<Tax />} />
             <Route path="/payment-simulator" element={<PaymentSimulator />} />
             <Route path="/trustflow" element={<Trustflow />} />
+            <Route path="/project-submission/:id" element={<ProjectSubmission />} />
 
             {/* Messages can be accessed by both, path differs but component is same */}
             <Route path="/client/messages" element={<Messages />} />

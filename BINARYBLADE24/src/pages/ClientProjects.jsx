@@ -84,8 +84,6 @@ const ClientProjects = () => {
     }
 
     try {
-      // Logic for client to contact the assigned freelancer
-      // This assumes the project has an associated freelancer through an accepted proposal
       const freelancerId = project.freelancer?.id || project.owner_details?.id;
       if (!freelancerId) {
         alert("No freelancer assigned to this project yet.");

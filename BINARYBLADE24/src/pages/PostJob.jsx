@@ -24,7 +24,6 @@ const PostJob = () => {
     try {
       await createJob(jobDetails);
       alert('Job posted successfully!');
-      // Optionally, you can redirect the user to another page
       // navigate('/client/dashboard');
     } catch (error) {
       console.error('Failed to post job:', error);

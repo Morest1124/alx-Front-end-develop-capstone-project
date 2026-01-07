@@ -217,12 +217,9 @@ const Settings = () => {
         // Update global user context to reflect changes immediately
         updateUser({
           name: accountData.username,
-          // Note: we're using username as the display name in context based on login logic,
-          // but strictly speaking it could be `firstName lastName`. 
-          // However, since the user complained "dashboard does update the username", 
-          // let's ensure username is synced if that's what's shown.
-          // Re-reading login logic: name = userData.username || (first + last)
-          // So if username is present, it's used.
+          // name: accountData.firstName + ' ' + accountData.lastName,
+          // name: getAccountStatus.length
+       
         });
       } else if (section === 'Password') {
         if (securityData.newPassword !== securityData.confirmPassword) {

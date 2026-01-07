@@ -17,7 +17,7 @@ const ClientDashboardProvider = ({ children }) => {
         setDashboardData(data); 
         setError(null);
       } catch (err) {
-        setError(err.message || "Failed to fetch dashboard data.");
+        setError(err.message || "Failed to fetch dashboard projects.");
         setDashboardData(null);
       } finally {
         setLoading(false);

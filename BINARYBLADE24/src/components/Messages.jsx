@@ -14,11 +14,7 @@ import {
   Loader2
 } from "lucide-react";
 
-/**
- * Messages Component
- * Handles real-time communication between clients and freelancers.
- * Styled with the platform's cyan/teal accent theme.
- */
+
 
 const Messages = () => {
   const { user } = useContext(AuthContext);
@@ -260,7 +256,7 @@ const Messages = () => {
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Write a message..."
-                    className="w-full px-6 py-3.5 bg-[var(--color-primary-bg)] border border-transparent rounded-full text-sm focus:outline-none focus:bg-white focus:border-[var(--color-accent-light)] focus:ring-4 focus:ring-[var(--color-accent)]/5 transition-all"
+                    className="w-full px-6 py-3 bg-[var(--color-primary-bg)] border border-transparent rounded-full text-sm focus:outline-none focus:bg-white focus:border-[var(--color-accent-light)] focus:ring-4 focus:ring-[var(--color-accent)]/5 transition-all"
                     disabled={sending}
                   />
                 </div>
@@ -268,7 +264,7 @@ const Messages = () => {
                 <button
                   type="submit"
                   disabled={sending || !newMessage.trim()}
-                  className="p-3.5 bg-[var(--color-accent)] text-white rounded-full hover:bg-[var(--color-accent-hover)] disabled:opacity-50 disabled:bg-[var(--color-text-muted)] shadow-lg shadow-[var(--color-accent-light)] transition-all transform active:scale-90 flex items-center justify-center"
+                  className="p-3 bg-[var(--color-accent)] text-white rounded-full hover:bg-[var(--color-accent-hover)] disabled:opacity-50 disabled:bg-[var(--color-text-muted)] shadow-lg shadow-[var(--color-accent-light)] transition-all transform active:scale-90 flex items-center justify-center"
                 >
                   {sending ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
                 </button>
